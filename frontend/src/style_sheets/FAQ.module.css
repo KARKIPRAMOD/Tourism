@@ -1,0 +1,25 @@
+.faqPage {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.faqContainer {
+  margin-top: 2rem;
+}
+
+.faqItem {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.faqQuestion {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.faqAnswer {
+  color: #666;
+}

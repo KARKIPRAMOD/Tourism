@@ -1,0 +1,99 @@
+.mainContainer {
+  min-height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.carouselContainer {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.carousel {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carouselImage {
+  width: 33.33%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mainTitle {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  font-size: 2.5rem;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.updatesSection {
+  margin-bottom: 3rem;
+}
+
+.updateCard {
+  background: white;
+  padding: 20px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.updateCard h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.updateCard ul {
+  padding-left: 20px;
+}
+
+.faqSection {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.faqItem {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.faqQuestion {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.faqAnswer {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .carouselContainer {
+    height: 300px;
+  }
+  
+  .mainTitle {
+    font-size: 2rem;
+  }
+  
+  .contentContainer {
+    padding: 15px;
+  }
+}

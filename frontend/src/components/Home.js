@@ -1,0 +1,438 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState, useEffect } from "react";
+
+//import css file from style sheets directory
+import styleHome from "../style_sheets/Home.module.css";
+
+//import images from img directory
+import coverImg from "../img/Beach.jpg";
+import paymentImg from "../img/ezpayment.png";
+import nearbyImg from "../img/Nearby.png";
+import covidImg from "../img/Safe.png";
+import priceImg from "../img/Prices.png";
+
+// Import the ChatBot component
+import ChatBot from "./ChatBot";
+import FeedbackForm from "./feedbackform";
+
+const Home = () => {
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  // Fetch feedback from the database when the component mounts
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const response = await fetch("http://localhost:8070/feedBack/all"); // Replace with your actual API endpoint
+        const data = await response.json();
+        setFeedbacks(data);
+      } catch (error) {
+        console.error("Error fetching feedback:", error);
+      }
+    };
+
+    fetchFeedback();
+  }, []);
+
+  // Toggle function to open/close the feedback form
+  const toggleFeedbackForm = () => {
+    setIsFeedbackOpen(!isFeedbackOpen);
+  };
+
+  return (
+    <>
+      <div className={styleHome.container}>
+        <img src={coverImg} alt="Cover Beach" className={styleHome.img} />
+        <div className={styleHome.layer}>
+          <div className={styleHome.centered}>
+            <div className={styleHome.headerTxt}>TRAVEL TO EXPLORE</div>
+            <div className={styleHome.sloganTxt}>
+              Stop worrying about the potholes in the road and enjoy the journey{" "}
+              <br />~ Babs Hoffman ~
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={`row row-cols-md-4 g-5`}
+        style={{ margin: "40px 70px 0px 70px" }}
+      >
+        <div className={`col`}>
+          <div className={`card h-100 ${styleHome.cardContainer}`}>
+            <div className={styleHome.imgBg}>
+              <img
+                src={priceImg}
+                className={`card-img-top ${styleHome.cardImg}`}
+                alt="..."
+              />
+            </div>
+            <div
+              className={`card-body`}
+              style={{ marginLeft: "10px", marginRight: "15px" }}
+            >
+              <h5 className={`card-title ${styleHome.cardHeader}`}>
+                Get Best Prices
+              </h5>
+              <p className={`card-text ${styleHome.cardDes}`}>
+                Pay through our application and save thousands and get amazing
+                rewards
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className={`col`}>
+          <div className={`card h-100 ${styleHome.cardContainer}`}>
+            <div className={styleHome.imgBg}>
+              <img
+                src={covidImg}
+                className={`card-img-top ${styleHome.cardImg}`}
+                style={{ width: "45px" }}
+                alt="..."
+              />
+            </div>
+            <div
+              className={`card-body`}
+              style={{ marginLeft: "10px", marginRight: "20px" }}
+            >
+              <h5 className={`card-title ${styleHome.cardHeader}`}>Safty</h5>
+              <p className={`card-text ${styleHome.cardDes}`}>
+                We provide safe spaces by ensuring our partnered hotels follow
+                top hygiene and safety practices.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className={`col`}>
+          <div className={`card h-100 ${styleHome.cardContainer}`}>
+            <div className={styleHome.imgBg}>
+              <img
+                src={paymentImg}
+                className={`card-img-top ${styleHome.cardImg}`}
+                style={{ width: "45px", marginTop: "5px" }}
+                alt="..."
+              />
+            </div>
+            <div
+              className={`card-body`}
+              style={{ marginLeft: "10px", marginRight: "20px" }}
+            >
+              <h5 className={`card-title ${styleHome.cardHeader}`}>
+                Flexible Payment
+              </h5>
+              <p className={`card-text ${styleHome.cardDes}`}>
+                Enjoy the flexible payment through our app and get rewards on
+                every payment
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className={`col`}>
+          <div className={`card h-100 ${styleHome.cardContainer}`}>
+            <div className={styleHome.imgBg}>
+              <img
+                src={nearbyImg}
+                className={`card-img-top ${styleHome.cardImg}`}
+                style={{ width: "45px" }}
+                alt="..."
+              />
+            </div>
+            <div
+              className={`card-body`}
+              style={{ marginLeft: "10px", marginRight: "20px" }}
+            >
+              <h5 className={`card-title ${styleHome.cardHeader}`}>
+                Find The Best Near You
+              </h5>
+              <p className={`card-text ${styleHome.cardDes}`}>
+                Find the best hotels and places to visit near you in a single
+                click
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section
+        className={styleHome.reviewSection}
+        style={{ padding: "60px 80px", backgroundColor: "#f8f9fa" }}
+      >
+        <div className="container">
+          <h2
+            className="text-center mb-5"
+            style={{ fontWeight: "700", fontSize: "36px" }}
+          >
+            About Us
+          </h2>
+
+          {/* Centered Welcome Text */}
+          <p
+            className="text-center"
+            style={{
+              fontWeight: "600",
+              fontSize: "22px",
+              marginBottom: "30px",
+            }}
+          >
+            Welcome to YatraPath
+          </p>
+
+          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+            Hey there, traveler! We’re so glad you found us. YatraPath was born
+            from a simple idea traveling should be joyful, not stressful. We
+            know how confusing it can be to juggle multiple apps just to plan
+            one trip. That’s why we created a place where everything you need
+            hotel bookings, local guides, travel tips, even a friend group all
+            under one digital roof. Whether you’re a solo backpacker, a couple
+            on a getaway, or a group chasing adventure, YatraPath is here to
+            make your journey through Nepal smooth, safe, and full of memories.
+          </p>
+
+          {/* Centered Welcome Text */}
+          <p
+            className="text-center"
+            style={{
+              fontWeight: "600",
+              fontSize: "22px",
+              marginBottom: "30px",
+            }}
+          >
+            Our Vision
+          </p>
+          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+            We dream of a world where travel connects people, cultures, and
+            communities in beautiful ways. Our vision is to become Nepal’s most
+            trusted travel platform, not just by offering bookings and support,
+            but by making every journey meaningful. We want every traveler to
+            feel the magic of Nepal—and every local business to grow from the
+            love of tourism done right.
+          </p>
+          {/* Centered Welcome Text */}
+          <p
+            className="text-center"
+            style={{
+              fontWeight: "600",
+              fontSize: "22px",
+              marginBottom: "30px",
+            }}
+          >
+            Our Mission
+          </p>
+          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+            At YatraPath, we’re on a mission to make travel planning easier and
+            more personal. We combine smart technology with a human touch,
+            helping you find trusted guides, cozy places to stay, and exciting
+            things to do—all while supporting the local people who make Nepal so
+            special. We believe that great trips aren’t just about where you go,
+            but about who you meet and what you experience along the way.
+          </p>
+          {/* Centered Welcome Text */}
+          <p
+            className="text-center"
+            style={{
+              fontWeight: "600",
+              fontSize: "22px",
+              marginBottom: "30px",
+            }}
+          >
+            What Makes Us Different
+          </p>
+          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+            We’re more than just a booking site—we’re your travel buddy. Our
+            platform gives you the power to plan your trip your way, with help
+            from an AI chatbot that’s always there to answer your questions
+            (even the silly ones!). You can book verified guides, chat with
+            fellow travelers, read travel stories, and find tips on what to do
+            and where to go. It’s simple, helpful, and made with love—for people
+            who love to explore.
+          </p>
+          {/* Centered Welcome Text */}
+          <p
+            className="text-center"
+            style={{
+              fontWeight: "600",
+              fontSize: "22px",
+              marginBottom: "30px",
+            }}
+          >
+            why Nepal?
+          </p>
+          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+            Nepal isn’t just a destination it’s a feeling. From the snowy peaks
+            of the Himalayas to the bustling streets of Kathmandu, every corner
+            of this country has a story to tell. We’re proud to be from here,
+            and even prouder to share it with the world. YatraPath exists to
+            help you discover not just famous spots, but also the hidden gems,
+            local flavors, and heartwarming moments that make Nepal
+            unforgettable.
+          </p>
+        </div>
+      </section>
+
+      <div style={{ padding: "100px 100px 20px 100px" }}>
+        <p className={`text-center ${styleHome.destinationHeading}`}>
+          <span style={{ color: "#4468E2" }}>BEST</span> DESTINATIONS
+        </p>
+        <div className="row">
+          <div className="col-lg-4 col-md-12 mb-4 mb-lg-0">
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Boat on Calm Water"
+            />
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain1.webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Wintry Mountain Landscape"
+            />
+          </div>
+
+          <div className="col-lg-4 mb-4 mb-lg-0">
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain2.webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Mountains in the Clouds"
+            />
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Boat on Calm Water"
+            />
+          </div>
+
+          <div className="col-lg-4 mb-4 mb-lg-0">
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(18).webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Waves at Sea"
+            />
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain3.webp"
+              className="w-100 shadow-1-strong rounded mb-4"
+              alt="Yosemite National Park"
+            />
+          </div>
+        </div>
+      </div>
+      <section style={{ padding: "60px 80px", backgroundColor: "#ffffff" }}>
+        <div className="container">
+          <h2
+            className="text-center mb-5"
+            style={{ fontWeight: "700", fontSize: "32px" }}
+          >
+            Things to Do in Nepal
+          </h2>
+
+          <div className="row">
+            {/* Left Column */}
+            <div className="col-md-6">
+              {[
+                "Trekking",
+                "Zip Flying",
+                "Sky Diving",
+                "Bungee Jumping",
+                "Motor Biking",
+                "Rafting & Kayaking",
+                "Canyoning",
+                "Mountain Biking",
+                "Paragliding",
+                "Hiking",
+              ].map((activity, index) => (
+                <p
+                  key={index}
+                  className="text-start"
+                  style={{
+                    fontWeight: "600",
+                    fontSize: "20px",
+                    marginBottom: "20px",
+                    color: "#155263",
+                  }}
+                >
+                  • {activity}
+                </p>
+              ))}
+            </div>
+
+            {/* Right Column */}
+            <div className="col-md-6">
+              {[
+                "Camping",
+                "Cave Exploration",
+                "Hot Air Balloon",
+                "Bird Watching",
+                "Mountain Viewing",
+                "Jungle Discovery",
+                "Butterfly Watching",
+                "Nagarkot Sunrise and Sunset",
+                "Wetlands",
+                "Traditional Crafts",
+              ].map((activity, index) => (
+                <p
+                  key={index}
+                  className="text-start"
+                  style={{
+                    fontWeight: "600",
+                    fontSize: "20px",
+                    marginBottom: "20px",
+                    color: "#155263",
+                  }}
+                >
+                  • {activity}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div className="mt-5">
+            <h4 className="text-center mb-4">User Feedback</h4>
+            {feedbacks.length > 0 ? (
+              <div className="row row-cols-1 row-cols-md-2 g-4">
+                {feedbacks.map((fb) => (
+                  <div key={fb._id} className="col">
+                    <div className="card h-100 shadow-sm">
+                      <div className="card-body">
+                        <h5 className="card-title mb-1">{fb.name}</h5>
+                        <h6 className="text-muted mb-2">{fb.category}</h6>
+                        <p className="card-text">{fb.feedbackText}</p>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span>⭐ {fb.rating}/5</span>
+                          <small className="text-muted">
+                            {new Date(fb.createdAt).toLocaleDateString()}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted">
+                No feedback submitted yet.
+              </p>
+            )}
+          </div>
+
+          {/* Button */}
+          <div className="text-center mt-5"></div>
+        </div>
+        <button
+          onClick={toggleFeedbackForm}
+          className="btn btn-secondary"
+          style={{
+            position: "fixed",
+            bottom: "90px", // Move it up a bit
+            right: "10px", // Keep it on the right
+            zIndex: 1000, // Optional, if needed for stacking context
+          }}
+        >
+          Give Feedback
+        </button>
+      </section>
+      {/* Feedback Form Component */}
+      <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
+      {/* ChatBot Component */}
+      <ChatBot />
+    </>
+  );
+};
+
+export default Home;
