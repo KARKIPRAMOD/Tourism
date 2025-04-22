@@ -155,117 +155,219 @@ const Home = () => {
 
       <section
         className={styleHome.reviewSection}
-        style={{ padding: "60px 80px", backgroundColor: "#f8f9fa" }}
+        style={{
+          padding: "60px 80px",
+          backgroundColor: "#f8f9fa",
+        }}
       >
         <div className="container">
-          <h2
-            className="text-center mb-5"
-            style={{ fontWeight: "700", fontSize: "36px" }}
+          <div
+            style={{
+              fontWeight: "700",
+              fontSize: "42px",
+              marginBottom: "5rem",
+              textAlign: "center",
+            }}
           >
-            About Us
-          </h2>
-
+            <label className="text-center">About Us</label>
+            <div style={{ fontSize: "16px", fontWeight: "500", color: "gray" }}>
+              A little description of our site on how we work and server the
+              service towards you
+            </div>
+          </div>
           {/* Centered Welcome Text */}
           <p
-            className="text-center"
             style={{
-              fontWeight: "600",
-              fontSize: "22px",
+              fontWeight: "700",
+              fontSize: "26px",
               marginBottom: "30px",
+              textAlign: "left",
             }}
           >
             Welcome to YatraPath
           </p>
-
-          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
-            Hey there, traveler! We’re so glad you found us. YatraPath was born
-            from a simple idea traveling should be joyful, not stressful. We
-            know how confusing it can be to juggle multiple apps just to plan
-            one trip. That’s why we created a place where everything you need
-            hotel bookings, local guides, travel tips, even a friend group all
-            under one digital roof. Whether you’re a solo backpacker, a couple
-            on a getaway, or a group chasing adventure, YatraPath is here to
-            make your journey through Nepal smooth, safe, and full of memories.
-          </p>
-
-          {/* Centered Welcome Text */}
-          <p
-            className="text-center"
+          <div
             style={{
-              fontWeight: "600",
-              fontSize: "22px",
-              marginBottom: "30px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "7rem",
+              marginBottom: "5rem",
             }}
           >
-            Our Vision
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
-            We dream of a world where travel connects people, cultures, and
-            communities in beautiful ways. Our vision is to become Nepal’s most
-            trusted travel platform, not just by offering bookings and support,
-            but by making every journey meaningful. We want every traveler to
-            feel the magic of Nepal—and every local business to grow from the
-            love of tourism done right.
-          </p>
+            <div>
+              <img src="" alt="welcome" />
+            </div>
+            <div>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
+                Hey there, traveler! We’re so glad you found us. YatraPath was
+                born from a simple idea traveling should be joyful, not
+                stressful. We know how confusing it can be to juggle multiple
+                apps just to plan one trip. That’s why we created a place where
+                everything you need hotel bookings, local guides, travel tips,
+                even a friend group all under one digital roof. Whether you’re a
+                solo backpacker, a couple on a getaway, or a group chasing
+                adventure, YatraPath is here to make your journey through Nepal
+                smooth, safe, and full of memories.
+              </p>
+            </div>
+          </div>
           {/* Centered Welcome Text */}
-          <p
-            className="text-center"
+          <div
             style={{
-              fontWeight: "600",
-              fontSize: "22px",
-              marginBottom: "30px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "7rem",
+              marginBottom: "5rem",
             }}
           >
-            Our Mission
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
-            At YatraPath, we’re on a mission to make travel planning easier and
-            more personal. We combine smart technology with a human touch,
-            helping you find trusted guides, cozy places to stay, and exciting
-            things to do—all while supporting the local people who make Nepal so
-            special. We believe that great trips aren’t just about where you go,
-            but about who you meet and what you experience along the way.
-          </p>
+            <div>
+              <p
+                className="text-center"
+                style={{
+                  fontWeight: "700",
+                  fontSize: "28px",
+                  marginBottom: "30px",
+                }}
+              >
+                Our Vision
+              </p>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
+                We dream of a world where travel connects people, cultures, and
+                communities in beautiful ways. Our vision is to become Nepal’s
+                most trusted travel platform, not just by offering bookings and
+                support, but by making every journey meaningful. We want every
+                traveler to feel the magic of Nepal—and every local business to
+                grow from the love of tourism done right.
+              </p>
+            </div>
+            <div>
+              <img
+                src="https://img.freepik.com/free-photo/business-strategy-success-target-goals_1421-33.jpg?t=st=1745340390~exp=1745343990~hmac=a445379c80b0b030b186fd59c343a9c1c1e4075b48e55e7e202fc881cdcf9c84&w=1380"
+                alt="our vision"
+                style={{
+                  borderRadius: "16px",
+                }}
+              />
+            </div>
+          </div>
           {/* Centered Welcome Text */}
-          <p
-            className="text-center"
+          <div
             style={{
-              fontWeight: "600",
-              fontSize: "22px",
-              marginBottom: "30px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "7rem",
+              marginBottom: "3rem",
             }}
           >
-            What Makes Us Different
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
-            We’re more than just a booking site—we’re your travel buddy. Our
-            platform gives you the power to plan your trip your way, with help
-            from an AI chatbot that’s always there to answer your questions
-            (even the silly ones!). You can book verified guides, chat with
-            fellow travelers, read travel stories, and find tips on what to do
-            and where to go. It’s simple, helpful, and made with love—for people
-            who love to explore.
-          </p>
+            <div>
+              <img
+                src="https://img.freepik.com/free-photo/businessman-touching-virtual-screen_1232-737.jpg?t=st=1745341616~exp=1745345216~hmac=1c393cb33c509e73b64803c412d65af6995e39fd479ac715b8ddaa76c66859d1&w=1380"
+                alt="our mission"
+                style={{
+                  borderRadius: "16px",
+                }}
+              />
+            </div>
+            <div>
+              <p
+                className="text-center"
+                style={{
+                  fontWeight: "700",
+                  fontSize: "22px",
+                  marginBottom: "30px",
+                }}
+              >
+                Our Mission
+              </p>
+              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+                At YatraPath, we’re on a mission to make travel planning easier
+                and more personal. We combine smart technology with a human
+                touch, helping you find trusted guides, cozy places to stay, and
+                exciting things to do—all while supporting the local people who
+                make Nepal so special. We believe that great trips aren’t just
+                about where you go, but about who you meet and what you
+                experience along the way.
+              </p>
+            </div>
+          </div>
           {/* Centered Welcome Text */}
-          <p
-            className="text-center"
+          <div
             style={{
-              fontWeight: "600",
-              fontSize: "22px",
-              marginBottom: "30px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "7rem",
+              marginBottom: "3rem",
             }}
           >
-            why Nepal?
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
-            Nepal isn’t just a destination it’s a feeling. From the snowy peaks
-            of the Himalayas to the bustling streets of Kathmandu, every corner
-            of this country has a story to tell. We’re proud to be from here,
-            and even prouder to share it with the world. YatraPath exists to
-            help you discover not just famous spots, but also the hidden gems,
-            local flavors, and heartwarming moments that make Nepal
-            unforgettable.
-          </p>
+            <div>
+              <p
+                className="text-center"
+                style={{
+                  fontWeight: "700",
+                  fontSize: "22px",
+                  marginBottom: "30px",
+                }}
+              >
+                What Makes Us Different
+              </p>
+              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+                We’re more than just a booking site—we’re your travel buddy. Our
+                platform gives you the power to plan your trip your way, with
+                help from an AI chatbot that’s always there to answer your
+                questions (even the silly ones!). You can book verified guides,
+                chat with fellow travelers, read travel stories, and find tips
+                on what to do and where to go. It’s simple, helpful, and made
+                with love—for people who love to explore.
+              </p>
+            </div>
+            <div>
+              <img
+                src="https://img.freepik.com/free-photo/young-man-making-scales-gesture-shirt-jacket-pants-looking-confident-front-view_176474-88930.jpg?t=st=1745342219~exp=1745345819~hmac=a23423b5c50911d1983a291bdfc8d8e93c7c2325badb44a0c718075a42980281&w=1380"
+                alt="what makes us different"
+                style={{
+                  borderRadius: "16px",
+                }}
+              />
+            </div>
+          </div>
+          {/* Centered Welcome Text */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "7rem",
+              marginBottom: "3rem",
+            }}
+          >
+            <div>
+              <img
+                src="https://img.freepik.com/free-photo/young-friends-top-mountain-enjoying-mesmerizing-view_181624-30260.jpg?t=st=1745342380~exp=1745345980~hmac=6b10c6188c0c74bcd4dbed903dac8aea35a556d0baa622a6157b163357da93b7&w=1380"
+                alt="why nepal"
+                style={{ borderRadius: "16px" }}
+              />
+            </div>
+            <div>
+              <p
+                className="text-center"
+                style={{
+                  fontWeight: "700",
+                  fontSize: "22px",
+                  marginBottom: "30px",
+                }}
+              >
+                why Nepal?
+              </p>
+              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+                Nepal isn’t just a destination it’s a feeling. From the snowy
+                peaks of the Himalayas to the bustling streets of Kathmandu,
+                every corner of this country has a story to tell. We’re proud to
+                be from here, and even prouder to share it with the world.
+                YatraPath exists to help you discover not just famous spots, but
+                also the hidden gems, local flavors, and heartwarming moments
+                that make Nepal unforgettable.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
