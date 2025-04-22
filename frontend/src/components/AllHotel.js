@@ -125,28 +125,6 @@ export default class AllHotel extends Component {
 
         <div className={styles.mainContent}>
           {/* header */}
-          <header className={styles.headert}>
-            <h4>
-              <label>
-                <span className={styles.icon1}>
-                  <RiAdminFill />
-                </span>
-              </label>
-              Maneger Panel
-            </h4>
-
-            <div className={styles.userWrapper}>
-              <img
-                src={photo}
-                alt="Travelo logo"
-                className={styles.Profile}
-              ></img>
-
-              <div></div>
-              <h4>jeney Deo</h4>
-              <small className={styles.userName}>Manager</small>
-            </div>
-          </header>
 
           {/* main box */}
           <main className={styles.Main1}>
