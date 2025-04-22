@@ -85,6 +85,8 @@ app.use("/feedBack", feedBackRouter);
 
 app.use("/tourguideReservation", reserveGuideRouter);
 
+console.log("Test");
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
