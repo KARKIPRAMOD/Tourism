@@ -14,6 +14,7 @@ import priceImg from "../img/Prices.png";
 // Import the ChatBot component
 import ChatBot from "./ChatBot";
 import FeedbackForm from "./feedbackform";
+import Destinations from "./Destinations";
 
 const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -279,7 +280,7 @@ const Home = () => {
               >
                 Our Mission
               </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
                 At YatraPath, we’re on a mission to make travel planning easier
                 and more personal. We combine smart technology with a human
                 touch, helping you find trusted guides, cozy places to stay, and
@@ -310,7 +311,7 @@ const Home = () => {
               >
                 What Makes Us Different
               </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
                 We’re more than just a booking site—we’re your travel buddy. Our
                 platform gives you the power to plan your trip your way, with
                 help from an AI chatbot that’s always there to answer your
@@ -357,7 +358,7 @@ const Home = () => {
               >
                 why Nepal?
               </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8" }}>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
                 Nepal isn’t just a destination it’s a feeling. From the snowy
                 peaks of the Himalayas to the bustling streets of Kathmandu,
                 every corner of this country has a story to tell. We’re proud to
@@ -371,51 +372,10 @@ const Home = () => {
         </div>
       </section>
 
-      <div style={{ padding: "100px 100px 20px 100px" }}>
-        <p className={`text-center ${styleHome.destinationHeading}`}>
-          <span style={{ color: "#4468E2" }}>BEST</span> DESTINATIONS
-        </p>
-        <div className="row">
-          <div className="col-lg-4 col-md-12 mb-4 mb-lg-0">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Boat on Calm Water"
-            />
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain1.webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Wintry Mountain Landscape"
-            />
-          </div>
+      <section>
+        <Destinations />
+      </section>
 
-          <div className="col-lg-4 mb-4 mb-lg-0">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain2.webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Mountains in the Clouds"
-            />
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Boat on Calm Water"
-            />
-          </div>
-
-          <div className="col-lg-4 mb-4 mb-lg-0">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(18).webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Waves at Sea"
-            />
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain3.webp"
-              className="w-100 shadow-1-strong rounded mb-4"
-              alt="Yosemite National Park"
-            />
-          </div>
-        </div>
-      </div>
       <section style={{ padding: "60px 80px", backgroundColor: "#ffffff" }}>
         <div className="container">
           <h2
