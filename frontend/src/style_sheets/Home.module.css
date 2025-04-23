@@ -119,3 +119,8 @@
   border-radius: 10px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+
+.thigsToDo:hover {
+  margin-top: -6px;
+  transition: 0.2s ease-in-out;
+}

@@ -539,7 +539,7 @@ const Home = () => {
               ))} */}
                 {thingToDO?.map((value, index) => {
                   return (
-                    <div>
+                    <div className={styleHome.thigsToDo}>
                       <ThingsToDo
                         image={value.image}
                         alt={value.alt}
