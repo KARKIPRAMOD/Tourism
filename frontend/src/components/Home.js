@@ -15,6 +15,7 @@ import priceImg from "../img/Prices.png";
 import ChatBot from "./ChatBot";
 import FeedbackForm from "./feedbackform";
 import Destinations from "./Destinations";
+import ThingsToDo from "./ThingsToDo";
 
 const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -39,6 +40,73 @@ const Home = () => {
   const toggleFeedbackForm = () => {
     setIsFeedbackOpen(!isFeedbackOpen);
   };
+
+  //  "Trekking",
+  //               "Zip Flying",
+  //               "Sky Diving",
+  //               "Bungee Jumping",
+  //               "Motor Biking",
+  //               "Rafting & Kayaking",
+  //               "Canyoning",
+  //               "Mountain Biking",
+  //               "Paragliding",
+  //               "Hiking",
+
+  const thingToDO = [
+    {
+      image: "https://vietchallenge.com/images/uploads/trekking2.jpg",
+      alt: "Trekking",
+      description: "Trekking",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/OIP.to9XW2aHcEKiLExDTzWRzAHaEK?w=333&h=187&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
+      alt: "Zip Flying",
+      description: "Zip Flying",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/OIP.iZEvBHcyhAtCeTGy2bQ26wHaE8?rs=1&pid=ImgDetMain",
+      alt: "Sky Diving",
+      description: "Sky Diving",
+    },
+    {
+      image:
+        "https://neptrek.com/wp-content/uploads/2024/02/The-Cliff-at-Kushma-the-best-place-for-Bungee-Jumping-in-Nepal.jpg",
+      alt: "Bungee Jumping",
+      description: "Bungee Jumping",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/OIP.3Qgqv8g2Em0cQeP7rHd2-wHaDc?rs=1&pid=ImgDetMain",
+      alt: "Motor Biking",
+      description: "Motor Biking",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/OIP.YiSCWVyCKAtlAMDMD8ONqgHaE8?rs=1&pid=ImgDetMain",
+      alt: "Rafting ",
+      description: "Rafting",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/OIP.miycVxAMy4j7Mf8jrQcjewHaEH?rs=1&pid=ImgDetMain",
+      alt: "Canyoying",
+      description: "Canyoying",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/R.4cf3acbb948c13cee6365bae5d9eaa62?rik=RS9UQyvW3hipeg&riu=http%3a%2f%2fwww.sidetracked.com%2fwp-content%2fuploads%2f2013%2f07%2fpf_nepalstory_037-1600x1000.jpg&ehk=eWtDJqUvxJTCGu5ZQb3jMFHQY%2b4miDi38QLp%2bI7HSf0%3d&risl=&pid=ImgRaw&r=0",
+      alt: "Mountain Biking",
+      description: "Mountain Biking",
+    },
+    {
+      image:
+        "https://th.bing.com/th/id/R.ac2fb96091ed2e998a18bc5e73e73c9f?rik=HqmxT40J8JeFhw&riu=http%3a%2f%2ftourstreknepal.com%2fwp-content%2fuploads%2f2015%2f02%2fparaglidinginnepal.jpg&ehk=OwV68OkjQltkj4darK5mekLja5vmPwXLcDt1GSZhKXY%3d&risl=&pid=ImgRaw&r=0",
+      alt: "Paragliding",
+      description: "Paragliding",
+    },
+  ];
 
   return (
     <>
@@ -376,7 +444,9 @@ const Home = () => {
         <Destinations />
       </section>
 
-      <section style={{ padding: "60px 80px", backgroundColor: "#ffffff" }}>
+      <section
+        style={{ padding: "60px 190px 0px 0px", backgroundColor: "#ffffff" }}
+      >
         <div className="container">
           <h2
             className="text-center mb-5"
@@ -385,9 +455,26 @@ const Home = () => {
             Things to Do in Nepal
           </h2>
 
-          <div className="row">
-            {/* Left Column */}
-            <div className="col-md-6">
+          <div
+            className="row"
+            style={{
+              backgroundImage: ` url(
+                "https://ntb.gov.np/storage/website/landscape2-44237cb6.jpeg"
+              )`,
+              width: "98vw",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.79)",
+                height: "60rem",
+                padding: "40px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+              }}
+            >
+              {/* Left Column */}
+              {/* <div className="col-md-6">
               {[
                 "Trekking",
                 "Zip Flying",
@@ -413,11 +500,19 @@ const Home = () => {
                   • {activity}
                 </p>
               ))}
-            </div>
+            </div> */}
 
-            {/* Right Column */}
-            <div className="col-md-6">
-              {[
+              {/* Right Column */}
+              <div
+                className="col-md-6"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "40px",
+                  paddingTop: "2rem",
+                }}
+              >
+                {/* {[
                 "Camping",
                 "Cave Exploration",
                 "Hot Air Balloon",
@@ -441,7 +536,31 @@ const Home = () => {
                 >
                   • {activity}
                 </p>
-              ))}
+              ))} */}
+                {thingToDO?.map((value, index) => {
+                  return (
+                    <div>
+                      <ThingsToDo
+                        image={value.image}
+                        alt={value.alt}
+                        name={value.description}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src="https://ntb.gov.np/storage/website/nepal-55265453.png"
+                  alt="map of nepal"
+                />
+              </div>
             </div>
           </div>
           <div className="mt-5">
