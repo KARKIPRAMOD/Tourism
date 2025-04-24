@@ -1,0 +1,43 @@
+.boxWrapper {
+  cursor: pointer;
+  padding: 3rem 2rem 3rem 2rem;
+  background-color: #86bfdb;
+  border-radius: 0px 20px 0px 20px;
+}
+
+.boxWrapper:hover {
+  background-color: #95c9e3;
+  transition: 0.2s ease-in-out;
+
+  scale: 0.99;
+}
+
+.reviewMsg {
+  padding-top: 1rem;
+  border-top: 1px solid black;
+}
+
+.profileInfo {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.name {
+  font-family: poppins;
+  font-weight: 600;
+}
+
+.profileImg {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.profileWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}

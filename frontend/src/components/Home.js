@@ -16,25 +16,27 @@ import ChatBot from "./ChatBot";
 import FeedbackForm from "./feedbackform";
 import Destinations from "./Destinations";
 import ThingsToDo from "./ThingsToDo";
+import FeedBackComp from "./feedbackComp";
+import Footer from "./Footer";
 
 const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
 
   // Fetch feedback from the database when the component mounts
-  useEffect(() => {
-    const fetchFeedback = async () => {
-      try {
-        const response = await fetch("http://localhost:8070/feedBack/all"); // Replace with your actual API endpoint
-        const data = await response.json();
-        setFeedbacks(data);
-      } catch (error) {
-        console.error("Error fetching feedback:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFeedback = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:8070/feedBack/all"); // Replace with your actual API endpoint
+  //       const data = await response.json();
+  //       setFeedbacks(data);
+  //     } catch (error) {
+  //       console.error("Error fetching feedback:", error);
+  //     }
+  //   };
 
-    fetchFeedback();
-  }, []);
+  //   fetchFeedback();
+  // }, []);
 
   // Toggle function to open/close the feedback form
   const toggleFeedbackForm = () => {
@@ -563,55 +565,43 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="mt-5">
-            <h4 className="text-center mb-4">User Feedback</h4>
-            {feedbacks.length > 0 ? (
-              <div className="row row-cols-1 row-cols-md-2 g-4">
-                {feedbacks.map((fb) => (
-                  <div key={fb._id} className="col">
-                    <div className="card h-100 shadow-sm">
-                      <div className="card-body">
-                        <h5 className="card-title mb-1">{fb.name}</h5>
-                        <h6 className="text-muted mb-2">{fb.category}</h6>
-                        <p className="card-text">{fb.feedbackText}</p>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <span>⭐ {fb.rating}/5</span>
-                          <small className="text-muted">
-                            {new Date(fb.createdAt).toLocaleDateString()}
-                          </small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-muted">
-                No feedback submitted yet.
-              </p>
-            )}
-          </div>
 
           {/* Button */}
           <div className="text-center mt-5"></div>
         </div>
-        <button
-          onClick={toggleFeedbackForm}
-          className="btn btn-secondary"
+      </section>
+      <div
+        className="mt-5"
+        style={{
+          marginBottom: "4rem",
+        }}
+      >
+        <h3 className="text-center mb-4 ">Nepal's #1 platform for tourism</h3>
+        <div
           style={{
-            position: "fixed",
-            bottom: "90px", // Move it up a bit
-            right: "10px", // Keep it on the right
-            zIndex: 1000, // Optional, if needed for stacking context
+            padding: "10px",
           }}
         >
-          Give Feedback
-        </button>
-      </section>
+          <FeedBackComp />
+        </div>
+      </div>
+      <button
+        onClick={toggleFeedbackForm}
+        className="btn btn-secondary"
+        style={{
+          position: "fixed",
+          bottom: "90px", // Move it up a bit
+          right: "10px", // Keep it on the right
+          zIndex: 1000, // Optional, if needed for stacking context
+        }}
+      >
+        Give Feedback
+      </button>
       {/* Feedback Form Component */}
       <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
       {/* ChatBot Component */}
       <ChatBot />
+      <Footer />
     </>
   );
 };

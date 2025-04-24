@@ -52,7 +52,7 @@ const Destinations = () => {
   ];
 
   return (
-    <div style={{ padding: "100px 100px 20px 100px" }}>
+    <div style={{ padding: "100px 100px 20px 100px", cursor: "pointer" }}>
       <p className={`text-center ${styleHome.destinationHeading}`}>
         <span style={{ color: "#4468E2" }}>BEST</span> DESTINATIONS
       </p>
