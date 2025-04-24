@@ -7,7 +7,7 @@ const submitFeedback = async (req, res) => {
     await feedback.save();
     res.status(201).json({ message: "Feedback submitted", feedback });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ messege: "Invalid data", error: error.message });
   }
 };
 

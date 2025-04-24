@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import styles from '../style_sheets/ChatBot.module.css';
+import React, { useState, useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import styles from "../style_sheets/ChatBot.module.css";
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const history = useHistory();
@@ -14,28 +14,28 @@ const ChatBot = () => {
     welcome: [
       "Hello! Welcome to Travelo. How can I help you today?",
       "Hi there! I'm your Travelo assistant. What would you like to know?",
-      "Welcome! How may I assist you with your travel plans?"
+      "Welcome! How may I assist you with your travel plans?",
     ],
     hotels: [
       "We have a great selection of hotels! Would you like to see our available options?",
-      "I can help you find the perfect hotel. Would you like to browse our listings?"
+      "I can help you find the perfect hotel. Would you like to browse our listings?",
     ],
     tourGuides: [
       "Our professional tour guides are ready to help! Would you like to see available guides?",
-      "We have experienced tour guides for all destinations. Shall I show you the list?"
+      "We have experienced tour guides for all destinations. Shall I show you the list?",
     ],
     packages: [
       "We offer various tour packages. Would you like to see our options?",
-      "I can help you find the perfect tour package for your needs. Want to take a look?"
+      "I can help you find the perfect tour package for your needs. Want to take a look?",
     ],
     booking: [
       "I can help you with booking. Would you like to proceed with a reservation?",
-      "Ready to book your trip? I can guide you through the process."
+      "Ready to book your trip? I can guide you through the process.",
     ],
     help: [
       "I can help you with:\n- Hotel bookings\n- Tour guides\n- Tour packages\n- General information",
-      "Need assistance? I can help with bookings, finding guides, or answering general questions."
-    ]
+      "Need assistance? I can help with bookings, finding guides, or answering general questions.",
+    ],
   };
 
   const handleNavigation = (path) => {
@@ -48,33 +48,50 @@ const ChatBot = () => {
     const lowerMsg = message.toLowerCase();
 
     setTimeout(() => {
-      if (lowerMsg.includes('hotel')) {
-        setMessages(prev => [...prev, 
-          { text: botResponses.hotels[0], sender: 'bot' },
-          { text: "Click here to view hotels", sender: 'bot', action: () => handleNavigation('/view/hotel') }
+      if (lowerMsg.includes("hotel")) {
+        setMessages((prev) => [
+          ...prev,
+          { text: botResponses.hotels[0], sender: "bot" },
+          {
+            text: "Click here to view hotels",
+            sender: "bot",
+            action: () => handleNavigation("/view/hotel"),
+          },
         ]);
-      }
-      else if (lowerMsg.includes('guide')) {
-        setMessages(prev => [...prev,
-          { text: botResponses.tourGuides[0], sender: 'bot' },
-          { text: "Click here to view tour guides", sender: 'bot', action: () => handleNavigation('/add/tourguide') }
+      } else if (lowerMsg.includes("guide")) {
+        setMessages((prev) => [
+          ...prev,
+          { text: botResponses.tourGuides[0], sender: "bot" },
+          {
+            text: "Click here to view tour guides",
+            sender: "bot",
+            action: () => handleNavigation("/add/tourguide"),
+          },
         ]);
-      }
-      else if (lowerMsg.includes('package')) {
-        setMessages(prev => [...prev,
-          { text: botResponses.packages[0], sender: 'bot' },
-          { text: "Click here to view packages", sender: 'bot', action: () => handleNavigation('/view/cuspackage') }
+      } else if (lowerMsg.includes("package")) {
+        setMessages((prev) => [
+          ...prev,
+          { text: botResponses.packages[0], sender: "bot" },
+          {
+            text: "Click here to view packages",
+            sender: "bot",
+            action: () => handleNavigation("/view/cuspackage"),
+          },
         ]);
-      }
-      else if (lowerMsg.includes('book')) {
-        setMessages(prev => [...prev,
-          { text: botResponses.booking[0], sender: 'bot' },
-          { text: "Click here to make a booking", sender: 'bot', action: () => handleNavigation('/customize/package') }
+      } else if (lowerMsg.includes("book")) {
+        setMessages((prev) => [
+          ...prev,
+          { text: botResponses.booking[0], sender: "bot" },
+          {
+            text: "Click here to make a booking",
+            sender: "bot",
+            action: () => handleNavigation("/customize/package"),
+          },
         ]);
-      }
-      else {
-        setMessages(prev => [...prev, 
-          { text: botResponses.help[0], sender: 'bot' }
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { text: botResponses.help[0], sender: "bot" },
         ]);
       }
       setIsTyping(false);
@@ -83,17 +100,17 @@ const ChatBot = () => {
 
   const handleSend = () => {
     if (!inputValue.trim()) return;
-    
-    setMessages(prev => [...prev, { text: inputValue, sender: 'user' }]);
+
+    setMessages((prev) => [...prev, { text: inputValue, sender: "user" }]);
     processMessage(inputValue);
-    setInputValue('');
+    setInputValue("");
   };
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      processMessage('help');
+      processMessage("help");
     }
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [isOpen, messages]);
 
   return (
@@ -106,11 +123,13 @@ const ChatBot = () => {
           </div>
           <div className={styles.messagesList}>
             {messages.map((msg, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`${styles.message} ${styles[msg.sender]}`}
                 onClick={msg.action}
-                style={msg.action ? {cursor: 'pointer', color: '#0066cc'} : {}}
+                style={
+                  msg.action ? { cursor: "pointer", color: "#0066cc" } : {}
+                }
               >
                 {msg.text}
               </div>
@@ -123,17 +142,14 @@ const ChatBot = () => {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              onKeyPress={(e) => e.key === "Enter" && handleSend()}
               placeholder="Type your message..."
             />
             <button onClick={handleSend}>Send</button>
           </div>
         </div>
       )}
-      <button 
-        className={styles.chatButton} 
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button className={styles.chatButton} onClick={() => setIsOpen(!isOpen)}>
         <i className="fas fa-comments"></i>
       </button>
     </div>
