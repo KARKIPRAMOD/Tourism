@@ -3,16 +3,15 @@ import axios from "axios";
 import ProfileSidebar from "./Profile"; // Import the sidebar that contains user profile
 
 const ReservedTourGuides = ({ userId }) => {
-  const [reservations, setReservations] = useState([]); // To store the user's reserved tour guides
-  const [tourGuideDetails, setTourGuideDetails] = useState({}); // To store details of the tour guides
-  const [loading, setLoading] = useState(true); // Loading state for reserved tour guides
-  const [error, setError] = useState(""); // Error state
-  const [userData, setUserData] = useState(null); // To store the user data for the profile sidebar
+  const [reservations, setReservations] = useState([]);
+  const [tourGuideDetails, setTourGuideDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     if (!userId) return;
 
-    // Fetch the user data (user profile) for the sidebar
     axios
       .get(`http://localhost:8070/user/${userId}`)
       .then((res) => setUserData(res.data.user))
@@ -21,7 +20,6 @@ const ReservedTourGuides = ({ userId }) => {
         setError("Failed to load user data");
       });
 
-    // Fetch the reserved tour guides for the user
     axios
       .get(
         `http://localhost:8070/tourguideReservation/reservedTourGuides/${userId}`
@@ -38,8 +36,6 @@ const ReservedTourGuides = ({ userId }) => {
               ? reservation.tourguide._id
               : reservation.tourguide;
 
-          console.log("Fetching tour guide with ID:", tourGuideId);
-
           return axios
             .get(`http://localhost:8070/tourguide/${tourGuideId}`)
             .then((res) => {
@@ -51,7 +47,6 @@ const ReservedTourGuides = ({ userId }) => {
             });
         });
 
-        // Wait for all requests to complete
         Promise.all(tourGuideRequests).then(() => {
           setTourGuideDetails(details);
         });
@@ -69,9 +64,7 @@ const ReservedTourGuides = ({ userId }) => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Profile Sidebar */}
       <ProfileSidebar userData={userData} userId={userId} />
-
       <main style={{ flexGrow: 1, padding: "20px" }}>
         {error && <div className="alert alert-danger">{error}</div>}
         {loading ? (
@@ -81,7 +74,7 @@ const ReservedTourGuides = ({ userId }) => {
         ) : (
           <div>
             <h3>Your Reserved Tour Guides</h3>
-            <ul className="list-group">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {reservations.map((reservation) => {
                 const tourGuideId =
                   typeof reservation.tourguide === "object"
@@ -90,24 +83,81 @@ const ReservedTourGuides = ({ userId }) => {
                 const guide = tourGuideDetails[tourGuideId];
 
                 return (
-                  <li key={reservation._id} className="list-group-item">
-                    <p>
-                      <strong>Tour Guide:</strong>{" "}
-                      {guide?.fullName || "Loading..."} <br />
-                      <strong>Age:</strong> {guide?.age || "Loading..."} <br />
-                      <strong>Date:</strong>{" "}
-                      {new Date(reservation.startDate).toLocaleDateString()} -{" "}
-                      {new Date(reservation.endDate).toLocaleDateString()}
-                    </p>
-                  </li>
+                  <div
+                    key={reservation._id}
+                    style={{
+                      width: "300px",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                      overflow: "hidden",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    <img
+                      src={
+                        guide?.profileImage ||
+                        "https://media.istockphoto.com/id/1369171053/photo/group-of-sporty-people-walks-in-mountains-at-sunset-with-backpacks.jpg?s=612x612&w=0&k=20&c=ajQuWt2YRWd0FPaCpdKz2Tt3WX2NI1ddeZjf8HIxlwU="
+                      }
+                      alt={guide?.fullName}
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div style={{ padding: "16px" }}>
+                      <h5 style={{ margin: 0 }}>
+                        {guide?.fullName || "Loading..."}
+                      </h5>
+                      <p style={{ color: "#666", fontSize: "14px" }}>
+                        Age: {guide?.age || "Loading..."} <br />
+                        Date:{" "}
+                        {new Date(
+                          reservation.startDate
+                        ).toLocaleDateString()} -{" "}
+                        {new Date(reservation.endDate).toLocaleDateString()}
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <span style={tagStyle("orange")}>Family</span>
+                        <span style={tagStyle("green")}>
+                          {guide?.location || "Location"}
+                        </span>
+                      </div>
+                      <button style={editButtonStyle}>Edit</button>
+                    </div>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           </div>
         )}
       </main>
     </div>
   );
+};
+
+const tagStyle = (color) => ({
+  backgroundColor: color === "orange" ? "#FFE8CC" : "#D3F9D8",
+  color: color === "orange" ? "#FF922B" : "#37B24D",
+  fontSize: "12px",
+  padding: "2px 8px",
+  borderRadius: "8px",
+});
+
+const editButtonStyle = {
+  marginTop: "10px",
+  padding: "6px 12px",
+  backgroundColor: "#F1F3F5",
+  border: "1px solid #CED4DA",
+  borderRadius: "8px",
+  fontSize: "14px",
+  cursor: "pointer",
 };
 
 export default ReservedTourGuides;
