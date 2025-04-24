@@ -28,6 +28,7 @@ const ThingsToDo = (props) => {
           textAlign: "center",
           fontFamily: "poppins",
           fontSize: "14px",
+          fontWeight: "600",
         }}
       >
         {props.name}

@@ -76,7 +76,7 @@ const Home = () => {
       image:
         "https://neptrek.com/wp-content/uploads/2024/02/The-Cliff-at-Kushma-the-best-place-for-Bungee-Jumping-in-Nepal.jpg",
       alt: "Bungee Jumping",
-      description: "Bungee Jumping",
+      description: "Bungee",
     },
     {
       image:
