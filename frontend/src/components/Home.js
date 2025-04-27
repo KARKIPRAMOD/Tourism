@@ -276,7 +276,13 @@ const Home = () => {
             }}
           >
             <div>
-              <img src="" alt="welcome" />
+              <img
+                src="https://st4.depositphotos.com/4601361/31277/i/450/depositphotos_312778290-stock-photo-background-concept-inscription-welcome-on.jpg"
+                alt="welcome"
+                style={{
+                  borderRadius: "16px",
+                }}
+              />
             </div>
             <div>
               <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
