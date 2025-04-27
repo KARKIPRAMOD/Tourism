@@ -18,6 +18,7 @@ import Destinations from "./Destinations";
 import ThingsToDo from "./ThingsToDo";
 import FeedBackComp from "./feedbackComp";
 import Footer from "./Footer";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -59,54 +60,63 @@ const Home = () => {
       image: "https://vietchallenge.com/images/uploads/trekking2.jpg",
       alt: "Trekking",
       description: "Trekking",
+      link: "trekking",
     },
     {
       image:
         "https://th.bing.com/th/id/OIP.to9XW2aHcEKiLExDTzWRzAHaEK?w=333&h=187&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
       alt: "Zip Flying",
       description: "Zip Flying",
+      link: "zipflying",
     },
     {
       image:
         "https://th.bing.com/th/id/OIP.iZEvBHcyhAtCeTGy2bQ26wHaE8?rs=1&pid=ImgDetMain",
       alt: "Sky Diving",
       description: "Sky Diving",
+      link: "skydiving",
     },
     {
       image:
         "https://neptrek.com/wp-content/uploads/2024/02/The-Cliff-at-Kushma-the-best-place-for-Bungee-Jumping-in-Nepal.jpg",
       alt: "Bungee Jumping",
       description: "Bungee",
+      link: "bungeejumping",
     },
     {
       image:
         "https://th.bing.com/th/id/OIP.3Qgqv8g2Em0cQeP7rHd2-wHaDc?rs=1&pid=ImgDetMain",
       alt: "Motor Biking",
       description: "Motor Biking",
+      link: "motorbiking",
     },
     {
       image:
         "https://th.bing.com/th/id/OIP.YiSCWVyCKAtlAMDMD8ONqgHaE8?rs=1&pid=ImgDetMain",
       alt: "Rafting ",
       description: "Rafting",
+      link: "rafting",
     },
     {
       image:
         "https://th.bing.com/th/id/OIP.miycVxAMy4j7Mf8jrQcjewHaEH?rs=1&pid=ImgDetMain",
       alt: "Canyoying",
       description: "Canyoying",
+      link: "canyoying",
     },
     {
       image:
         "https://th.bing.com/th/id/R.4cf3acbb948c13cee6365bae5d9eaa62?rik=RS9UQyvW3hipeg&riu=http%3a%2f%2fwww.sidetracked.com%2fwp-content%2fuploads%2f2013%2f07%2fpf_nepalstory_037-1600x1000.jpg&ehk=eWtDJqUvxJTCGu5ZQb3jMFHQY%2b4miDi38QLp%2bI7HSf0%3d&risl=&pid=ImgRaw&r=0",
       alt: "Mountain Biking",
       description: "Mountain Biking",
+      link: "mountainbiking",
     },
     {
       image:
         "https://th.bing.com/th/id/R.ac2fb96091ed2e998a18bc5e73e73c9f?rik=HqmxT40J8JeFhw&riu=http%3a%2f%2ftourstreknepal.com%2fwp-content%2fuploads%2f2015%2f02%2fparaglidinginnepal.jpg&ehk=OwV68OkjQltkj4darK5mekLja5vmPwXLcDt1GSZhKXY%3d&risl=&pid=ImgRaw&r=0",
       alt: "Paragliding",
       description: "Paragliding",
+      link: "paragliding",
     },
   ];
 
@@ -541,13 +551,15 @@ const Home = () => {
               ))} */}
                 {thingToDO?.map((value, index) => {
                   return (
-                    <div className={styleHome.thigsToDo}>
-                      <ThingsToDo
-                        image={value.image}
-                        alt={value.alt}
-                        name={value.description}
-                      />
-                    </div>
+                    <Link to={`/${value.link}`}>
+                      <div className={styleHome.thigsToDo}>
+                        <ThingsToDo
+                          image={value.image}
+                          alt={value.alt}
+                          name={value.description}
+                        />
+                      </div>
+                    </Link>
                   );
                 })}
               </div>

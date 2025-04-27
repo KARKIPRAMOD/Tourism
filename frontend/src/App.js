@@ -53,6 +53,15 @@ import TourUpdates from "./components/TourUpdates";
 import AdminTourGuideView from "./components/AdminTourGuideView";
 import AdminDashboard from "./components/AdminDashboard";
 import AllUser from "./components/allUser";
+import Trekking from "./components/Trekking";
+import Zipflying from "./components/Zipflying";
+import Skydiving from "./components/Skydiving";
+import Bungee from "./components/Bungee";
+import MotorBiking from "./components/MotorBiking";
+import Rafting from "./components/Rafting";
+import Canyoying from "./components/Canyoying";
+import MountainBiking from "./components/MountainBiking";
+import Paragliding from "./components/Paragliding";
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
@@ -168,6 +177,15 @@ const App = () => {
             </Route>
 
             <Route path="/home" component={Home} />
+            <Route path="/trekking" component={Trekking} />
+            <Route path="/zipflying" component={Zipflying} />
+            <Route path="/skydiving" component={Skydiving} />
+            <Route path="/bungeejumping" component={Bungee} />
+            <Route path="/motorbiking" component={MotorBiking} />
+            <Route path="/rafting" component={Rafting} />
+            <Route path="/canyoying" component={Canyoying} />
+            <Route path="/mountainbiking" component={MountainBiking} />
+            <Route path="/paragliding" component={Paragliding} />
 
             <Route
               path="/add/payment+details"
