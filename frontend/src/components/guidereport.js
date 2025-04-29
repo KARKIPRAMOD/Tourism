@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -5,12 +6,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const styles = {
   prettyGuideReportContainer: {
-    padding: "40px 20px",
     backgroundColor: "#f9fafb",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    maxWidth: "1200px",
-    margin: "0 auto",
-    borderRadius: "12px",
+    margin: "20px 20px 0 20px",
   },
   prettyGuideReportTitle: {
     textAlign: "center",
@@ -21,8 +19,8 @@ const styles = {
   },
   prettyGuideCardGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    gap: "30px",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+    gap: "40px",
   },
   prettyGuideCard: {
     backgroundColor: "#fff",
@@ -238,68 +236,102 @@ export default class GuideReport extends Component {
           <strong>Our Amazing Tour Guides</strong>
         </h2>
         <div style={styles.prettyGuideCardGrid}>
-          {tourguides.map((tourguide, index) => (
-            <div
-              key={index}
-              style={{
-                ...styles.prettyGuideCard,
-                ...(hoveredIndex === index && styles.prettyGuideCardHover),
-              }}
-              onMouseEnter={() => this.handleMouseEnter(index)}
-              onMouseLeave={this.handleMouseLeave}
-            >
-              <div style={styles.prettyCardHeader}>
-                <h3 style={styles.prettyCardHeaderH3}>
-                  <i className="fas fa-user-tie mr-2"></i>
-                  {tourguide.fullName}
-                </h3>
-              </div>
-              <div style={styles.prettyCardBody}>
-                <p style={styles.prettyCardBodyP}>
-                  <i className="fas fa-birthday-cake mr-2"></i>
-                  <strong>Age:</strong> {tourguide.age} (Born on{" "}
-                  {new Date(tourguide.dateOfBirth).toLocaleDateString()})
-                </p>
-                <p style={styles.prettyCardBodyP}>
-                  <i className="fas fa-map-marker-alt mr-2"></i>
-                  <strong>Address:</strong> {tourguide.address}
-                </p>
-                <p style={styles.prettyCardBodyP}>
-                  <i className="fas fa-phone mr-2"></i>
-                  <strong>Contact:</strong> {tourguide.contactNumber}
-                </p>
-                <p style={styles.prettyCardBodyP}>
-                  <i className="fas fa-envelope mr-2"></i>
-                  <strong>Email:</strong> {tourguide.eMail}
-                </p>
-                <p style={styles.prettyCardBodyP}>
-                  <i className="fas fa-venus-mars mr-2"></i>
-                  <strong>Gender:</strong> {tourguide.gender}
-                </p>
-                <div style={styles.detailHighlight}>
-                  <strong style={styles.detailHighlightStrong}>
-                    <i className="fas fa-briefcase mr-2"></i>
-                    Experience:
-                  </strong>{" "}
-                  <span style={styles.largerText}>
-                    {tourguide.workExperience} Years
+          {tourguides?.map((tourguide, index) => {
+            console.log(tourguide);
+            return (
+              <div
+                key={index}
+                style={{
+                  borderRadius: "6px",
+                  height: "auto",
+                  boxShadow:
+                    "9px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1)",
+                }}
+                className="transition-shadow rounded-xl overflow-hidden shadow-md hover:shadow-xl bg-red-50"
+                onMouseEnter={() => this.handleMouseEnter(index)}
+                onMouseLeave={this.handleMouseLeave}
+              >
+                {/* Top image */}
+
+                <img
+                  src={
+                    tourguide.imageUrl ||
+                    "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
+                  } // Replace with your actual image URL
+                  style={{
+                    objectFit: "contain",
+                    height: "15rem",
+                    width: "auto",
+                  }}
+                  alt={tourguide.fullName}
+                />
+                {/* Content */}
+                <div className="p-4">
+                  <h3
+                    style={{
+                      fontWeight: "700",
+                      color: "#1981c6",
+                    }}
+                    className="text-lg font-bold text-gray-800"
+                  >
+                    {tourguide.fullName}
+                  </h3>
+
+                  {/* Rating */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px",
+                    }}
+                    className="flex items-center text-sm text-gray-700 mt-1"
+                  >
+                    <span className="text-yellow-500 flex items-center mr-2">
+                      ⭐
+                    </span>
+                    <span className="font-semibold mr-2">4.78 / 5</span>
+                  </div>
+
+                  {/* Location */}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      marginTop: "0.5rem",
+                      padding: "0.25rem 0.5rem",
+                      backgroundColor: "#e5e7eb",
+                      color: "#374151",
+                      fontSize: "0.75rem",
+                      borderRadius: "0.375rem",
+                    }}
+                  >
+                    {tourguide.address || "Japan"}
                   </span>
+
+                  {/* Bio Preview */}
+                  <p className="text-sm text-gray-600 mt-3 line-clamp-3">
+                    {tourguide.bio ||
+                      "I was born and grew up in Yokohama. I used to work in Tokyo for more than 20 years..."}
+                  </p>
+
+                  <p>Rs. {tourguide.amount}</p>
+
+                  {/* CTA Button */}
+                  <button
+                    onClick={() => this.openModal(tourguide)}
+                    style={{
+                      borderRadius: "8px",
+                      width: "100%",
+                      backgroundColor: "#0069cb",
+                      border: "none",
+                    }}
+                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all text-sm font-medium"
+                  >
+                    Reserve
+                  </button>
                 </div>
-                <div style={styles.detailHighlight}>
-                  <strong style={styles.detailHighlightStrong}>Rate:</strong>{" "}
-                  <span style={styles.largerText}>
-                    NPR {tourguide.amount} / Day
-                  </span>
-                </div>
-                <button
-                  style={styles.prettyPrintButton}
-                  onClick={() => this.openModal(tourguide)}
-                >
-                  Reserve
-                </button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {showModal && selectedGuide && (

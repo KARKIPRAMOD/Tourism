@@ -1,8 +1,13 @@
 .boxWrapper {
   cursor: pointer;
   padding: 3rem 2rem 3rem 2rem;
-  background-color: #86bfdb;
   border-radius: 0px 20px 0px 20px;
+  height: 15rem;
+  overflow: auto;
+  border: 1px solid #e5e5e5;
+  box-shadow: 9px 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 18px;
 }
 
 .boxWrapper:hover {

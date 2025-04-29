@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "../style_sheets/feedBackComp.css";
+import { Rating } from "@mui/material";
 
 function FeedBackComp() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -60,18 +61,31 @@ function FeedBackComp() {
                         className="profileImg"
                       />
                     </div>
+
                     <div className="name">{value.name}</div>
+                    <Rating
+                      defaultValue={value.rating}
+                      name="read-only"
+                      readOnly
+                    />
+                    <div
+                      style={{
+                        fontWeight: "600",
+                      }}
+                    >
+                      {value.rating}.0
+                    </div>
                   </div>
-                  <div>⭐{value.rating}</div>
                 </div>
                 <div className="reviewMsg">
                   <div
                     style={{
                       fontWeight: "600",
-                      fontFamily: "poppins",
+                      fontFamily: "Delius",
+                      fontSize: "24px",
                     }}
                   >
-                    {value.category.toUpperCase()}
+                    {value.category}
                   </div>
                   <div>{value.feedbackText}</div>
                 </div>
