@@ -153,13 +153,27 @@ export default class GuideReport extends Component {
   }
 
   retriveTourguides() {
-    axios.get("http://localhost:8070/tourguide/").then((res) => {
-      if (res.data.success) {
-        this.setState({
-          tourguides: res.data.existingTourguides,
-        });
-      }
-    });
+    axios
+      .get("http://localhost:8070/tourguide/")
+      .then((res) => {
+        console.log(" Status:", res.status);
+        console.log(" Payload:", res.data);
+
+        if (res.data.success) {
+          this.setState({
+            tourguides: res.data.guides,
+          });
+        } else {
+          console.warn("success");
+        }
+      })
+      .catch((err) => {
+        console.error(" Error fetching tour guides:", err);
+        if (err.response) {
+          console.error(" Status:", err.response.status);
+          console.error(" Response:", err.response.data);
+        }
+      });
   }
 
   handleMouseEnter = (index) => {
@@ -255,9 +269,9 @@ export default class GuideReport extends Component {
 
                 <img
                   src={
-                    tourguide.imageUrl ||
+                    `http://localhost:8070/uploads/tourguide_pictures/${tourguide.image}` ||
                     "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
-                  } // Replace with your actual image URL
+                  }
                   style={{
                     objectFit: "contain",
                     height: "15rem",
@@ -309,7 +323,7 @@ export default class GuideReport extends Component {
 
                   {/* Bio Preview */}
                   <p className="text-sm text-gray-600 mt-3 line-clamp-3">
-                    {tourguide.bio ||
+                    {tourguide.description ||
                       "I was born and grew up in Yokohama. I used to work in Tokyo for more than 20 years..."}
                   </p>
 

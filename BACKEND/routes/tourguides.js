@@ -1,28 +1,38 @@
 const router = require("express").Router();
+const multer = require("multer");
+const path = require("path");
+
 const verifyAdmin = require("../middleware/authMiddleware");
 const {
-  getAllTourguides,
-  getTourguideById,
-  getTourguideCount,
-  addTourguide,
-  updateTourguide,
-  deleteTourguide,
+  getAllTourGuides,
+  getTourGuideById,
+  getTourGuideCount,
+  registerTourGuide,
+  updateTourGuide,
+  deleteTourGuide,
 } = require("../controllers/tourguideController");
 
-// Public routes - accessible to all
-router.get("/", getAllTourguides);
+// Multer setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "..", "uploads", "tourguide_pictures"));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
+  },
+});
+const upload = multer({ storage });
 
-router.get("/all", getAllTourguides);
+// Public routes
+router.get("/", getAllTourGuides);
+router.get("/all", getAllTourGuides);
+router.get("/count", getTourGuideCount);
+router.get("/:id", getTourGuideById);
 
-// Add this new route to get count for dashboard
-router.get("/count", getTourguideCount);
-router.get("/:id", getTourguideById);
-
-// Protected routes - admin only
-router.post("/add", verifyAdmin, addTourguide);
-
-router.put("/update/:id", verifyAdmin, updateTourguide);
-
-router.delete("/delete/:id", verifyAdmin, deleteTourguide);
+// Admin-protected routes
+router.post("/add", verifyAdmin, upload.single("image"), registerTourGuide);
+router.put("/update/:id", verifyAdmin, upload.single("image"), updateTourGuide);
+router.delete("/delete/:id", verifyAdmin, deleteTourGuide);
 
 module.exports = router;

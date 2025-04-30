@@ -1,52 +1,95 @@
-const Tourguide = require("../models/Tourguide");
-const mongoose = require("mongoose");
+const Tourguide = require("../models/tourguide");
+const path = require("path");
+const fs = require("fs");
 
-exports.getAllTourguides = async (req, res) => {
+const uploadDir = path.join(__dirname, "..", "uploads", "tourguide_pictures");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("Tour guide pictures directory created!");
+}
+
+// Register new tour guide
+exports.registerTourGuide = async (req, res) => {
+  const {
+    fullName,
+    age,
+    address,
+    contactNumber,
+    gender,
+    nicNumber,
+    eMail,
+    workExperience,
+    amount,
+    description,
+  } = req.body;
+
+  const image = req.file ? req.file.filename : "default.jpg";
+
   try {
-    const tourguides = await Tourguide.find();
-    res.status(200).json({
+    const existing = await Tourguide.findOne({
+      $or: [{ nicNumber }, { eMail }],
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message:
+          existing.nicNumber === nicNumber
+            ? "Tour guide with this NIC already exists"
+            : "Tour guide with this email already exists",
+      });
+    }
+
+    const newGuide = new Tourguide({
+      fullName,
+      age,
+      address,
+      contactNumber,
+      gender,
+      nicNumber,
+      eMail,
+      workExperience,
+      amount,
+      image,
+      description,
+    });
+
+    await newGuide.save();
+    res.status(201).json({
       success: true,
-      existingTourguides: tourguides,
+      message: "Tour guide registered successfully!",
+      guide: newGuide,
     });
   } catch (err) {
-    res.status(400).json({
-      error: err,
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-exports.getTourguideById = async (req, res) => {
+// Get all tour guides
+exports.getAllTourGuides = async (req, res) => {
   try {
-    console.log("Fetching tour guide with ID:", req.params.id); // <-- 🔍
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid tour guide ID" });
-    }
-
-    const fb = await Tourguide.findById(req.params.id);
-    if (fb) {
-      res.json(fb);
-    } else {
-      res.status(404).json({ message: "Tourguide not found" });
-    }
+    const guides = await Tourguide.find();
+    res.json({ success: true, guides });
   } catch (err) {
-    console.error("Error in getTourguideById:", err); // <-- 🔍
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-exports.getTourguideCount = async (req, res) => {
+// Get a single tour guide by ID
+exports.getTourGuideById = async (req, res) => {
   try {
-    const count = await Tourguide.countDocuments();
-    res.status(200).json({ count });
-  } catch (error) {
-    console.error("Error getting tourguide count:", error);
-    res
-      .status(500)
-      .json({ message: "Error getting count", error: error.message });
+    const guide = await Tourguide.findById(req.params.id);
+    if (!guide) {
+      return res.status(404).json({ success: false, message: "Not found" });
+    }
+    res.json({ success: true, guide });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-exports.addTourguide = async (req, res) => {
+// Update tour guide
+exports.updateTourGuide = async (req, res) => {
   const {
     fullName,
     age,
@@ -58,96 +101,65 @@ exports.addTourguide = async (req, res) => {
     eMail,
     workExperience,
     amount,
+    description,
   } = req.body;
 
-  // Validation check for required fields
-  if (
-    !fullName ||
-    !age ||
-    !address ||
-    !dateOfBirth ||
-    !contactNumber ||
-    !nicNumber ||
-    !eMail ||
-    !workExperience ||
-    !amount
-  ) {
-    return res.status(400).json({
-      status: "Error",
-      message: "All fields are required",
-    });
-  }
-
-  const newTourguide = new Tourguide({
+  const update = {
     fullName,
     age,
     address,
     dateOfBirth,
     contactNumber,
-    gender: gender || "Male",
+    gender,
     nicNumber,
     eMail,
     workExperience,
     amount,
-  });
+    description,
+  };
 
-  try {
-    await newTourguide.save();
-    res.json("Tour Guide Added Successfully!");
-  } catch (err) {
-    res.status(400).json({
-      status: "Error",
-      message: "Failed to add tour guide",
-      error: err.message,
-    });
+  if (req.file) {
+    update.image = req.file.filename;
   }
-};
 
-exports.updateTourguide = async (req, res) => {
   try {
-    const fb = await Tourguide.findById(req.params.id);
+    const updated = await Tourguide.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+    });
 
-    if (fb) {
-      fb.fullName = req.body.fullName || fb.fullName;
-      fb.age = req.body.age || fb.age;
-      fb.address = req.body.address || fb.address;
-      fb.dateOfBirth = req.body.dateOfBirth || fb.dateOfBirth;
-      fb.contactNumber = req.body.contactNumber || fb.contactNumber;
-      fb.gender =
-        req.body.gender && req.body.gender.trim() !== ""
-          ? req.body.gender
-          : "Male";
-      fb.nicNumber = req.body.nicNumber || fb.nicNumber;
-      fb.eMail = req.body.eMail || fb.eMail;
-      fb.workExperience = req.body.workExperience || fb.workExperience;
-      fb.amount = req.body.amount || fb.amount;
-
-      const updatedTourguide = await fb.save();
-      res.json(updatedTourguide);
-    } else {
-      res.status(404).json({
-        status: "Error",
-        message: "Tourguide not found",
-      });
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Not found" });
     }
-  } catch (error) {
-    res.status(500).json({
-      status: "Error",
-      message: "Can't Update Tourguide Details",
-      error: error.message,
+
+    res.json({
+      success: true,
+      message: "Updated successfully",
+      guide: updated,
     });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-exports.deleteTourguide = async (req, res) => {
+// Delete tour guide
+exports.deleteTourGuide = async (req, res) => {
   try {
-    const TId = req.params.id;
-    await Tourguide.findByIdAndDelete(TId);
-    res.status(200).send({ status: "Tour Guide Deleted" });
+    const result = await Tourguide.findByIdAndDelete(req.params.id);
+    if (!result) {
+      return res.status(404).json({ success: false, message: "Not found" });
+    }
+    res.json({ success: true, message: "Tour guide deleted successfully" });
   } catch (err) {
-    res.status(500).send({
-      status: "Error with delete tourguide",
-      error: err.message,
-    });
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Get total count of tour guides
+exports.getTourGuideCount = async (req, res) => {
+  try {
+    const count = await Tourguide.countDocuments();
+    res.json({ success: true, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };

@@ -1,13 +1,4 @@
 const User = require("../models/user");
-const path = require("path");
-const fs = require("fs");
-
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, "..", "uploads", "profile_pictures");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("Profile pictures directory created!");
-}
 
 // Register new user
 exports.registerUser = async (req, res) => {
@@ -21,14 +12,7 @@ exports.registerUser = async (req, res) => {
     phone,
   } = req.body;
 
-  const profile_picture = req.file ? req.file.filename : "default.jpg"; // Default to 'default.jpg' if no file
-
-  console.log("User registration data:", {
-    user_name,
-    full_name,
-    email,
-    profile_picture,
-  });
+  const profile_picture = req.file ? req.file.filename : "default.jpg";
 
   try {
     const existingUser = await User.findOne({
@@ -53,10 +37,8 @@ exports.registerUser = async (req, res) => {
       role,
       address,
       phone,
-      profile_picture, // Ensure new users get the profile_picture field
+      profile_picture,
     });
-
-    console.log("Saving new user:", newUser);
 
     await newUser.save();
 

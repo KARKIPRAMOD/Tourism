@@ -19,11 +19,6 @@ const tourguideSchema = new mongoose.Schema({
     required: true,
   },
 
-  dateOfBirth: {
-    type: String,
-    required: true,
-  },
-
   contactNumber: {
     type: String,
     required: true,
@@ -49,7 +44,18 @@ const tourguideSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   amount: {
+    type: String,
+    required: true,
+  },
+
+  image: {
+    type: String,
+    required: true,
+  },
+
+  description: {
     type: String,
     required: true,
   },

@@ -1,8 +1,15 @@
+const fs = require("fs");
+const path = require("path");
 const Hotel = require("../models/Hotel");
+
+// Ensure uploads directory exists
+const uploadDir = "uploads/hotel_photos";
+fs.mkdirSync(uploadDir, { recursive: true });
 
 // Add new hotel
 exports.addHotel = async (req, res) => {
-  const { name, type, location, price, no_of_rooms } = req.body;
+  const { name, type, location, price, no_of_rooms, description } = req.body;
+  const photos = req.files ? req.files.map((file) => file.filename) : [];
 
   const newHotel = new Hotel({
     name,
@@ -10,13 +17,15 @@ exports.addHotel = async (req, res) => {
     location,
     price,
     no_of_rooms,
+    photos,
+    description,
   });
 
   try {
     await newHotel.save();
-    res.json("Hotel Added");
+    res.json({ success: true, message: "Hotel Added", hotel: newHotel });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ success: false, error: err.message });
   }
 };
 
@@ -29,7 +38,7 @@ exports.getAllHotels = async (req, res) => {
       existingHotels: hotels,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ success: false, error: err.message });
   }
 };
 
@@ -39,61 +48,95 @@ exports.getHotelCount = async (req, res) => {
     const count = await Hotel.countDocuments();
     res.status(200).json({ count });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error getting count", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Error getting count",
+      error: error.message,
+    });
   }
 };
 
 // Update hotel
 exports.updateHotel = async (req, res) => {
+  const hotelId = req.params.id;
+  const { name, type, location, price, no_of_rooms, description } = req.body;
+
+  const updateData = {
+    name,
+    type,
+    location,
+    price,
+    no_of_rooms,
+    description,
+  };
+
+  if (req.files && req.files.length > 0) {
+    updateData.photos = req.files.map((file) => file.filename);
+  }
+
   try {
-    const hotelId = req.params.id;
-    const { name, type, location, price, no_of_rooms } = req.body;
+    const updatedHotel = await Hotel.findByIdAndUpdate(hotelId, updateData, {
+      new: true,
+    });
 
-    const updateHotel = {
-      name,
-      type,
-      location,
-      price,
-      no_of_rooms,
-    };
+    if (!updatedHotel) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Hotel not found" });
+    }
 
-    await Hotel.findByIdAndUpdate(hotelId, updateHotel);
-    res.status(200).send({ status: "Hotel updated" });
-  } catch (err) {
     res
-      .status(500)
-      .send({ status: "Error with updating data", error: err.message });
+      .status(200)
+      .json({ success: true, message: "Hotel updated", hotel: updatedHotel });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating hotel",
+      error: err.message,
+    });
   }
 };
 
 // Delete hotel
 exports.deleteHotel = async (req, res) => {
+  const hotelId = req.params.id;
+
   try {
-    const hotelId = req.params.id;
-    await Hotel.findByIdAndDelete(hotelId);
-    res.status(200).send({ status: "Hotel deleted" });
+    const deletedHotel = await Hotel.findByIdAndDelete(hotelId);
+    if (!deletedHotel) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Hotel not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Hotel deleted" });
   } catch (err) {
-    res
-      .status(500)
-      .send({ status: "Error with deleting hotel", error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error deleting hotel",
+      error: err.message,
+    });
   }
 };
 
 // Get hotel by ID
 exports.getHotelById = async (req, res) => {
+  const hotelId = req.params.id;
+
   try {
-    const hotelId = req.params.id;
     const hotel = await Hotel.findById(hotelId);
-    if (hotel) {
-      res.status(200).send({ status: "Hotel fetched", hotel });
-    } else {
-      res.status(404).send({ status: "Hotel not found" });
+    if (!hotel) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Hotel not found" });
     }
+
+    res.status(200).json({ success: true, hotel });
   } catch (err) {
-    res
-      .status(500)
-      .send({ status: "Error with fetching hotel", error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching hotel",
+      error: err.message,
+    });
   }
 };
