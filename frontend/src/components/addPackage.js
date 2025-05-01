@@ -13,24 +13,52 @@ function AddPackage() {
   const [transport, setTrans] = useState("");
   const [tourGuide, setGuide] = useState("");
   const [TotPrice, setPrice] = useState("");
+  const [description, setDescription] = useState(""); // New state for description
+  const [destinations, setDestinations] = useState([]); // Array for destinations
+  const [images, setImages] = useState(null); // State for image files
+
+  // Function to handle image uploads
+  const handleImageChange = (e) => {
+    setImages(e.target.files);
+  };
+
+  // Function to handle destination array
+  const handleDestinationChange = (e) => {
+    const destArray = e.target.value.split(",").map((item) => item.trim());
+    setDestinations(destArray);
+  };
 
   function sendData(e) {
     e.preventDefault();
 
-    const newPackage = {
-      packName,
-      packID,
-      Destination,
-      NumOfDays,
-      NumOfPassen,
-      hotel,
-      transport,
-      tourGuide,
-      TotPrice,
-    };
+    const formData = new FormData();
+
+    // Append package data to FormData
+    formData.append("packName", packName);
+    formData.append("packID", packID);
+    formData.append("Destination", Destination);
+    formData.append("NumOfDays", NumOfDays);
+    formData.append("NumOfPassen", NumOfPassen);
+    formData.append("hotel", hotel);
+    formData.append("transport", transport);
+    formData.append("tourGuide", tourGuide);
+    formData.append("TotPrice", TotPrice);
+    formData.append("description", description);
+    formData.append("destinations", JSON.stringify(destinations));
+
+    // Append each image to FormData
+    if (images) {
+      for (let i = 0; i < images.length; i++) {
+        formData.append("images", images[i]);
+      }
+    }
 
     axios
-      .post("http://localhost:8070/package/add", newPackage)
+      .post("http://localhost:8070/package/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then(() => {
         alert("Package Added");
       })
@@ -50,7 +78,6 @@ function AddPackage() {
           width={200}
           alt="Travelo Logo"
         />
-
         <a
           className="btnHome"
           href="/man"
@@ -71,8 +98,16 @@ function AddPackage() {
         <br />
         <br />
 
-        <div>
-          <div className="form-group" style={{ width: "400px" }}>
+        {/* Two Column Layout */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Left Column */}
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="pacName">
               <strong>Package Name *</strong>
             </label>
@@ -84,9 +119,8 @@ function AddPackage() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="packId">
               <strong>Package ID *</strong>
             </label>
@@ -98,9 +132,8 @@ function AddPackage() {
               onChange={(e) => setPid(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="desti">
               <strong>Destination *</strong>
             </label>
@@ -108,13 +141,12 @@ function AddPackage() {
               type="text"
               className="form-control"
               id="desti"
-              placeholder="Enter any destination"
-              onChange={(e) => setDesti(e.target.value)}
+              placeholder="Enter destinations separated by commas"
+              onChange={handleDestinationChange}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="numDays">
               <strong>Number of days *</strong>
             </label>
@@ -128,9 +160,8 @@ function AddPackage() {
               onChange={(e) => setDays(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="numPass">
               <strong>Number of passengers *</strong>
             </label>
@@ -144,12 +175,8 @@ function AddPackage() {
               onChange={(e) => setPass(e.target.value)}
             />
           </div>
-        </div>
 
-        <br />
-
-        <div style={{ position: "absolute", top: 220, right: 300 }}>
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="hotel">
               <strong>Hotel Name *</strong>
             </label>
@@ -161,9 +188,8 @@ function AddPackage() {
               onChange={(e) => setHotel(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="transport">
               <strong>Transport Mode *</strong>
             </label>
@@ -175,9 +201,8 @@ function AddPackage() {
               onChange={(e) => setTrans(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="tourGuide">
               <strong>Tour Guide *</strong>
             </label>
@@ -189,9 +214,8 @@ function AddPackage() {
               onChange={(e) => setGuide(e.target.value)}
             />
           </div>
-          <br />
 
-          <div className="form-group" style={{ width: "400px" }}>
+          <div className="form-group" style={{ width: "48%" }}>
             <label htmlFor="totPrice">
               <strong>Total Price *</strong>
             </label>
@@ -203,9 +227,34 @@ function AddPackage() {
               onChange={(e) => setPrice(e.target.value)}
             />
           </div>
+
+          {/* Right Column */}
+          <div className="form-group" style={{ width: "48%" }}>
+            <label htmlFor="description">
+              <strong>Description *</strong>
+            </label>
+            <textarea
+              className="form-control"
+              id="description"
+              placeholder="Enter a description of the package"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group" style={{ width: "48%" }}>
+            <label htmlFor="images">
+              <strong>Package Images</strong>
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              id="images"
+              multiple
+              onChange={handleImageChange}
+            />
+          </div>
         </div>
 
-        <br />
         <br />
         <button
           type="submit"

@@ -5,7 +5,8 @@ exports.reserveHotel = async (req, res) => {
     const { userId, hotelId, startDate, endDate, noOfPersons, noOfRooms } =
       req.body;
 
-    const reservation = new HotelReservation({
+    const reservation = new Reservation({
+      // Use the correct model name here
       user: userId,
       hotel: hotelId,
       startDate,
@@ -24,8 +25,9 @@ exports.reserveHotel = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
 exports.getUserReservations = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.id; // Assuming req.user.id is populated with the user's ID
 
   try {
     const reservations = await Reservation.find({ user: userId }).populate(
