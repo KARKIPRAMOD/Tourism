@@ -5,7 +5,7 @@ const hotelReservationController = require("../controllers/HotelReservationContr
 router.post("/reserve", hotelReservationController.reserveHotel);
 router.get(
   "/reservedHotels/:userId",
-  hotelReservationController.getReservedHotels
+  hotelReservationController.getUserReservations
 );
 
 module.exports = router;

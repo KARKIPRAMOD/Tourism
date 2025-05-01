@@ -41,6 +41,7 @@ const feedBackRouter = require("./routes/feedBack");
 
 //reservation
 const reserveGuideRouter = require("./routes/TourguideReservation.js");
+const reserveHotelRouter = require("./routes/HotelReservation.js");
 
 // Middleware
 app.use(cors());
@@ -84,6 +85,7 @@ app.use("/whatsapp", whatsappRouter);
 app.use("/feedBack", feedBackRouter);
 
 app.use("/tourguideReservation", reserveGuideRouter);
+app.use("/HotelReservation", reserveHotelRouter);
 
 console.log("Test");
 
