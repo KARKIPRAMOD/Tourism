@@ -56,43 +56,93 @@ const UserProfile = ({ userId }) => {
       <div className="d-flex" style={{ minHeight: "100vh" }}>
         <ProfileSidebar userData={userData} userId={userId} />
 
-        <main className="flex-grow-1 p-5">
+        <main className="flex-grow-1">
           {error && <div className="alert alert-danger">{error}</div>}
           {userData ? (
-            <div className="card p-4">
-              <h3 className="mb-4">My Profile</h3>
-              <div className="row">
-                <div className="col-md-8">
-                  <p>
-                    <strong>Full Name:</strong> {userData.full_name}
-                  </p>
-                  <p>
-                    <strong>Username:</strong> {userData.user_name}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {userData.email}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {userData.phone || "Not provided"}
-                  </p>
-                  <p>
-                    <strong>Role:</strong> {userData.role}
-                  </p>
-                  <p>
-                    <strong>Address:</strong>{" "}
-                    {userData.address || "Not provided"}
-                  </p>
+            <div>
+              <div className="card border-0 shadow-sm rounded-4 p-4">
+                {/* Header Row */}
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h4 className="mb-0">My Profile</h4>
                 </div>
-                <div className="col-md-4 d-flex justify-content-center align-items-start">
+
+                <div className="d-flex align-items-center gap-3 mb-4">
                   <img
                     src={
                       userData.profile_picture
                         ? `http://localhost:8070/uploads/profile_pictures/${userData.profile_picture}`
-                        : "https://via.placeholder.com/150?text=User"
+                        : "https://via.placeholder.com/100?text=User"
                     }
-                    alt="Large Profile"
-                    className={styles.largeProfilePic}
+                    alt="Profile"
+                    className="rounded-circle"
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                    }}
                   />
+                  <div>
+                    <h6 className="mb-0">{userData.full_name}</h6>
+                    <small className="text-muted">{userData.role}</small>
+                    <br />
+                    <small className="text-muted">{userData.address}</small>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="mb-0">Personal Information</h6>
+                </div>
+                <div className="row mb-4">
+                  <div className="col-md-6">
+                    <p>
+                      <strong>First Name:</strong>{" "}
+                      {userData.full_name.split(" ")[0]}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {userData.email}
+                    </p>
+                    <p>
+                      <strong>Bio:</strong> {userData.bio || userData.role}
+                    </p>
+                  </div>
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Last Name:</strong>{" "}
+                      {userData.full_name.split(" ")[1] || ""}
+                    </p>
+                    <p>
+                      <strong>Phone:</strong> {userData.phone || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="mb-0">Address</h6>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Country:</strong>{" "}
+                      {userData.country || "United Kingdom"}
+                    </p>
+                    <p>
+                      <strong>Postal Code:</strong>{" "}
+                      {userData.postal || "E3T 3Y64"}
+                    </p>
+                  </div>
+                  <div className="col-md-6">
+                    <p>
+                      <strong>City/State:</strong>{" "}
+                      {userData.city || "Leeds, East London"}
+                    </p>
+                    <p>
+                      <strong>Tax ID:</strong> {userData.taxId || "4545454545X"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

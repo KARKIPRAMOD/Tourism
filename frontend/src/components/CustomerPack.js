@@ -117,40 +117,80 @@ export default class CusPack extends Component {
         </div>
 
         {/* Cards Grid - No Image for now */}
-        <div className="row g-4">
-          {this.state.packages.map((pack, index) => (
-            <div className="col-md-4" key={index}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 p-3">
-                <h5 className="fw-bold mb-3 text-primary">
-                  <i className="fa-solid fa-map-signs"></i>&nbsp;
-                  {pack.packName}
-                </h5>
-                <p>
-                  <i className="fa-solid fa-location-dot text-danger"></i>&nbsp;
-                  <strong>Destination:</strong> {pack.Destination}
-                </p>
-                <p>
-                  <i className="fa-solid fa-calendar-days text-success"></i>
-                  &nbsp;
-                  <strong>Days:</strong> {pack.NumOfDays}
-                </p>
-                <p>
-                  <i className="fa-solid fa-user-group text-warning"></i>&nbsp;
-                  <strong>Passengers:</strong> {pack.NumOfPassen}
-                </p>
-                <p>
-                  <i className="fa-solid fa-money-bill-wave text-info"></i>
-                  &nbsp;
-                  <strong>Price:</strong> Rs. {pack.TotPrice}
-                </p>
-                <div className="text-center mt-auto">
-                  <a href="/book/package" className="btn btn-outline-primary">
-                    <i className="fa-solid fa-plane-up"></i>&nbsp;Book Now
-                  </a>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+          {this.state.packages.map((pack, index) => {
+            console.log(pack);
+            return (
+              <div className="col-md-12" key={index}>
+                <div className="card mb-4 shadow-sm border-0 rounded-4 overflow-hidden">
+                  <div className="row g-0">
+                    <div className="col-md-8 p-3 d-flex flex-column">
+                      <div>
+                        <h5 className="fw-bold text-primary">
+                          {pack.packName}
+                        </h5>
+                        <div className="d-flex align-items-center mb-2">
+                          <span className="me-2 text-warning">
+                            ★★★★☆{" "}
+                            {/* Replace with a rating component if dynamic */}
+                          </span>
+                          <span className="fw-bold text-dark">
+                            Rs. {pack.TotPrice}
+                          </span>
+                        </div>
+                        <p
+                          className="text-muted"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          {pack.description ||
+                            "Enjoy beautiful destinations with top amenities. Family-friendly, relaxing, and memorable."}
+                        </p>
+
+                        <div className="d-flex flex-wrap gap-3 my-3">
+                          <span className="badge bg-light text-dark border px-3 py-2">
+                            🎫 Number of people: {pack.NumOfPassen || 40}
+                          </span>
+                          <span className="badge bg-light text-dark border px-3 py-2">
+                            📅 Start Date: {pack.startDate || "20.11.2022"}
+                          </span>
+                          <span className="badge bg-light text-dark border px-3 py-2">
+                            ⏰ End Date: {pack.endDate || "02.12.2022"}
+                          </span>
+                        </div>
+
+                        <div className="d-flex flex-wrap gap-3 mb-3">
+                          <span className="badge bg-danger text-white">
+                            📍 {pack.Destination}
+                          </span>
+                          <span className="badge bg-warning text-dark">
+                            🍽️ Breakfast & Dinner
+                          </span>
+                          <span className="badge bg-success text-white">
+                            🌇 First-Class Sightseeing
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="mt-auto d-flex gap-2">
+                        <a
+                          href="/book/package"
+                          className="btn btn-danger rounded-pill px-4"
+                        >
+                          BOOK NOW
+                        </a>
+                        <a
+                          href={`/package/${pack.id}`}
+                          className="btn btn-outline-secondary rounded-pill px-4"
+                        >
+                          SEE DETAILS
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Back Button */}

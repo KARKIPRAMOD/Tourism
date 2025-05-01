@@ -62,6 +62,8 @@ import Rafting from "./components/Rafting";
 import Canyoying from "./components/Canyoying";
 import MountainBiking from "./components/MountainBiking";
 import Paragliding from "./components/Paragliding";
+import HotelReservation from "./components/HotelReservation";
+import ReservedPackages from "./components/ReservedPackages";
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
@@ -213,6 +215,12 @@ const App = () => {
                 <ReservedTourGuides {...props} userId={userId} />
               )}
             />
+            <Route
+              path={`/profile/reservedpackages/${userId}`}
+              render={(props) => (
+                <ReservedPackages {...props} userId={userId} />
+              )}
+            />
 
             <Route path="/new+user/signup" component={Signup} />
 
@@ -252,7 +260,7 @@ const App = () => {
             <Route path="/update/tourguide/:id" component={UpdateTourguide} />
 
             <Route path="/admin/hotel" component={Navbar} />
-
+            <Route path="/insert/hotel" component={HotelReservation} />
             <Route path="/add/hotel" component={AddHotel} />
 
             <Route path="/all/hotel" component={AllHotel} />
