@@ -57,7 +57,8 @@ const Home = () => {
 
   const thingToDO = [
     {
-      image: "https://vietchallenge.com/images/uploads/trekking2.jpg",
+      image:
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dHJla2tpbmd8ZW58MHx8MHx8fDA%3D",
       alt: "Trekking",
       description: "Trekking",
       link: "trekking",
@@ -78,7 +79,7 @@ const Home = () => {
     },
     {
       image:
-        "https://neptrek.com/wp-content/uploads/2024/02/The-Cliff-at-Kushma-the-best-place-for-Bungee-Jumping-in-Nepal.jpg",
+        "https://media.istockphoto.com/id/547436912/photo/bungee-jumping.jpg?s=612x612&w=0&k=20&c=yGAdtv_o5h9uzsLhHFxU9al_H-3EzgSCuqRiJ9Hq08A=",
       alt: "Bungee Jumping",
       description: "Bungee",
       link: "bungeejumping",

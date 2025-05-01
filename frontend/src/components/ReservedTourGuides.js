@@ -81,7 +81,7 @@ const ReservedTourGuides = ({ userId }) => {
                     ? reservation.tourguide._id
                     : reservation.tourguide;
                 const guide = tourGuideDetails[tourGuideId];
-
+                console.log(guide.guide);
                 return (
                   <div
                     key={reservation._id}
@@ -95,7 +95,7 @@ const ReservedTourGuides = ({ userId }) => {
                   >
                     <img
                       src={
-                        guide?.profileImage ||
+                        guide?.guide.image ||
                         "https://media.istockphoto.com/id/1369171053/photo/group-of-sporty-people-walks-in-mountains-at-sunset-with-backpacks.jpg?s=612x612&w=0&k=20&c=ajQuWt2YRWd0FPaCpdKz2Tt3WX2NI1ddeZjf8HIxlwU="
                       }
                       alt={guide?.fullName}
@@ -107,10 +107,10 @@ const ReservedTourGuides = ({ userId }) => {
                     />
                     <div style={{ padding: "16px" }}>
                       <h5 style={{ margin: 0 }}>
-                        {guide?.fullName || "Loading..."}
+                        {guide?.guide?.fullName || "Loading..."}
                       </h5>
                       <p style={{ color: "#666", fontSize: "14px" }}>
-                        Age: {guide?.age || "Loading..."} <br />
+                        Age: {guide?.guide?.age || "Loading..."} <br />
                         Date:{" "}
                         {new Date(
                           reservation.startDate

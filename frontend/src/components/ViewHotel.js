@@ -14,10 +14,6 @@ import photo5 from "../img/hl5.jpg";
 import photo6 from "../img/hl6.jpg";
 import photo7 from "../img/hl7.jpg";
 import photo0 from "../img/hl0.jpg";
-import cphoto1 from "../img/cus.svg";
-import cphoto2 from "../img/hcus.svg";
-import cphoto3 from "../img/htl.svg";
-import cphoto4 from "../img/rm.svg";
 import { AiFillStar } from "react-icons/ai";
 
 import { FaArrowAltCircleRight } from "react-icons/fa";
@@ -78,43 +74,6 @@ export default class ViewHotel extends Component {
           </div>
         </section>
 
-        {/* <!--container---> */}
-        <section className={styles.container2}>
-          <div className={styles.row_items2}>
-            <div className={styles.container_box2}>
-              <div className={styles.container_img2}>
-                <img src={cphoto1} className={styles.cus}></img>
-              </div>
-              <h4>2563</h4>
-              <p>customer</p>
-            </div>
-
-            <div className={styles.container_box2}>
-              <div className={styles.container_img2}>
-                <img src={cphoto2} className={styles.hcus}></img>
-              </div>
-              <h4>1252</h4>
-              <p>Happy customer</p>
-            </div>
-
-            <div className={styles.container_box2}>
-              <div className={styles.container_img2}>
-                <img src={cphoto3} className={styles.htl}></img>
-              </div>
-              <h4>514</h4>
-              <p>No Of Hotels</p>
-            </div>
-
-            <div className={styles.container_box2}>
-              <div className={styles.container_img2}>
-                <img src={cphoto4} className={styles.rm}></img>
-              </div>
-              <h4>2164</h4>
-              <p>No Of Rooms</p>
-            </div>
-          </div>
-        </section>
-
         <section className={styles.offer}>
           <div className={styles.container}>
             <input
@@ -133,47 +92,49 @@ export default class ViewHotel extends Component {
             <div className={styles.content}>
               {this.state.hotels.map((hotels, index) => (
                 <>
-                  <div className={styles.box}>
-                    <div className={styles.left}>
-                      <h4>{hotels.name}</h4>
-                      <img src={add} className={styles.add}></img>
-                    </div>
-                    <div class="right" className={styles.right}>
-                      <h4> {hotels.type} </h4>
-                      <div className={styles.rate}>
-                        <i className={styles.logo3}>
-                          <AiFillStar />
-                        </i>
-                        <i className={styles.logo3}>
-                          <AiFillStar />
-                        </i>
-                        <i className={styles.logo3}>
-                          <AiFillStar />
-                        </i>
-                        <i className={styles.logo3}>
-                          <AiFillStar />
-                        </i>
+                  <Link
+                    to="/insert/hotel"
+                    type="submit"
+                    className={styles.link}
+                  >
+                    <div className={styles.box}>
+                      <div className={styles.left}>
+                        <h4>{hotels.name}</h4>
+                        <img src={add} className={styles.add}></img>
                       </div>
-                      <p> Excepteur sint occaecat cupidatat non proident.</p>
-                      <p>{hotels.location}</p>
-                      <h5>{hotels.price} / per Night</h5>
-                      {/* <button className={styles.flex1}>
+                      <div class="right" className={styles.right}>
+                        <h4> {hotels.type} </h4>
+                        <div className={styles.rate}>
+                          <i className={styles.logo3}>
+                            <AiFillStar />
+                          </i>
+                          <i className={styles.logo3}>
+                            <AiFillStar />
+                          </i>
+                          <i className={styles.logo3}>
+                            <AiFillStar />
+                          </i>
+                          <i className={styles.logo3}>
+                            <AiFillStar />
+                          </i>
+                        </div>
+                        <p> Excepteur sint occaecat cupidatat non proident.</p>
+                        <p>{hotels.location}</p>
+                        <h5>{hotels.price} / per Night</h5>
+                        {/* <button className={styles.flex1}>
               <span>Check Availability</span>
               <i className={styles.logo3}><FaArrowAltCircleRight/></i>
             </button> */}
 
-                      <Link
-                        to="/insert/hotel"
-                        type="submit"
-                        className={styles.flex1}
-                      >
-                        <span>Resevation</span>
-                        <i className={styles.logo3}>
-                          <FaArrowAltCircleRight />
-                        </i>
-                      </Link>
+                        <button className={styles.flex1}>
+                          <span>Resevation</span>
+                          <i className={styles.logo3}>
+                            <FaArrowAltCircleRight />
+                          </i>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </>
               ))}
             </div>

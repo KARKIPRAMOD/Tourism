@@ -251,7 +251,7 @@ export default class GuideReport extends Component {
         </h2>
         <div style={styles.prettyGuideCardGrid}>
           {tourguides?.map((tourguide, index) => {
-            console.log(tourguide);
+            console.log(tourguide.image);
             return (
               <div
                 key={index}

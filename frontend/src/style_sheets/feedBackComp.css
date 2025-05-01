@@ -11,9 +11,8 @@
 }
 
 .boxWrapper:hover {
-  background-color: #95c9e3;
+  background-color: #f0eeee;
   transition: 0.2s ease-in-out;
-
   scale: 0.99;
 }
 
