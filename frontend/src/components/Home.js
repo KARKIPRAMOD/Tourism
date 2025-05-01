@@ -618,6 +618,29 @@ const Home = () => {
       </button>
       {/* Feedback Form Component */}
       <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
+      <a
+        href="https://chat.whatsapp.com/HCw1h4K2pUp6l1vSnj8GLH"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: "fixed",
+          bottom: "15px", // Moved higher to avoid overlap
+          right: "85px",
+          backgroundColor: "#25D366",
+          color: "white",
+          borderRadius: "50%",
+          width: "65px",
+          height: "65px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textDecoration: "none",
+          zIndex: 1000,
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        <i className="fab fa-whatsapp" style={{ fontSize: "24px" }}></i>
+      </a>
       {/* ChatBot Component */}
       <ChatBot />
       <Footer />
