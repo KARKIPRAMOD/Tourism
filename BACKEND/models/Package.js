@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//Create Database Schema
+//Create Database Scheams
 const PackageSchema = new mongoose.Schema({
   packName: {
     type: String,
@@ -17,13 +17,6 @@ const PackageSchema = new mongoose.Schema({
     required: true,
   },
 
-  destinations: [
-    {
-      name: { type: String, required: true },
-      description: { type: String },
-    },
-  ],
-
   NumOfDays: {
     type: Number,
     required: true,
@@ -36,14 +29,17 @@ const PackageSchema = new mongoose.Schema({
 
   Hotel: {
     type: String,
+    required: false,
   },
 
   Transport: {
     type: String,
+    required: false,
   },
 
   TourGuide: {
     type: String,
+    required: false,
   },
 
   TotPrice: {
@@ -51,12 +47,12 @@ const PackageSchema = new mongoose.Schema({
     required: true,
   },
 
-  photos: {
+  Images: {
     type: [String],
+    required: false,
   },
 });
 
-// Create a model
 const Package = mongoose.model("TourPackage", PackageSchema);
 
 module.exports = Package;

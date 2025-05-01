@@ -42,6 +42,7 @@ const feedBackRouter = require("./routes/feedBack");
 //reservation
 const reserveGuideRouter = require("./routes/TourguideReservation.js");
 const reserveHotelRouter = require("./routes/HotelReservation.js");
+const reservePackageRouter = require("./routes/PackageReservation.js");
 
 // Middleware
 app.use(cors());
@@ -86,7 +87,7 @@ app.use("/feedBack", feedBackRouter);
 
 app.use("/tourguideReservation", reserveGuideRouter);
 app.use("/HotelReservation", reserveHotelRouter);
-
+app.use("/reservePackageRouter", reservePackageRouter);
 console.log("Test");
 
 // Start server
