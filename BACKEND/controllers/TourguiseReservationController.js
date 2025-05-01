@@ -5,7 +5,6 @@ exports.reserveTourguide = async (req, res) => {
   try {
     const { userId, tourguideId, startDate, endDate } = req.body;
 
-    // Check for overlapping reservation
     const existingReservation = await TourguideReservation.findOne({
       tourguide: tourguideId,
       $or: [

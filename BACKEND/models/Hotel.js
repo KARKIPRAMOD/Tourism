@@ -29,6 +29,10 @@ const hotelSchema = new Schema({
     type: Number,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
 });
 const Hotel = mongoose.model("Hotel", hotelSchema);
 module.exports = Hotel;

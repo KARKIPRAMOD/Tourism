@@ -8,7 +8,7 @@ import { BiMenu, BiLogOut } from "react-icons/bi";
 import { BsFillGridFill } from "react-icons/bs";
 import { FaHotel, FaBuilding, FaExternalLinkAlt } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
-import { MdFamilyRestroom } from "react-icons/md";
+import { MdFamilyRestroom, MdMargin } from "react-icons/md";
 import { GiCarKey, GiDetour } from "react-icons/gi";
 import { GrUpdate } from "react-icons/gr";
 import { ImPrinter } from "react-icons/im";
@@ -20,6 +20,8 @@ export default function AddHotel() {
   const [location, setlocation] = useState("");
   const [price, setprice] = useState("");
   const [no_of_rooms, setno_of_rooms] = useState("");
+  const [description, setdescription] = useState("");
+
   const [photos, setPhotos] = useState([]);
 
   function sendData(e) {
@@ -31,6 +33,7 @@ export default function AddHotel() {
     formData.append("location", location);
     formData.append("price", price);
     formData.append("no_of_rooms", no_of_rooms);
+    formData.append("description", description);
 
     for (let i = 0; i < photos.length; i++) {
       formData.append("photos", photos[i]);
@@ -40,13 +43,13 @@ export default function AddHotel() {
       .post("http://localhost:8070/hotel/add", formData)
       .then(() => {
         alert("Hotel added successfully");
-        // Clear form fields after submission
         setname("");
         settype("");
         setlocation("");
         setprice("");
         setno_of_rooms("");
         setPhotos([]);
+        setdescription("");
       })
       .catch((err) => {
         alert("Error adding hotel: " + err.message);
@@ -182,6 +185,17 @@ export default function AddHotel() {
                       className="form-control"
                       placeholder="Enter No. of Rooms"
                       onChange={(e) => setno_of_rooms(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className={`form-group text-left ${styles.input}`}>
+                    <textarea
+                      value={description}
+                      rows="3"
+                      className="form-control"
+                      placeholder="Enter Description"
+                      onChange={(e) => setdescription(e.target.value)}
                       required
                     />
                   </div>
