@@ -21,11 +21,10 @@ export default class CusPack extends Component {
     axios
       .get("http://localhost:8070/package/all")
       .then((res) => {
-        if (res.data.success) {
-          this.setState({
-            packages: res.data.existingPackages || [],
-          });
-        }
+        this.setState({
+          packages: res.data || [],
+        });
+        console.log(res.data);
       })
       .catch((err) => {
         console.error("Error fetching packages:", err);

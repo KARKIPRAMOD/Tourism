@@ -1,7 +1,9 @@
-const Package = require("../models/Package");
+const Package = require("../models/Package"); // Import the Package model
+const fs = require("fs");
+const path = require("path");
 
-// Add a new package
-exports.addPackage = async (req, res) => {
+// Function to add a new package
+const addPackage = async (req, res) => {
   try {
     const {
       packName,
@@ -13,151 +15,126 @@ exports.addPackage = async (req, res) => {
       Transport,
       TourGuide,
       TotPrice,
-      description,
-      destinations,
     } = req.body;
 
-    const destinationArray = Array.isArray(destinations)
-      ? destinations
-      : destinations.split(",").map((item) => item.trim());
+    // Collect image paths if any images are uploaded
+    const images = req.files ? req.files.map((file) => file.path) : [];
 
     const newPackage = new Package({
       packName,
       packID,
       Destination,
-      destinations: destinationArray,
       NumOfDays,
       NumOfPassen,
       Hotel,
       Transport,
       TourGuide,
       TotPrice,
-      description,
-      photos: req.files ? req.files.map((file) => file.path) : [],
+      Images: images, // Save the image paths in the database
     });
 
+    // Save the package to the database
     await newPackage.save();
-
-    res.status(201).json({
-      message: "Package added successfully",
-      package: newPackage,
-    });
+    res.status(200).json({ message: "Package added successfully" }); // Send success response
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error adding package", error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error adding package" }); // Send error response
   }
 };
 
-// Get all packages
-exports.getAllPackages = async (req, res) => {
+// Function to get all packages
+const getAllPackages = async (req, res) => {
   try {
     const packages = await Package.find();
-    res.status(200).json({ success: true, packages });
+    res.status(200).json(packages);
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error fetching packages" });
   }
 };
 
-// Get package by ID
-exports.getPackageById = async (req, res) => {
+// Function to get a package by ID
+const getPackageById = async (req, res) => {
   try {
-    const pkg = await Package.findById(req.params.id);
-    if (!pkg) {
-      return res.status(404).json({ message: "Package not found" });
+    const package = await Package.findById(req.params.id);
+    if (!package) {
+      return res.status(404).json({ error: "Package not found" });
     }
-    res.status(200).json(pkg);
+    res.status(200).json(package); // Return the package
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching package", error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error fetching package" });
   }
 };
 
-// Update package by ID
-exports.updatePackage = async (req, res) => {
+// Function to update a package
+const updatePackage = async (req, res) => {
   try {
-    const {
-      packName,
-      packID,
-      Destination,
-      NumOfDays,
-      NumOfPassen,
-      Hotel,
-      Transport,
-      TourGuide,
-      TotPrice,
-      description,
-      destinations,
-    } = req.body;
+    const updatedData = { ...req.body };
 
-    const destinationArray = Array.isArray(destinations)
-      ? destinations
-      : destinations?.split(",").map((item) => item.trim());
-
-    const updateData = {
-      packName,
-      packID,
-      Destination,
-      destinations: destinationArray,
-      NumOfDays,
-      NumOfPassen,
-      Hotel,
-      Transport,
-      TourGuide,
-      TotPrice,
-      description,
-    };
-
-    // If new images are uploaded, add them
-    if (req.files && req.files.length > 0) {
-      updateData.photos = req.files.map((file) => file.path);
+    // Handle new images upload if any
+    if (req.files) {
+      const images = req.files.map((file) => file.path);
+      updatedData.Images = images; // Update the images if new ones are uploaded
     }
 
     const updatedPackage = await Package.findByIdAndUpdate(
       req.params.id,
-      updateData,
+      updatedData,
       { new: true }
     );
 
     if (!updatedPackage) {
-      return res.status(404).json({ message: "Package not found" });
+      return res.status(404).json({ error: "Package not found" });
     }
 
-    res.status(200).json({
-      message: "Package updated successfully",
-      package: updatedPackage,
-    });
+    res.status(200).json(updatedPackage); // Return the updated package
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error updating package", error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error updating package" });
   }
 };
 
-// Delete package by ID
-exports.deletePackage = async (req, res) => {
+// Function to delete a package
+const deletePackage = async (req, res) => {
   try {
-    const deleted = await Package.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "Package not found" });
+    const deletedPackage = await Package.findByIdAndDelete(req.params.id);
+    if (!deletedPackage) {
+      return res.status(404).json({ error: "Package not found" });
     }
-    res.status(200).json({ message: "Package deleted successfully" });
+
+    // Delete images from the file system (optional)
+    deletedPackage.Images.forEach((imagePath) => {
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error(`Error deleting image: ${imagePath}`);
+        }
+      });
+    });
+
+    res.status(200).json({ message: "Package deleted successfully" }); // Send success response
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error deleting package", error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error deleting package" });
   }
 };
 
-// Get count of all packages
-exports.getPackageCount = async (req, res) => {
+// Function to get the total package count
+const getPackageCount = async (req, res) => {
   try {
     const count = await Package.countDocuments();
     res.status(200).json({ count });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error counting packages", error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error fetching package count" });
   }
+};
+
+module.exports = {
+  addPackage,
+  getAllPackages,
+  getPackageById,
+  updatePackage,
+  deletePackage,
+  getPackageCount,
 };
