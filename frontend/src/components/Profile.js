@@ -68,7 +68,7 @@ const ProfileSidebar = ({ userData, userId }) => {
           alt={"package"}
         />
         <CustomSidebarLink
-          // to={`/profile/reservedTourGuides/${userId}`}
+          to={`/profile/reservedhotels/${userId}`}
           label="Reserved Hotels"
           img={Hotel}
           alt={"hotel"}

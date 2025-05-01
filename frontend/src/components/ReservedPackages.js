@@ -24,7 +24,7 @@ const ReservedPackages = ({ userId }) => {
       .get(`http://localhost:8070/package/all`)
       .then((res) => {
         const reservations = res.data.existingPackages;
-        setReservations(reservations);
+        setReservations(reservations || []);
 
         const packageRequests = reservations.map((reservation) => {
           const packageId =

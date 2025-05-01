@@ -2,15 +2,15 @@ const Reservation = require("../models/HotelReservation");
 
 exports.reserveHotel = async (req, res) => {
   try {
-    const { userId, hotelId, startDate, endDate, noOfPersons, noOfRooms } =
+    const { user, hotel, startDate, endDate, noOfPersons, noOfRooms } =
       req.body;
 
     const reservation = new Reservation({
       // Use the correct model name here
-      user: userId,
-      hotel: hotelId,
-      startDate,
-      endDate,
+      user,
+      hotel,
+      fromDate: startDate,
+      toDate: endDate,
       noOfPersons,
       noOfRooms,
     });
@@ -27,7 +27,7 @@ exports.reserveHotel = async (req, res) => {
 };
 
 exports.getUserReservations = async (req, res) => {
-  const userId = req.user.id; // Assuming req.user.id is populated with the user's ID
+  const userId = req.params.userId; // Assuming req.user.id is populated with the user's ID
 
   try {
     const reservations = await Reservation.find({ user: userId }).populate(

@@ -93,7 +93,8 @@ export default class ViewHotel extends Component {
               {this.state.hotels.map((hotels, index) => (
                 <>
                   <Link
-                    to="/insert/hotel"
+                    key={hotels._id}
+                    to={`/insert/hotel/${hotels._id}`}
                     type="submit"
                     className={styles.link}
                   >

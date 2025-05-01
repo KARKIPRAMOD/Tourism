@@ -23,7 +23,7 @@ export default class CusPack extends Component {
       .then((res) => {
         if (res.data.success) {
           this.setState({
-            packages: res.data.existingPackages,
+            packages: res.data.existingPackages || [],
           });
         }
       })
@@ -131,7 +131,7 @@ export default class CusPack extends Component {
                         </h5>
                         <div className="d-flex align-items-center mb-2">
                           <span className="me-2 text-warning">
-                            ★★★★☆{" "}
+                            ★★★★☆
                             {/* Replace with a rating component if dynamic */}
                           </span>
                           <span className="fw-bold text-dark">

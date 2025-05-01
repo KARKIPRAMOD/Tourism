@@ -1,5 +1,8 @@
+import axios from "axios";
+import { useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css"; // Make sure to import styles
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 function HotelReservation() {
   const hotelImage = [
@@ -7,6 +10,12 @@ function HotelReservation() {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXyENPbvq8vEUBtvSO-3dYBOT6Dmd08-MSwu7kDAOgIourx98PCsy346QTEyxyjFnrWg4&usqp=CAU",
     "https://media.licdn.com/dms/image/v2/D5612AQFzAAoTpXKvgw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1706185857400?e=2147483647&v=beta&t=owEbaQHl3G9ZfjWEV7MTAtd5dfLGfcEiL9Ej475bFvE",
   ];
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [noOfPersons, setNumberOfPersons] = useState();
+  const [noOfRooms, setNumberOfRooms] = useState();
+  const [message, setMessage] = useState();
+  const { hotelId } = useParams();
 
   const responsive = {
     superLargeDesktop: {
@@ -28,7 +37,20 @@ function HotelReservation() {
   };
 
   const handleFormSubmit = () => {
-    console.log("Form will be submit from this");
+    axios
+      .post("http://localhost:8070/HotelReservation/reserve", {
+        user: localStorage.getItem("userId"),
+        hotel: hotelId,
+        startDate: startDate,
+        endDate: endDate,
+        noOfPersons: noOfPersons,
+        noOfRooms: noOfRooms,
+      })
+      .then((res) => {
+        setMessage(res.data);
+        console.log(message);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -78,20 +100,46 @@ function HotelReservation() {
           <label>Description</label>
         </div>
         <div>
-          <form onSubmit={handleFormSubmit}>
-            <label for="firstname">First name: </label>
-            <input type="text" name="firstname" required />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleFormSubmit();
+            }}
+          >
+            {message && <div>{message}</div>}
+            <label for="lastname">Start Date: </label>
+            <input
+              type="date"
+              name="startDate"
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
             <br />
-            <label for="lastname">Last name: </label>
-            <input type="text" name="lastname" required />
+            <label for="lastname">End Date: </label>
+            <input
+              type="date"
+              name="endDatet"
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
             <br />
-            <label for="email">email: </label>
-            <input type="email" name="email" required />
+            <label for="email">Number of Persons: </label>
+            <input
+              type="text"
+              name="numberOfPersons"
+              onChange={(e) => setNumberOfPersons(e.target.value)}
+              required
+            />
             <br />
-            <label for="password">password: </label>
-            <input type="password" name="password" required />
+            <label for="password">Number of Rooms: </label>
+            <input
+              type="text"
+              name="rooms"
+              onChange={(e) => setNumberOfRooms(e.target.value)}
+              required
+            />
             <br />
-            <input type="submit" value="Login!"></input>
+            <button>Submit</button>
           </form>
         </div>
       </div>
