@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProfileSidebar from "./Profile";
 import PackageCard from "./PackageCard";
+import PackageReservation from "./PackageReservation";
 
 const ReservedPackages = ({ userId }) => {
   const [reservations, setReservations] = useState([]);
@@ -21,9 +22,9 @@ const ReservedPackages = ({ userId }) => {
 
     // Fetch reservations
     axios
-      .get(`http://localhost:8070/package/all`)
+      .get(`http://localhost:8070/reservePackageRouter/reservations/${userId}`)
       .then((res) => {
-        const reservations = res.data.existingPackages;
+        const reservations = res.data;
         setReservations(reservations || []);
 
         const packageRequests = reservations.map((reservation) => {
@@ -31,12 +32,12 @@ const ReservedPackages = ({ userId }) => {
             typeof reservation.package === "object"
               ? reservation.package._id
               : reservation.package;
-
+          console.log(packageId);
           return axios
-            .get(`http://localhost:8070/package/${packageId}`)
+            .get(`http://localhost:8070/package/get/${packageId}`)
             .then((pkgRes) => ({
               packageId,
-              data: pkgRes.data.package,
+              data: pkgRes.data,
             }))
             .catch((err) => {
               console.error("Error fetching package:", err);
@@ -47,10 +48,13 @@ const ReservedPackages = ({ userId }) => {
         Promise.all(packageRequests).then((results) => {
           const details = {};
           results.forEach((res) => {
+            console.log(res);
             if (res) {
+              console.log("Adding to details:", res.packageId, res);
               details[res.packageId] = res.data;
             }
           });
+          console.log("Response", details);
           setPackages(details);
           setLoading(false);
         });
@@ -90,8 +94,9 @@ const ReservedPackages = ({ userId }) => {
                       : reservation.package;
 
                   const pkg = packages[packageId];
+                  console.log(pkg);
                   return (
-                    <PackageCard
+                    <PackageReservation
                       key={reservation._id}
                       pkg={pkg}
                       reservation={reservation}

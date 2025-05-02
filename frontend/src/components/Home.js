@@ -24,36 +24,9 @@ const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
 
-  // Fetch feedback from the database when the component mounts
-  // useEffect(() => {
-  //   const fetchFeedback = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:8070/feedBack/all"); // Replace with your actual API endpoint
-  //       const data = await response.json();
-  //       setFeedbacks(data);
-  //     } catch (error) {
-  //       console.error("Error fetching feedback:", error);
-  //     }
-  //   };
-
-  //   fetchFeedback();
-  // }, []);
-
-  // Toggle function to open/close the feedback form
   const toggleFeedbackForm = () => {
     setIsFeedbackOpen(!isFeedbackOpen);
   };
-
-  //  "Trekking",
-  //               "Zip Flying",
-  //               "Sky Diving",
-  //               "Bungee Jumping",
-  //               "Motor Biking",
-  //               "Rafting & Kayaking",
-  //               "Canyoning",
-  //               "Mountain Biking",
-  //               "Paragliding",
-  //               "Hiking",
 
   const thingToDO = [
     {
@@ -492,36 +465,6 @@ const Home = () => {
                 gridTemplateColumns: "1fr 1fr",
               }}
             >
-              {/* Left Column */}
-              {/* <div className="col-md-6">
-              {[
-                "Trekking",
-                "Zip Flying",
-                "Sky Diving",
-                "Bungee Jumping",
-                "Motor Biking",
-                "Rafting & Kayaking",
-                "Canyoning",
-                "Mountain Biking",
-                "Paragliding",
-                "Hiking",
-              ].map((activity, index) => (
-                <p
-                  key={index}
-                  className="text-start"
-                  style={{
-                    fontWeight: "600",
-                    fontSize: "20px",
-                    marginBottom: "20px",
-                    color: "#155263",
-                  }}
-                >
-                  • {activity}
-                </p>
-              ))}
-            </div> */}
-
-              {/* Right Column */}
               <div
                 className="col-md-6"
                 style={{
@@ -531,31 +474,6 @@ const Home = () => {
                   paddingTop: "2rem",
                 }}
               >
-                {/* {[
-                "Camping",
-                "Cave Exploration",
-                "Hot Air Balloon",
-                "Bird Watching",
-                "Mountain Viewing",
-                "Jungle Discovery",
-                "Butterfly Watching",
-                "Nagarkot Sunrise and Sunset",
-                "Wetlands",
-                "Traditional Crafts",
-              ].map((activity, index) => (
-                <p
-                  key={index}
-                  className="text-start"
-                  style={{
-                    fontWeight: "600",
-                    fontSize: "20px",
-                    marginBottom: "20px",
-                    color: "#155263",
-                  }}
-                >
-                  • {activity}
-                </p>
-              ))} */}
                 {thingToDO?.map((value, index) => {
                   return (
                     <Link to={`/${value.link}`}>
