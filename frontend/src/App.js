@@ -97,59 +97,38 @@ const App = () => {
         <nav className={`navbar-fixed-top ${styles.nav}`}>
           <div className={`container ${styles.parentnav}`}>
             <img src={logo} alt="Travelo logo" className={styles.logo}></img>
-            <div className={styles.topnav_center}>
-              <ul>
-                <li>
-                  <Link
-                    to={
-                      localStorage.getItem("userRole") === "admin"
-                        ? "/admin/dashboard"
-                        : "/home"
-                    }
-                  >
-                    Home
-                  </Link>
-                </li>
+            {localStorage.getItem("userRole") !== "admin" && (
+              <div className={styles.topnav_center}>
+                <ul>
+                  <li>
+                    <Link to="/home">Home</Link>
+                  </li>
 
-                <li>
-                  <Link to={`/view/hotel`}>Hotels</Link>
-                </li>
+                  <li>
+                    <Link to="/view/hotel">Hotels</Link>
+                  </li>
 
-                <li>
-                  <Link to={`/guidereport`}>Tour Guides</Link>
-                  {/* {isAuthorizedForTourGuide() ? (
-                    <Link to={`/add/tourguide`}>Tour Guide</Link>
-                  ) : (
-                    <Link
-                      to="/user/login"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        alert(
-                          "Please login as an administrator or tour manager to access tour guide management."
-                        );
-                        window.location.href = "/user/login";
-                      }}
-                    >
-                      Tour Guide
-                    </Link>
-                  )} */}
-                </li>
+                  <li>
+                    <Link to="/guidereport">Tour Guides</Link>
+                  </li>
 
-                <li>
-                  <Link to="/view/cuspackage">Tour Packages</Link>
-                </li>
+                  <li>
+                    <Link to="/view/cuspackage">Tour Packages</Link>
+                  </li>
 
-                <li>
-                  <Link to={`/profile/home/${userId}`}>Profile</Link>
-                </li>
+                  <li>
+                    <Link to={`/profile/home/${userId}`}>Profile</Link>
+                  </li>
 
-                <li>
-                  <Link to="/tour-updates">Tour Updates</Link>
-                </li>
-              </ul>
-            </div>
+                  <li>
+                    <Link to="/tour-updates">Tour Updates</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+
             {userId ? (
-              <>
+              <div>
                 <Link
                   to={"/home"}
                   onClick={logout}
@@ -157,7 +136,7 @@ const App = () => {
                 >
                   Logout
                 </Link>
-              </>
+              </div>
             ) : (
               <>
                 <Link to={"/user/login"} className={styles.btn_login}>
