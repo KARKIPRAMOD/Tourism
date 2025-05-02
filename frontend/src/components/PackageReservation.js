@@ -6,7 +6,6 @@ const PackageReservation = ({ pkg, reservation }) => {
     : "https://via.placeholder.com/300x200?text=No+Image";
 
   const start = new Date(reservation.startDate).toLocaleDateString("en-US");
-  const end = new Date(reservation.endDate).toLocaleDateString("en-US");
 
   return (
     <div
