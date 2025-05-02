@@ -522,28 +522,18 @@ const Home = () => {
           <FeedBackComp />
         </div>
       </div>
-      <button
-        onClick={toggleFeedbackForm}
-        className="btn btn-secondary"
-        style={{
-          position: "fixed",
-          bottom: "90px", // Move it up a bit
-          right: "10px", // Keep it on the right
-          zIndex: 1000, // Optional, if needed for stacking context
-        }}
-      >
-        Give Feedback
-      </button>
-      {/* Feedback Form Component */}
-      <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
+      {/* ChatBot Component - Bottom Right */}
+      <ChatBot />
+
+      {/* WhatsApp Floating Icon - Above ChatBot */}
       <a
         href="https://chat.whatsapp.com/HCw1h4K2pUp6l1vSnj8GLH"
         target="_blank"
         rel="noopener noreferrer"
         style={{
           position: "fixed",
-          bottom: "15px",
-          right: "85px",
+          bottom: "90px", // Just above chatbot
+          right: "20px",
           backgroundColor: "#25D366",
           color: "white",
           borderRadius: "50%",
@@ -557,10 +547,36 @@ const Home = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <i className="fab fa-whatsapp" style={{ fontSize: "24px" }}></i>
+        <i className="fab fa-whatsapp" style={{ fontSize: "28px" }}></i>
       </a>
-      {/* ChatBot Component */}
-      <ChatBot />
+
+      {/* Feedback Button - Top */}
+      <button
+        onClick={toggleFeedbackForm}
+        style={{
+          position: "fixed",
+          bottom: "170px",
+          right: "25px",
+          backgroundColor: "#6c757d",
+          color: "white",
+          border: "none",
+          borderRadius: "50%",
+          width: "60px",
+          height: "60px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000,
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+          cursor: "pointer",
+        }}
+      >
+        <i className="fas fa-comment-dots" style={{ fontSize: "24px" }}></i>
+      </button>
+
+      {/* Feedback Form Component */}
+      <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
+
       <Footer />
     </>
   );
