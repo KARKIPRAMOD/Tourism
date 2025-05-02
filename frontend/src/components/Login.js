@@ -243,21 +243,6 @@ export default function Login({ login }) {
                   )}
                 </button>
 
-                {/* Quick admin access button for testing */}
-                <button
-                  className="btn btn-secondary w-100 mt-3"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    localStorage.setItem("userRole", "admin");
-                    localStorage.setItem("userId", "admin_id");
-                    login("admin_id");
-                    history.push("/admin/dashboard");
-                  }}
-                  type="button"
-                >
-                  Quick Admin Access
-                </button>
-
                 <hr className="my-4" style={{ opacity: "0.15" }} />
 
                 <div className="d-flex align-items-center justify-content-center pb-4">
