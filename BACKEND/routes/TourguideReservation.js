@@ -1,67 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const TourguideReservation = require("../models/TourguideReservation");
+const {
+  reserveTourguide,
+  confirmReservation,
+  getUserReservations,
+} = require("../controllers/tourguideReservationController");
 
-// POST /reserve
-router.post("/reserve", async (req, res) => {
-  try {
-    const { userId, tourguideId, startDate, endDate } = req.body;
+// POST - Make a new reservation
+router.post("/reserve", reserveTourguide);
 
-    // Check for overlapping reservation
-    const existingReservation = await TourguideReservation.findOne({
-      tourguide: tourguideId,
-      $or: [
-        {
-          startDate: { $lte: new Date(endDate) },
-          endDate: { $gte: new Date(startDate) },
-        },
-      ],
-    });
+// PUT - Admin confirms a reservation
+router.put("/confirm/:reservationId", confirmReservation);
 
-    if (existingReservation) {
-      return res
-        .status(400)
-        .json({ message: "Tour guide already reserved for these dates" });
-    }
+// GET - Show confirmed reservations for a user
+router.get("/reservedTourGuides/:userId", getUserReservations);
 
-    // Create reservation
-    const reservation = new TourguideReservation({
-      user: userId,
-      tourguide: tourguideId,
-      startDate,
-      endDate,
-    });
-
-    await reservation.save();
-
-    res.status(201).json({ message: "Reservation successful", reservation });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-});
-
-router.get("/reservedTourGuides/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    console.log("GET /reservedTourGuides request for userId:", userId); // Log the userId parameter
-
-    const reservations = await TourguideReservation.find({ user: userId })
-      .populate("tourguide", "tourguide_name") // Populate the tourguide name
-      .sort({ startDate: 1 }); // Sort by start date
-
-    if (!reservations.length) {
-      console.log("No reservations found for userId:", userId); // Log if no reservations are found
-      return res.status(404).json({ message: "No reserved tour guides found" });
-    }
-
-    console.log("Reserved tour guides found:", reservations); // Log the reservations
-
-    res.status(200).json(reservations);
-  } catch (err) {
-    console.error("Error in /reservedTourGuides route:", err); // Log any errors in the catch block
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
 module.exports = router;

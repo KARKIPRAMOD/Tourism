@@ -1,5 +1,6 @@
 const Reservation = require("../models/HotelReservation");
 
+// Reserve hotel
 exports.reserveHotel = async (req, res) => {
   try {
     const { user, hotel, startDate, endDate, noOfPersons, noOfRooms } =
@@ -25,13 +26,15 @@ exports.reserveHotel = async (req, res) => {
   }
 };
 
+// Get confirmed reservations for a user
 exports.getUserReservations = async (req, res) => {
-  const userId = req.params.userId; // Assuming req.user.id is populated with the user's ID
+  const userId = req.params.userId;
 
   try {
-    const reservations = await Reservation.find({ user: userId }).populate(
-      "hotel"
-    );
+    const reservations = await Reservation.find({
+      user: userId,
+      isConfirmed: true,
+    }).populate("hotel");
 
     res.status(200).json({
       success: true,
@@ -39,5 +42,30 @@ exports.getUserReservations = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// Admin confirms reservation
+exports.confirmReservation = async (req, res) => {
+  const { reservationId } = req.params;
+
+  try {
+    const updated = await Reservation.findByIdAndUpdate(
+      reservationId,
+      { isConfirmed: true },
+      { new: true }
+    ).populate("hotel user");
+
+    if (!updated) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Reservation confirmed", reservation: updated });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Confirmation failed", error: err.message });
   }
 };
