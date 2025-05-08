@@ -40,6 +40,10 @@ function AdminDashboard() {
     fetchDashboardData();
   }, [history]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    history.push("/home");
+  };
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
@@ -184,12 +188,13 @@ function AdminDashboard() {
 
           {/* Logout Button */}
           <div className="mt-auto">
-            <Link
-              to="/home"
+            <div
+              onClick={handleLogout}
               className="d-flex align-items-center text-white px-3 py-2"
+              style={{ cursor: "pointer" }}
             >
               <i className="bi bi-box-arrow-right me-2"></i> Logout
-            </Link>
+            </div>
           </div>
         </div>
 
@@ -228,8 +233,8 @@ function AdminDashboard() {
                   </h2>
                 </div>
                 <div className="card-footer">
-                  <Link to="/all/tourguides" className="text-white">
-                    Manage Tour Guides
+                  <Link to="/add/tourguide" className="text-white">
+                    Add Tour Guides
                   </Link>
                 </div>
               </div>
@@ -247,8 +252,8 @@ function AdminDashboard() {
                   </h2>
                 </div>
                 <div className="card-footer">
-                  <Link to="/all/hotel" className="text-white">
-                    Manage Hotels
+                  <Link to="/add/hotel" className="text-white">
+                    Add Hotels
                   </Link>
                 </div>
               </div>
@@ -266,8 +271,8 @@ function AdminDashboard() {
                   </h2>
                 </div>
                 <div className="card-footer">
-                  <Link to="/manage/AllPacks" className="text-white">
-                    Manage Packages
+                  <Link to="/add/package" className="text-white">
+                    Add Packages
                   </Link>
                 </div>
               </div>
