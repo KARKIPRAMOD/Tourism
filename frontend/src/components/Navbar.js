@@ -3,24 +3,32 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import css file from style sheets directory
 import styles from "../style_sheets/Navbar.module.css";
-import photo from "../img/travel.svg";
 
 const Navbar = () => {
+  // Get user role from localStorage
+  const userRole = localStorage.getItem("userRole");
+
+  // Debugging log to ensure userRole is being fetched correctly
+  console.log("Current User Role:", userRole);
+
+  // If the user is an admin, don't render the Navbar
+  if (userRole === "admin") {
+    console.log("Admin detected, hiding navbar...");
+    return null; // Hides the navbar if userRole is 'admin'
+  }
+
+  // Render navbar for non-admin users
   return (
     <div className={styles.body}>
       <header className={styles.header1}>
         <div id="title" className={styles.title1}>
-          <h1 className={styles.ha}>Tour & Travel </h1>
+          <h1 className={styles.ha}>Tour & Travel</h1>
         </div>
       </header>
 
       <nav className={styles.navbar}>
         <NavLink
-          to={
-            localStorage.getItem("userRole") === "admin"
-              ? "/admin/dashboard"
-              : "/home"
-          }
+          to={"/home"}
           className={({ isActive }) =>
             isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
           }
@@ -68,31 +76,6 @@ const Navbar = () => {
           Profile
         </NavLink>
       </nav>
-
-      <main className={styles.main2}>
-        <aside>
-          <h2>
-            <span className={styles.span1}>Fuel Mind Travel</span>
-          </h2>
-
-          <p className={styles.p1}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s. Lorem Ipsum is
-            simply dummy text of the printing and typesetting industry.
-          </p>
-          <form className={styles.form1}>
-            <a className={styles.inputBtn} href={"/add/hotel"}>
-              <i className={styles.inputBtn}></i>&nbsp;Manager Panel{" "}
-            </a>
-          </form>
-        </aside>
-        <article>
-          <img src={photo} className={styles.travel} alt="Travel" />
-        </article>
-      </main>
     </div>
   );
 };

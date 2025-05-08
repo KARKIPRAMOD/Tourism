@@ -19,6 +19,11 @@ const tourguideReservationSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+
+  isConfirmed: {
+    type: Boolean,
+    default: false, // Initially, the reservation is not confirmed
+  },
 });
 
 module.exports = mongoose.model(

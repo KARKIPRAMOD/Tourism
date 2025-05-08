@@ -59,73 +59,78 @@ export default class AllHotel extends Component {
   render() {
     return (
       <div className={styles.body}>
-        <div className={styles.sidebar}>
-          <div className={styles.logo_content}>
-            <div className={styles.logo}>
-              <i className={styles.logo1}>
-                <GiDetour />
-              </i>
-              <div className={styles.logo_name}> Travelo </div>
-            </div>
-            <i className={styles.logo2} id="btn">
-              <BiMenu />
-            </i>
-          </div>
-          <div className={styles.nav_list}>
-            <li className={styles.list}>
-              <Link to="/add/hotel" className={styles.sidelinks}>
-                <i className={styles.logo3}>
-                  <FaBuilding />
-                </i>
-                <span className={styles.links_name}>Add Hotel Details </span>
-              </Link>
-            </li>
-
-            <li className={styles.list}>
-              <Link to="/all/hotel" className={styles.sidelinks}>
-                <i className={styles.logo3}>
-                  <FaExternalLinkAlt />
-                </i>
-                <span className={styles.links_name}>All Hotel Details</span>
-              </Link>
-            </li>
-
-            <li className={styles.list}>
-              <Link to="/update/hotel/:id" className={styles.sidelinks}>
-                <i className={styles.logo3}>
-                  <GrUpdate />
-                </i>
-                <span className={styles.links_name}>Update Hotel Details </span>
-              </Link>
-            </li>
-
-            <li className={styles.list}>
-              <Link to="/report/hotel" className={styles.sidelinks}>
-                <i className={styles.logo3}>
-                  <ImPrinter />
-                </i>
-                <span className={styles.links_name}>Print Hotel Details </span>
-              </Link>
-            </li>
-
-            <div className={styles.panel_content}>
-              <div className={styles.panel}>
-                <div className={styles.name_panel}>
-                  <div className={styles.name}>User Panel</div>
-                </div>
-              </div>
-              <Link to="/view/hotel" type="submit">
-                <span className={styles.user_icon}>
-                  <BiLogOut />
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
         <div className={styles.mainContent}>
-          {/* header */}
+          {/* sidebar */}
+          <div className="col-md-3 col-lg-2">
+            <div
+              className="sidebar"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                width: "240px",
+                backgroundColor: "#2c2c54", // Dark Purple background color
+                zIndex: 1000,
+                borderRight: "2px solid #ddd", // Divider to match style
+                paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+              }}
+            >
+              <h3 className="text-center text-white mb-4">Admin Panel</h3>
+              <ul className="list-unstyled">
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="d-flex align-items-center text-white px-3 py-2"
+                  >
+                    <i className="bi bi-house-door me-2"></i> Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/all/tourguides"
+                    className="d-flex align-items-center text-white px-3 py-2"
+                  >
+                    <i className="bi bi-person-lines-fill me-2"></i> Tour Guides
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/all/hotel"
+                    className="d-flex align-items-center text-white px-3 py-2"
+                  >
+                    <i className="bi bi-building me-2"></i> Hotels
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/manage/AllPacks"
+                    className="d-flex align-items-center text-white px-3 py-2"
+                  >
+                    <i className="bi bi-card-list me-2"></i> Packages
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/all/user"
+                    className="d-flex align-items-center text-white px-3 py-2"
+                  >
+                    <i className="bi bi-person-fill me-2"></i> Users
+                  </Link>
+                </li>
+              </ul>
 
+              {/* Logout Button */}
+              <div className="mt-auto">
+                <Link
+                  to="/home"
+                  className="d-flex align-items-center text-white px-3 py-2"
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i> Logout
+                </Link>
+              </div>
+            </div>
+          </div>
           {/* main box */}
           <main className={styles.Main1}>
             <h2>Over View</h2>
@@ -133,24 +138,30 @@ export default class AllHotel extends Component {
               <div className={styles.cardSingle}>
                 <div className={styles.cardBody}>
                   <span className={styles.boxicon}>
-                    <FaHotel />
+                    <Link to="/add/hotel" className={styles.sidelinks}>
+                      <i className={styles.logo3}>
+                        <FaBuilding />
+                      </i>
+                      <span className={styles.links_name}>
+                        Add Hotel Details
+                      </span>
+                    </Link>
                   </span>
-                  <div className={styles.cardname}>
-                    <h5>No Of Hotel</h5>
-                    <h4>653</h4>
-                  </div>
                 </div>
               </div>
 
               <div className={styles.cardSingle}>
                 <div className={styles.cardBody}>
                   <span className={styles.boxicon}>
-                    <MdFamilyRestroom />
+                    <Link to="/print/hotel" className={styles.sidelinks}>
+                      <i className={styles.logo3}>
+                        <ImPrinter />
+                      </i>
+                      <span className={styles.links_name}>
+                        Print Hotel Details
+                      </span>
+                    </Link>
                   </span>
-                  <div className={styles.cardname}>
-                    <h5>No Of Rooms</h5>
-                    <h4>2314</h4>
-                  </div>
                 </div>
               </div>
 

@@ -267,7 +267,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      import {(FaPlane, FaHotel, FaMapMarkedAlt, FaCar)} from "react-icons/fa";
       <section
         className={styleHome.reviewSection}
         style={{

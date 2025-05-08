@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const router = require("../routes/tourguides");
 
-//const Schema=mongoose.Schema;
-
 const tourguideSchema = new mongoose.Schema({
   fullName: {
     type: String,

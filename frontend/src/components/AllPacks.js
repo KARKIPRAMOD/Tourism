@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WhatsAppContact from "./WhatsAppContact"; // Assuming this is a component you want to include
+import { Link, useHistory, useLocation, Switch, Route } from "react-router-dom";
 
 export default class AllPacks extends Component {
   constructor(props) {
@@ -101,15 +102,79 @@ export default class AllPacks extends Component {
 
     return (
       <div className="container bg-white text-black p-3 mb-2">
+        <div
+          className="sidebar"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            height: "100vh",
+            width: "240px",
+            backgroundColor: "#2c2c54", // Dark Purple background color
+            zIndex: 1000,
+            borderRight: "2px solid #ddd", // Divider to match style
+            paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+          }}
+        >
+          <h3 className="text-center text-white mb-4">Admin Panel</h3>
+          <ul className="list-unstyled">
+            <li>
+              <Link
+                to="/admin/dashboard"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-house-door me-2"></i> Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/all/tourguides"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-person-lines-fill me-2"></i> Tour Guides
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/all/hotel"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-building me-2"></i> Hotels
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/manage/AllPacks"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-card-list me-2"></i> Packages
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/all/user"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-person-fill me-2"></i> Users
+              </Link>
+            </li>
+          </ul>
+
+          {/* Logout Button */}
+          <div className="mt-auto">
+            <Link
+              to="/home"
+              className="d-flex align-items-center text-white px-3 py-2"
+            >
+              <i className="bi bi-box-arrow-right me-2"></i> Logout
+            </Link>
+          </div>
+        </div>
         <div className="row">
           <h2 className="text-center">
             <strong>Manage Package Details</strong>
           </h2>
-          <div className="col-lg-9 mt-2 mb-2">
-            <h6>
-              <strong>Enter Pack_ID here</strong>
-            </h6>
-          </div>
+          <div className="col-lg-9 mt-2 mb-2"></div>
           <div className="col-lg-3 mt-2 mb-2 text-center">
             <input
               className="form-control"

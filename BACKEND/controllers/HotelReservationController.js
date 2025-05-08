@@ -6,7 +6,6 @@ exports.reserveHotel = async (req, res) => {
       req.body;
 
     const reservation = new Reservation({
-      // Use the correct model name here
       user,
       hotel,
       fromDate: startDate,

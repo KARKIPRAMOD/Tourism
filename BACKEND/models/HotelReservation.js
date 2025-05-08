@@ -33,6 +33,11 @@ const reservationSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+
+  isConfirmed: {
+    type: Boolean,
+    default: false, // Initially, the reservation is not confirmed
+  },
 });
 
 const Reservation = mongoose.model("Reservation", reservationSchema);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 
-//import css file from style sheets directory
+// Import css file from style sheets directory
 import styles from "../style_sheets/Login.module.css";
 
 export default function Login({ login }) {
@@ -17,7 +17,7 @@ export default function Login({ login }) {
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [loginType, setLoginType] = useState("user"); // Add state for login type
+  const [loginType, setLoginType] = useState("user"); // Default to "user" login
   const history = useHistory();
 
   const handleInputChange = (event) => {
@@ -25,6 +25,7 @@ export default function Login({ login }) {
     setUserEnteredInfo({ ...userEnteredInfo, [name]: value });
   };
 
+  // Handle regular user login
   function loginUser(e) {
     e.preventDefault();
     setLoading(true);
@@ -59,31 +60,24 @@ export default function Login({ login }) {
       });
   }
 
+  // Handle admin login (when username is "admin" and password is "admin")
   const handleAdminLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      // Debug log for admin login attempt
-      console.log(
-        "Starting admin login attempt for:",
-        userEnteredInfo.user_name
-      );
-
-      // Use "admin" for both username and password if that's what's entered
+      // If the user entered "admin" for both username and password, treat it as admin login
       const loginData =
-        userEnteredInfo.user_name.toLowerCase() === "admin"
+        userEnteredInfo.user_name.toLowerCase() === "admin" &&
+        userEnteredInfo.password === "admin"
           ? { email: "admin", password: "admin" }
           : {
               email: userEnteredInfo.user_name,
               password: userEnteredInfo.password,
             };
 
-      console.log(
-        "Sending admin login request to:",
-        "http://localhost:8070/admin/login"
-      );
+      // Send admin login request
       const response = await fetch("http://localhost:8070/admin/login", {
         method: "POST",
         headers: {
@@ -98,14 +92,13 @@ export default function Login({ login }) {
       }
 
       const data = await response.json();
-      console.log("Admin login response:", data);
 
       // Store the token and user info
       localStorage.setItem("token", data.token);
       localStorage.setItem("userRole", "admin");
       localStorage.setItem("userId", data.userId);
 
-      // Call login function and redirect
+      // Call login function and redirect to admin dashboard
       login(data.userId);
       history.push("/admin/dashboard");
     } catch (error) {
@@ -118,9 +111,13 @@ export default function Login({ login }) {
     }
   };
 
-  // Determine which login handler to use based on login type
+  // Handle login (either user or admin)
   const handleLogin = (e) => {
-    if (loginType === "admin") {
+    if (
+      userEnteredInfo.user_name.toLowerCase() === "admin" &&
+      userEnteredInfo.password === "admin"
+    ) {
+      // Admin login works when user_name is "admin" and password is "admin"
       handleAdminLogin(e);
     } else {
       loginUser(e);
@@ -144,32 +141,6 @@ export default function Login({ login }) {
                 <h2 className="mb-4">
                   {loginType === "admin" ? "Admin Sign in" : "User Sign in"}
                 </h2>
-
-                {/* Login Type Toggle */}
-                <div className="btn-group w-100 mb-4">
-                  <button
-                    type="button"
-                    className={`btn ${
-                      loginType === "user"
-                        ? "btn-primary"
-                        : "btn-outline-primary"
-                    }`}
-                    onClick={() => setLoginType("user")}
-                  >
-                    User Login
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn ${
-                      loginType === "admin"
-                        ? "btn-primary"
-                        : "btn-outline-primary"
-                    }`}
-                    onClick={() => setLoginType("admin")}
-                  >
-                    Admin Login
-                  </button>
-                </div>
 
                 {/* Error display */}
                 {error && (
