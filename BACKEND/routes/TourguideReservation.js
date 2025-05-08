@@ -4,7 +4,7 @@ const {
   reserveTourguide,
   confirmReservation,
   getUserReservations,
-} = require("../controllers/tourguideReservationController");
+} = require("../controllers/TourguideReservationController");
 
 // POST - Make a new reservation
 router.post("/reserve", reserveTourguide);
