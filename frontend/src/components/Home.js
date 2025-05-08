@@ -19,6 +19,67 @@ import ThingsToDo from "./ThingsToDo";
 import FeedBackComp from "./feedbackComp";
 import Footer from "./Footer";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { FaPlane, FaHotel, FaMapMarkedAlt, FaCar } from "react-icons/fa";
+const gradientHeader = (color1, color2) => ({
+  fontWeight: "700",
+  fontSize: "40px",
+  background: `linear-gradient(to right, ${color1}, ${color2})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+});
+
+const subTextStyle = {
+  fontSize: "18px",
+  color: "#666",
+  maxWidth: "600px",
+  margin: "auto",
+};
+
+const twoColumnGrid = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "50px",
+  alignItems: "center",
+};
+
+const imageStyle = {
+  width: "100%",
+  borderRadius: "15px",
+  boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+};
+
+const subHeader = {
+  fontSize: "28px",
+  fontWeight: "600",
+  marginBottom: "20px",
+};
+
+const paragraphText = {
+  fontSize: "16px",
+  color: "#444",
+  lineHeight: "1.6",
+};
+
+const serviceGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: "30px",
+};
+
+const serviceCard = {
+  backgroundColor: "#f9f9f9",
+  borderRadius: "15px",
+  padding: "30px",
+  textAlign: "center",
+  boxShadow: "0 8px 16px rgba(0,0,0,0.06)",
+  transition: "transform 0.3s",
+};
+
+const serviceTitle = {
+  fontSize: "22px",
+  marginBottom: "10px",
+  color: "#333",
+};
 
 const Home = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -108,7 +169,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`row row-cols-md-4 g-5`}
         style={{ margin: "40px 70px 0px 70px" }}
@@ -207,235 +267,165 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+      import {(FaPlane, FaHotel, FaMapMarkedAlt, FaCar)} from "react-icons/fa";
       <section
         className={styleHome.reviewSection}
         style={{
-          padding: "60px 80px",
-          backgroundColor: "#f8f9fa",
+          padding: "80px 60px",
+          backgroundColor: "#f0f4f8",
         }}
       >
+        {/* About Us Section */}
         <div className="container">
-          <div
-            style={{
-              fontWeight: "700",
-              fontSize: "42px",
-              marginBottom: "5rem",
-              textAlign: "center",
-            }}
-          >
-            <label className="text-center">About Us</label>
-            <div style={{ fontSize: "16px", fontWeight: "500", color: "gray" }}>
-              A little description of our site on how we work and server the
-              service towards you
-            </div>
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <h2 style={gradientHeader("#ff6a00", "#ee0979")}>About Us</h2>
+            <p style={subTextStyle}>
+              Learn how we make your travel easier, safer, and more fun ✨
+            </p>
           </div>
-          {/* Centered Welcome Text */}
-          <p
-            style={{
-              fontWeight: "700",
-              fontSize: "26px",
-              marginBottom: "30px",
-              textAlign: "left",
-            }}
-          >
-            Welcome to YatraPath
-          </p>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "7rem",
-              marginBottom: "5rem",
-            }}
-          >
+
+          <div style={twoColumnGrid}>
+            <img
+              src="https://img.freepik.com/free-vector/travel-around-world-concept-illustration_114360-8515.jpg"
+              alt="About Us Visual"
+              style={imageStyle}
+            />
+
             <div>
-              <img
-                src="https://st4.depositphotos.com/4601361/31277/i/450/depositphotos_312778290-stock-photo-background-concept-inscription-welcome-on.jpg"
-                alt="welcome"
-                style={{
-                  borderRadius: "16px",
-                }}
-              />
-            </div>
-            <div>
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
-                Hey there, traveler! We’re so glad you found us. YatraPath was
-                born from a simple idea traveling should be joyful, not
-                stressful. We know how confusing it can be to juggle multiple
-                apps just to plan one trip. That’s why we created a place where
-                everything you need hotel bookings, local guides, travel tips,
-                even a friend group all under one digital roof. Whether you’re a
-                solo backpacker, a couple on a getaway, or a group chasing
-                adventure, YatraPath is here to make your journey through Nepal
-                smooth, safe, and full of memories.
+              <h3 style={subHeader}>
+                Welcome to <span style={{ color: "#ff6a00" }}>YatraPath</span>
+              </h3>
+              <p style={paragraphText}>
+                At YatraPath, we believe that travel should be seamless and
+                joyful...
               </p>
-            </div>
-          </div>
-          {/* Centered Welcome Text */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "7rem",
-              marginBottom: "5rem",
-            }}
-          >
-            <div>
-              <p
-                className="text-center"
-                style={{
-                  fontWeight: "700",
-                  fontSize: "28px",
-                  marginBottom: "30px",
-                }}
-              >
-                Our Vision
-              </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
-                We dream of a world where travel connects people, cultures, and
-                communities in beautiful ways. Our vision is to become Nepal’s
-                most trusted travel platform, not just by offering bookings and
-                support, but by making every journey meaningful. We want every
-                traveler to feel the magic of Nepal—and every local business to
-                grow from the love of tourism done right.
-              </p>
-            </div>
-            <div>
-              <img
-                src="https://img.freepik.com/free-photo/business-strategy-success-target-goals_1421-33.jpg?t=st=1745340390~exp=1745343990~hmac=a445379c80b0b030b186fd59c343a9c1c1e4075b48e55e7e202fc881cdcf9c84&w=1380"
-                alt="our vision"
-                style={{
-                  borderRadius: "16px",
-                }}
-              />
-            </div>
-          </div>
-          {/* Centered Welcome Text */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "7rem",
-              marginBottom: "3rem",
-            }}
-          >
-            <div>
-              <img
-                src="https://img.freepik.com/free-photo/businessman-touching-virtual-screen_1232-737.jpg?t=st=1745341616~exp=1745345216~hmac=1c393cb33c509e73b64803c412d65af6995e39fd479ac715b8ddaa76c66859d1&w=1380"
-                alt="our mission"
-                style={{
-                  borderRadius: "16px",
-                }}
-              />
-            </div>
-            <div>
-              <p
-                className="text-center"
-                style={{
-                  fontWeight: "700",
-                  fontSize: "22px",
-                  marginBottom: "30px",
-                }}
-              >
-                Our Mission
-              </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
-                At YatraPath, we’re on a mission to make travel planning easier
-                and more personal. We combine smart technology with a human
-                touch, helping you find trusted guides, cozy places to stay, and
-                exciting things to do—all while supporting the local people who
-                make Nepal so special. We believe that great trips aren’t just
-                about where you go, but about who you meet and what you
-                experience along the way.
-              </p>
-            </div>
-          </div>
-          {/* Centered Welcome Text */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "7rem",
-              marginBottom: "3rem",
-            }}
-          >
-            <div>
-              <p
-                className="text-center"
-                style={{
-                  fontWeight: "700",
-                  fontSize: "22px",
-                  marginBottom: "30px",
-                }}
-              >
-                What Makes Us Different
-              </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
-                We’re more than just a booking site—we’re your travel buddy. Our
-                platform gives you the power to plan your trip your way, with
-                help from an AI chatbot that’s always there to answer your
-                questions (even the silly ones!). You can book verified guides,
-                chat with fellow travelers, read travel stories, and find tips
-                on what to do and where to go. It’s simple, helpful, and made
-                with love—for people who love to explore.
-              </p>
-            </div>
-            <div>
-              <img
-                src="https://img.freepik.com/free-photo/young-man-making-scales-gesture-shirt-jacket-pants-looking-confident-front-view_176474-88930.jpg?t=st=1745342219~exp=1745345819~hmac=a23423b5c50911d1983a291bdfc8d8e93c7c2325badb44a0c718075a42980281&w=1380"
-                alt="what makes us different"
-                style={{
-                  borderRadius: "16px",
-                }}
-              />
-            </div>
-          </div>
-          {/* Centered Welcome Text */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "7rem",
-              marginBottom: "3rem",
-            }}
-          >
-            <div>
-              <img
-                src="https://img.freepik.com/free-photo/young-friends-top-mountain-enjoying-mesmerizing-view_181624-30260.jpg?t=st=1745342380~exp=1745345980~hmac=6b10c6188c0c74bcd4dbed903dac8aea35a556d0baa622a6157b163357da93b7&w=1380"
-                alt="why nepal"
-                style={{ borderRadius: "16px" }}
-              />
-            </div>
-            <div>
-              <p
-                className="text-center"
-                style={{
-                  fontWeight: "700",
-                  fontSize: "22px",
-                  marginBottom: "30px",
-                }}
-              >
-                why Nepal?
-              </p>
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "gray" }}>
-                Nepal isn’t just a destination it’s a feeling. From the snowy
-                peaks of the Himalayas to the bustling streets of Kathmandu,
-                every corner of this country has a story to tell. We’re proud to
-                be from here, and even prouder to share it with the world.
-                YatraPath exists to help you discover not just famous spots, but
-                also the hidden gems, local flavors, and heartwarming moments
-                that make Nepal unforgettable.
+              <p style={{ ...paragraphText, marginTop: "15px" }}>
+                With real-time information, smart bookings, and personalized
+                recommendations...
               </p>
             </div>
           </div>
         </div>
       </section>
+      {/* Our Services Section */}
+      <section
+        style={{
+          padding: "80px 60px",
+          backgroundColor: "#fff",
+          marginTop: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <h2 style={gradientHeader("#0f2027", "#2c5364")}>Our Services</h2>
+            <p style={subTextStyle}>
+              Everything you need for a perfect journey 🚀
+            </p>
+          </div>
 
+          <div style={serviceGrid}>
+            {[
+              {
+                title: "Flight Booking",
+                icon: <FaPlane size={30} color="#ff6a00" />,
+                desc: "Find the best flights at the best prices.",
+              },
+              {
+                title: "Hotel Reservations",
+                icon: <FaHotel size={30} color="#ff6a00" />,
+                desc: "Top-rated hotels with verified reviews.",
+              },
+              {
+                title: "Tour Guides",
+                icon: <FaMapMarkedAlt size={30} color="#ff6a00" />,
+                desc: "Licensed guides to enrich your travel experience.",
+              },
+              {
+                title: "Vehicle Rental",
+                icon: <FaCar size={30} color="#ff6a00" />,
+                desc: "Cars, bikes & more, ready when you are.",
+              },
+            ].map((service, index) => (
+              <div key={index} style={serviceCard}>
+                <div style={{ marginBottom: "10px" }}>{service.icon}</div>
+                <h3 style={serviceTitle}>{service.title}</h3>
+                <p style={{ fontSize: "16px", color: "#666" }}>
+                  {service.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section style={{ padding: "40px 40px", backgroundColor: "#f0f4f8" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <h2
+              style={{
+                fontWeight: "700",
+                fontSize: "40px",
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Why Choose YatraPath?
+            </h2>
+            <p
+              style={{
+                fontSize: "18px",
+                color: "#666",
+                maxWidth: "600px",
+                margin: "auto",
+              }}
+            >
+              Trusted by thousands of happy travelers ✈️
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "40px",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <ul
+                style={{ listStyle: "none", paddingLeft: 0, lineHeight: "2" }}
+              >
+                <p>
+                  <li>✅ Easy and secure bookings</li>
+                </p>
+
+                <p>
+                  <li>✅ 24/7 customer support</li>{" "}
+                </p>
+                <p>
+                  <li>✅ Verified reviews and recommendations</li>{" "}
+                </p>
+                <p>
+                  <li>✅ Seamless itinerary planning</li>{" "}
+                </p>
+              </ul>
+            </div>
+            <img
+              src="https://img.freepik.com/free-vector/kathmandu-nepal-city-skyline-with-color-buildings-blue-sky-reflections-vector-illustration-business-travel-tourism-concept-with-historic-architecture-kathmandu-cityscape-with-landmarks_119523-6465.jpg?size=626&ext=jpg"
+              alt="Why Choose Us"
+              style={{
+                width: "100%",
+                borderRadius: "15px",
+                boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+              }}
+            />
+          </div>
+        </div>
+      </section>
       <section>
         <Destinations />
       </section>
-
       <section
         style={{ padding: "60px 190px 0px 0px", backgroundColor: "#ffffff" }}
       >
@@ -524,7 +514,6 @@ const Home = () => {
       </div>
       {/* ChatBot Component - Bottom Right */}
       <ChatBot />
-
       {/* WhatsApp Floating Icon - Above ChatBot */}
       <a
         href="https://chat.whatsapp.com/HCw1h4K2pUp6l1vSnj8GLH"
@@ -549,7 +538,6 @@ const Home = () => {
       >
         <i className="fab fa-whatsapp" style={{ fontSize: "28px" }}></i>
       </a>
-
       {/* Feedback Button - Top */}
       <button
         onClick={toggleFeedbackForm}
@@ -573,10 +561,8 @@ const Home = () => {
       >
         <i className="fas fa-comment-dots" style={{ fontSize: "24px" }}></i>
       </button>
-
       {/* Feedback Form Component */}
       <FeedbackForm isOpen={isFeedbackOpen} toggleForm={toggleFeedbackForm} />
-
       <Footer />
     </>
   );

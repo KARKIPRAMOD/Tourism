@@ -1,83 +1,72 @@
-import React from "react";
-import styleHome from "../style_sheets/Home.module.css";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
+import React, { useState } from "react";
+import styles from "../style_sheets/Destinations.module.css";
+
+const destinations = [
+  {
+    src: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp",
+    title: "Boat on Calm Water",
+  },
+  {
+    src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain1.webp",
+    title: "Wintry Mountain Landscape",
+  },
+  {
+    src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain2.webp",
+    title: "Cloud-Covered Mountains",
+  },
+  {
+    src: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(18).webp",
+    title: "Waves at Sea",
+  },
+  {
+    src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain3.webp",
+    title: "Yosemite National Park",
+  },
+];
 
 const Destinations = () => {
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
+  const [activeIndex, setActiveIndex] = useState(2); // Start from middle
+
+  const handleClick = (index) => {
+    setActiveIndex(index);
   };
 
-  const images = [
-    {
-      src: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(73).webp",
-      alt: "Boat on Calm Water",
-      description: "Boat on Calm Water",
-    },
-    {
-      src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain1.webp",
-      alt: "Wintry Mountain Landscape",
-      description: "Wintry Mountain Landscape",
-    },
-    {
-      src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain2.webp",
-      alt: "Mountains in the Clouds",
-      description: "Mountains in the Clouds",
-    },
-    {
-      src: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/Nature/4-col/img%20(18).webp",
-      alt: "Waves at Sea",
-      description: "Waves at Sea",
-    },
-    {
-      src: "https://mdbcdn.b-cdn.net/img/Photos/Vertical/mountain3.webp",
-      alt: "Yosemite National Park",
-      description: "Yosemite National Park",
-    },
-  ];
+  const getCardStyle = (index) => {
+    const position = index - activeIndex;
+
+    switch (position) {
+      case -2:
+        return `${styles.card} ${styles.left2}`;
+      case -1:
+        return `${styles.card} ${styles.left1}`;
+      case 0:
+        return `${styles.card} ${styles.center}`;
+      case 1:
+        return `${styles.card} ${styles.right1}`;
+      case 2:
+        return `${styles.card} ${styles.right2}`;
+      default:
+        return `${styles.card} ${styles.hidden}`;
+    }
+  };
 
   return (
-    <div style={{ padding: "100px 100px 20px 100px", cursor: "pointer" }}>
-      <p className={`text-center ${styleHome.destinationHeading}`}>
-        <span style={{ color: "#4468E2" }}>BEST</span> DESTINATIONS
-      </p>
-      <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={3000}>
-        {images.map((image, index) => (
-          <div key={index} className="px-2">
-            <img
-              src={image.src}
-              className="w-100 shadow-1-strong rounded"
-              alt={image.alt}
-              style={{ height: "300px", objectFit: "cover" }}
-            />
-            <div
-              style={{
-                fontWeight: "600",
-                fontFamily: "Poppins",
-                fontSize: "20px",
-                color: "#40525C",
-              }}
-            >
-              {image.description}
-            </div>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>
+        <span className={styles.highlight}>BEST</span> DESTINATIONS
+      </h2>
+      <div className={styles.carousel}>
+        {destinations.map((item, index) => (
+          <div
+            key={index}
+            className={getCardStyle(index)}
+            onClick={() => handleClick(index)}
+          >
+            <img src={item.src} alt={item.title} />
+            <p>{item.title}</p>
           </div>
         ))}
-      </Carousel>
+      </div>
     </div>
   );
 };
