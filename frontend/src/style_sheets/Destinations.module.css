@@ -25,8 +25,8 @@
 
 .card {
   position: absolute;
-  width: 380px;
-  height: 400px;
+  width: 400px;
+  height: 350px;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
