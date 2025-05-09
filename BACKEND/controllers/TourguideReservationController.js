@@ -67,19 +67,37 @@ exports.getUserReservations = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Fetch all reservations for the user, including unconfirmed ones
     const reservations = await TourguideReservation.find({
       user: userId,
-      isConfirmed: true, // Only show confirmed ones
     })
-      .populate("tourguide", "tourguide_name")
-      .sort({ startDate: 1 });
+      .populate("tourguide", "tourguide_name") // Populate tourguide details
+      .sort({ startDate: 1 }); // Sort by start date
 
     if (!reservations.length) {
-      return res
-        .status(404)
-        .json({ message: "No confirmed reservations found" });
+      return res.status(404).json({ message: "No reservations found" });
     }
 
+    res.status(200).json(reservations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.getAllReservations = async (req, res) => {
+  try {
+    // Fetch all reservations, sorted by start date
+    const reservations = await TourguideReservation.find({})
+      .populate("user", "fullName email") // Populating user details
+      .populate("tourguide", "tourguide_name") // Populating tourguide details
+      .sort({ startDate: 1 }); // Sorting by start date
+
+    if (!reservations.length) {
+      return res.status(404).json({ message: "No reservations found" });
+    }
+
+    // Return the list of all reservations
     res.status(200).json(reservations);
   } catch (err) {
     console.error(err);

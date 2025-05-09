@@ -4,10 +4,13 @@ const {
   reserveTourguide,
   confirmReservation,
   getUserReservations,
+  getAllReservations,
 } = require("../controllers/TourguideReservationController");
 
 // POST - Make a new reservation
 router.post("/reserve", reserveTourguide);
+
+router.get("/", getAllReservations);
 
 // PUT - Admin confirms a reservation
 router.put("/confirm/:reservationId", confirmReservation);
