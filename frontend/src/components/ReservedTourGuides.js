@@ -182,24 +182,7 @@ const ReservedTourGuides = ({ userId }) => {
                           }}
                         ></span>
                       ) : (
-                        <>
-                          <button
-                            onClick={() =>
-                              handleConfirmReservation(reservation._id)
-                            }
-                            style={editButtonStyle}
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleRejectReservation(reservation._id)
-                            }
-                            style={editButtonStyle}
-                          >
-                            Reject
-                          </button>
-                        </>
+                        <></>
                       )}
                     </div>
                   </div>
