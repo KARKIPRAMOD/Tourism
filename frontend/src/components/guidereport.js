@@ -4,7 +4,6 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styleHome from "../style_sheets/Home.module.css";
-import coverImg from "../img/Beach.jpg";
 
 const styles = {
   prettyGuideReportContainer: {

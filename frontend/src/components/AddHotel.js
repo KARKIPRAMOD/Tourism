@@ -1,18 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import styles from "../style_sheets/Add.module.css";
-import addImg from "../img/addImg.svg";
-
-import { BiMenu, BiLogOut } from "react-icons/bi";
-import { BsFillGridFill } from "react-icons/bs";
-import { FaHotel, FaBuilding, FaExternalLinkAlt } from "react-icons/fa";
-import { RiAdminFill } from "react-icons/ri";
-import { MdFamilyRestroom, MdMargin } from "react-icons/md";
-import { GiCarKey, GiDetour } from "react-icons/gi";
-import { GrUpdate } from "react-icons/gr";
-import { ImPrinter } from "react-icons/im";
-import photo from "../img/proflie.png";
+import "bootstrap/dist/css/bootstrap.min.css";
+import styles from "../style_sheets/All.module.css";
 
 export default function AddHotel() {
   const [name, setname] = useState("");
@@ -21,7 +11,6 @@ export default function AddHotel() {
   const [price, setprice] = useState("");
   const [no_of_rooms, setno_of_rooms] = useState("");
   const [description, setdescription] = useState("");
-
   const [photos, setPhotos] = useState([]);
 
   function sendData(e) {
@@ -34,7 +23,6 @@ export default function AddHotel() {
     formData.append("price", price);
     formData.append("no_of_rooms", no_of_rooms);
     formData.append("description", description);
-
     for (let i = 0; i < photos.length; i++) {
       formData.append("photos", photos[i]);
     }
@@ -51,9 +39,7 @@ export default function AddHotel() {
         setPhotos([]);
         setdescription("");
       })
-      .catch((err) => {
-        alert("Error adding hotel: " + err.message);
-      });
+      .catch((err) => alert("Error adding hotel: " + err.message));
   }
 
   return (
@@ -68,10 +54,10 @@ export default function AddHotel() {
             left: 0,
             height: "100vh",
             width: "240px",
-            backgroundColor: "#2c2c54", // Dark Purple background color
+            backgroundColor: "#2c2c54",
             zIndex: 1000,
-            borderRight: "2px solid #ddd", // Divider to match style
-            paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+            borderRight: "2px solid #ddd",
+            paddingTop: "20px",
           }}
         >
           <h3 className="text-center text-white mb-4">Admin Panel</h3>
@@ -117,8 +103,6 @@ export default function AddHotel() {
               </Link>
             </li>
           </ul>
-
-          {/* Logout Button */}
           <div className="mt-auto">
             <Link
               to="/home"
@@ -131,107 +115,179 @@ export default function AddHotel() {
       </div>
 
       {/* Main Content */}
-      <div className={styles.mainContent}>
-        <main className={styles.Main1}>
-          <section className={styles.recent}>
-            <div className={styles.activityCard}>
-              <div className={styles.container}>
-                <form className={styles.form1} onSubmit={sendData}>
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="text"
-                      value={name}
-                      className="form-control"
-                      placeholder="Enter name"
-                      onChange={(e) => setname(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="text"
-                      value={type}
-                      style={{ height: "50px" }}
-                      className="form-control"
-                      placeholder="Enter Hotel Type"
-                      onChange={(e) => settype(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="text"
-                      value={location}
-                      style={{ height: "50px" }}
-                      className="form-control"
-                      placeholder="Enter Location"
-                      onChange={(e) => setlocation(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="number"
-                      value={price}
-                      style={{ height: "50px" }}
-                      className="form-control"
-                      placeholder="Enter Price"
-                      onChange={(e) => setprice(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="number"
-                      value={no_of_rooms}
-                      style={{ height: "50px" }}
-                      className="form-control"
-                      placeholder="Enter No. of Rooms"
-                      onChange={(e) => setno_of_rooms(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <textarea
-                      value={description}
-                      rows="3"
-                      className="form-control"
-                      placeholder="Enter Description"
-                      onChange={(e) => setdescription(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <input
-                      type="file"
-                      multiple
-                      className="form-control"
-                      onChange={(e) => setPhotos(e.target.files)}
-                    />
-                  </div>
-
-                  <button type="submit" className={styles.subBtn}>
-                    Submit
-                  </button>
-                </form>
+      <div className="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
+        <div className="container mt-5">
+          <h2
+            className="mb-4"
+            style={{
+              color: "#2c2c54",
+              fontWeight: "bold",
+              fontSize: "40px",
+            }}
+          >
+            Add Hotel Details
+          </h2>
+          <form
+            onSubmit={sendData}
+            className="border rounded p-4 shadow-sm bg-white"
+          >
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  Hotel Name*
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  Hotel Type*
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={type}
+                  onChange={(e) => settype(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  Location*
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={location}
+                  onChange={(e) => setlocation(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                  s
+                >
+                  Price (NRP)*
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={price}
+                  onChange={(e) => setprice(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  No. of Rooms*
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={no_of_rooms}
+                  onChange={(e) => setno_of_rooms(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  Upload Photos
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  multiple
+                  onChange={(e) => setPhotos(e.target.files)}
+                />
+              </div>
+              <div className="col-12">
+                <label
+                  className="form-label"
+                  style={{
+                    color: "purple",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  Hotel Description
+                </label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  value={description}
+                  onChange={(e) => setdescription(e.target.value)}
+                  required
+                ></textarea>
               </div>
             </div>
-
-            <div className={styles.summary1}>
-              <img
-                src={addImg}
-                alt="Add illustration"
-                className={styles.addImg}
-              />
+            <div className="mt-4 d-flex justify-content-between">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{
+                  fontSize: "15px",
+                }}
+              >
+                Save Hotel
+              </button>
+              <button
+                type="reset"
+                className="btn btn-outline-danger"
+                style={{
+                  fontSize: "15px",
+                }}
+              >
+                Clear
+              </button>
             </div>
-          </section>
-        </main>
+          </form>
+        </div>
       </div>
     </div>
   );

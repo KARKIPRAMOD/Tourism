@@ -181,7 +181,12 @@ function AddTourguide() {
         }}
       >
         <form onSubmit={sendData} encType="multipart/form-data">
-          <div className="text-center mb-4">
+          <div
+            className="text-center mb-4"
+            style={{
+              color: "#2c2c54",
+            }}
+          >
             <h2>
               <strong>Add Tourguide Details</strong>
             </h2>

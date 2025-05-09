@@ -1,34 +1,30 @@
 import React, { Component } from "react";
 import axios from "axios";
-import WhatsAppContact from "./WhatsAppContact"; // Assuming this is a component you want to include
-import { Link, useHistory, useLocation, Switch, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default class AllPacks extends Component {
   constructor(props) {
     super(props);
     this.state = {
       packages: [],
+      searchQuery: "",
       userRole: localStorage.getItem("userRole") || "guest",
       isAuthorized: false,
     };
   }
 
   componentDidMount() {
-    // Check if user is authorized (admin or tour manager)
     const userRole = localStorage.getItem("userRole");
     const isAuthorized = userRole === "admin" || userRole === "tourmanager";
-
     this.setState({ isAuthorized }, () => {
       if (this.state.isAuthorized) {
         this.retrievePackages();
       } else {
-        // Redirect unauthorized users
         window.location.href = "/user/login";
       }
     });
   }
 
-  // Function to fetch the packages from the API
   retrievePackages() {
     axios
       .get("http://localhost:8070/package/all")
@@ -37,7 +33,6 @@ export default class AllPacks extends Component {
           this.setState({
             packages: res.data.existingPackages,
           });
-          console.log(this.state.packages);
         } else {
           console.log("Failed to fetch packages");
         }
@@ -47,42 +42,33 @@ export default class AllPacks extends Component {
       });
   }
 
-  // Function to delete a package
-  onDelete(id) {
-    fetch(`http://localhost:8070/package/delete/${id}`, {
-      method: "DELETE",
-    }).then((result) => {
-      result.json().then((resp) => {
-        console.warn(resp);
-        alert("Deleted Successfully");
-        this.retrievePackages(); // Refresh the list after deletion.
-      });
-    });
-  }
-
-  // Function to filter the packages based on search term
-  filterContent(packages, searchTerm) {
-    const results = packages.filter((pkg) =>
-      pkg.packId.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    this.setState({ packages: results });
-    console.log("Filtered Packages:", results);
-  }
-
-  // Function to handle text input for search
   handleTextSearch = (e) => {
     const searchTerm = e.currentTarget.value;
     axios
       .get("http://localhost:8070/package/all")
       .then((res) => {
         if (res.data.success) {
-          this.filterContent(res.data.existingPackages, searchTerm);
+          const filteredPackages = res.data.existingPackages.filter((pkg) =>
+            pkg.packId.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          this.setState({ packages: filteredPackages });
         }
       })
       .catch((error) => {
         console.error("Error during search:", error);
       });
   };
+
+  onDelete(id) {
+    fetch(`http://localhost:8070/package/delete/${id}`, {
+      method: "DELETE",
+    }).then((result) => {
+      result.json().then((resp) => {
+        alert("Deleted Successfully");
+        this.retrievePackages();
+      });
+    });
+  }
 
   render() {
     if (!this.state.isAuthorized) {
@@ -101,7 +87,8 @@ export default class AllPacks extends Component {
     }
 
     return (
-      <div className="container bg-white text-black p-3 mb-2">
+      <div className="container-fluid bg-white text-black p-0 m-0">
+        {/* Sidebar */}
         <div
           className="sidebar"
           style={{
@@ -110,10 +97,10 @@ export default class AllPacks extends Component {
             left: 0,
             height: "100vh",
             width: "240px",
-            backgroundColor: "#2c2c54", // Dark Purple background color
+            backgroundColor: "#2c2c54",
             zIndex: 1000,
-            borderRight: "2px solid #ddd", // Divider to match style
-            paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+            borderRight: "2px solid #ddd",
+            paddingTop: "20px",
           }}
         >
           <h3 className="text-center text-white mb-4">Admin Panel</h3>
@@ -128,7 +115,7 @@ export default class AllPacks extends Component {
             </li>
             <li>
               <Link
-                to="/all/tourguides"
+                to="/adminTourguide"
                 className="d-flex align-items-center text-white px-3 py-2"
               >
                 <i className="bi bi-person-lines-fill me-2"></i> Tour Guides
@@ -170,80 +157,103 @@ export default class AllPacks extends Component {
             </Link>
           </div>
         </div>
-        <div className="row">
-          <h2 className="text-center">
-            <strong>Manage Package Details</strong>
-          </h2>
-          <div className="col-lg-9 mt-2 mb-2"></div>
-          <div className="col-lg-3 mt-2 mb-2 text-center">
-            <input
-              className="form-control"
-              type="search"
-              placeholder="Search"
-              name="searchTerm"
-              onChange={this.handleTextSearch}
-            />
-          </div>
-          <table className="table table-hover" style={{ marginTop: "40px" }}>
-            <thead>
-              <tr>
-                <th scope="col">Count</th>
-                <th scope="col">Pack_Name</th>
-                <th scope="col">Pack_ID</th>
-                <th scope="col">Destination</th>
-                <th scope="col">Num_Of_Days</th>
-                <th scope="col">Num_Of_Passengers</th>
-                <th scope="col">Hotel/Other</th>
-                <th scope="col">Transport</th>
-                <th scope="col">Tourguide</th>
-                <th scope="col">Total_Price(Rs)</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.packages.length > 0 ? (
-                this.state.packages.map((pkg, index) => (
-                  <tr key={pkg._id}>
-                    <th scope="row">{index + 1}</th>
-                    <td>{pkg.packName}</td>{" "}
-                    {/* Changed from pkg.packName to pkg.name */}
-                    <td>{pkg.packID}</td>{" "}
-                    {/* Changed from pkg.packID to pkg.packId */}
-                    <td>{pkg.Destination}</td>{" "}
-                    {/* Changed from pkg.Destination to pkg.destination */}
-                    <td>{pkg.NumOfDays}</td>{" "}
-                    {/* Changed from pkg.NumOfDays to pkg.numofdays */}
-                    <td>{pkg.NumOfPassen}</td>{" "}
-                    {/* Changed from pkg.NumOfPassen to pkg.numofpassengers */}
-                    <td>{pkg.Hotel}</td>{" "}
-                    {/* Changed from pkg.Hotel to pkg.hotel */}
-                    <td>{pkg.Transport}</td>{" "}
-                    {/* Changed from pkg.Transport to pkg.transport */}
-                    <td>{pkg.TourGuide}</td>{" "}
-                    {/* Changed from pkg.TourGuide to pkg.tourguide */}
-                    <td>{pkg.TotPrice}</td>{" "}
-                    {/* Changed from pkg.TotPrice to pkg.totalprice */}
-                    <td>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => this.onDelete(pkg._id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+
+        {/* Main Content */}
+        <div
+          className="ms-auto"
+          style={{
+            marginLeft: "240px",
+            padding: "20px",
+            width: "calc(100% - 240px)",
+            boxSizing: "border-box",
+          }}
+        >
+          <main className="mt-5">
+            <h2 className="text-center">
+              <strong>Manage Package Details</strong>
+            </h2>
+
+            {/* Search and Filter */}
+            <div className="d-flex justify-content-between align-items-center mb-3 px-3">
+              <input
+                className="form-control w-50"
+                type="search"
+                placeholder="Search"
+                value={this.state.searchQuery}
+                onChange={this.handleTextSearch}
+              />
+              <div className="d-flex gap-2">
+                <select className="form-select">
+                  <option>Filter by</option>
+                  <option>Type</option>
+                  <option>Location</option>
+                </select>
+                <select className="form-select">
+                  <option>Sort by</option>
+                  <option>Name</option>
+                  <option>Price</option>
+                  <option>Rooms</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Package Table */}
+            <div className="table-responsive">
+              <table
+                className="table table-hover"
+                style={{ marginTop: "40px", tableLayout: "auto" }}
+              >
+                <thead className="table-dark">
+                  <tr>
+                    <th scope="col">Count</th>
+                    <th scope="col">Pack Name</th>
+                    <th scope="col">Pack ID</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Days</th>
+                    <th scope="col">Passengers</th>
+                    <th scope="col">Hotel/Other</th>
+                    <th scope="col">Transport</th>
+                    <th scope="col">Tourguide</th>
+                    <th scope="col">Total Price (Rs)</th>
+                    <th scope="col">Actions</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="11" style={{ textAlign: "center" }}>
-                    No packages found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {this.state.packages.length > 0 ? (
+                    this.state.packages.map((pkg, index) => (
+                      <tr key={pkg._id}>
+                        <td>{index + 1}</td>
+                        <td>{pkg.packName}</td>
+                        <td>{pkg.packID}</td>
+                        <td>{pkg.Destination}</td>
+                        <td>{pkg.NumOfDays}</td>
+                        <td>{pkg.NumOfPassen}</td>
+                        <td>{pkg.Hotel}</td>
+                        <td>{pkg.Transport}</td>
+                        <td>{pkg.TourGuide}</td>
+                        <td>{pkg.TotPrice}</td>
+                        <td>
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => this.onDelete(pkg._id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="11" style={{ textAlign: "center" }}>
+                        No packages found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </main>
         </div>
-        {/* WhatsApp Contact */}
       </div>
     );
   }

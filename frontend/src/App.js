@@ -65,7 +65,7 @@ import Paragliding from "./components/Paragliding";
 import HotelReservation from "./components/HotelReservation";
 import ReservedPackages from "./components/ReservedPackages";
 import ReservedHotel from "./components/ReservedHotel";
-import AdminGuideReport from "./components/guidereport1";
+import TourGuideConfirmation from "./components/TourGuideConfirmation";
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
@@ -275,7 +275,7 @@ const App = () => {
             <Route path="/tour-guide-faq" component={TourGuideFAQ} />
             <Route path="/tour-updates" component={TourUpdates} />
 
-            <Route path="/adminTourguide" component={AdminGuideReport} />
+            <Route path="/adminTourguide" component={TourGuideConfirmation} />
 
             {/* Admin Route */}
             <Route

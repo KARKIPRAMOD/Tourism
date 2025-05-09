@@ -20,13 +20,13 @@ function AdminDashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       setDateTime(new Date());
-    }, 1000); // Update every second
+    }, 1000);
 
-    return () => clearInterval(interval); // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
-  const formattedDate = dateTime.toLocaleDateString(); // Format date (e.g., 4/10/2025)
-  const formattedTime = dateTime.toLocaleTimeString(); // Format time (e.g., 14:30:45)
+  const formattedDate = dateTime.toLocaleDateString();
+  const formattedTime = dateTime.toLocaleTimeString();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -42,8 +42,11 @@ function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("userRole");
-    history.push("/home");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
+    window.location = "/home";
   };
+
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
@@ -94,9 +97,9 @@ function AdminDashboard() {
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem("token"); // Remove the token from local storage
-    localStorage.removeItem("userRole"); // Remove the user role
-    history.push("/home"); // Redirect to home page after logout
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    history.push("/home");
   };
 
   if (loading) {
@@ -136,10 +139,10 @@ function AdminDashboard() {
             left: 0,
             height: "100vh",
             width: "240px",
-            backgroundColor: "#2c2c54", // Dark Purple background color
+            backgroundColor: "#2c2c54",
             zIndex: 1000,
-            borderRight: "2px solid #ddd", // Divider to match style
-            paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+            borderRight: "2px solid #ddd",
+            paddingTop: "20px",
           }}
         >
           <h3 className="text-center text-white mb-4">Admin Panel</h3>
@@ -201,7 +204,7 @@ function AdminDashboard() {
         {/* Admin Dashboard Main Content */}
         <div
           className="col-md-9 col-lg-10 ms-auto"
-          style={{ marginLeft: "240px" }} // Adjust to prevent overlap
+          style={{ marginLeft: "240px" }}
         >
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="h2">Admin Dashboard</h1>
@@ -238,6 +241,16 @@ function AdminDashboard() {
                   </Link>
                 </div>
               </div>
+              <div
+                className="card text-white"
+                style={{ backgroundColor: "#3f51b5", marginTop: "10px" }}
+              >
+                <div className="card-footer">
+                  <Link to="/add/tourguide" className="text-white">
+                    Manage Tour Guides
+                  </Link>
+                </div>
+              </div>
             </div>
 
             <div className="col-md-4 col-lg-3">
@@ -257,6 +270,16 @@ function AdminDashboard() {
                   </Link>
                 </div>
               </div>
+              <div
+                className="card text-white"
+                style={{ backgroundColor: "#4caf50", marginTop: "10px" }}
+              >
+                <div className="card-footer">
+                  <Link to="/all/hotel" className="text-white">
+                    Manage Hotels
+                  </Link>
+                </div>
+              </div>
             </div>
 
             <div className="col-md-4 col-lg-3">
@@ -273,6 +296,16 @@ function AdminDashboard() {
                 <div className="card-footer">
                   <Link to="/add/package" className="text-white">
                     Add Packages
+                  </Link>
+                </div>
+              </div>
+              <div
+                className="card text-white"
+                style={{ backgroundColor: "#ff9800", marginTop: "10px" }}
+              >
+                <div className="card-footer">
+                  <Link to="/manage/AllPacks" className="text-white">
+                    Manage Packages
                   </Link>
                 </div>
               </div>

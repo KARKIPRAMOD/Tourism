@@ -1,45 +1,27 @@
 import React, { Component } from "react";
 import axios from "axios";
-
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../style_sheets/All.module.css";
 
-import addImg from "../img/addImg.svg";
-import { BiMenu, BiLogOut } from "react-icons/bi";
-import { BsFillGridFill } from "react-icons/bs";
-import { FaHotel } from "react-icons/fa";
-
-import { RiAdminFill } from "react-icons/ri";
-
-import { MdFamilyRestroom } from "react-icons/md";
-
-import { GiCarKey, GiDetour } from "react-icons/gi";
-import { FaBuilding } from "react-icons/fa";
-import { GrUpdate } from "react-icons/gr";
-import { ImPrinter } from "react-icons/im";
-import { FaExternalLinkAlt } from "react-icons/fa";
-import photo from "../img/proflie.png";
-
 export default class AllHotel extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       hotels: [],
+      searchQuery: "",
+      sortKey: "",
     };
   }
+
   componentDidMount() {
     this.retriveHotels();
   }
+
   retriveHotels() {
     axios.get("http://localhost:8070/hotel/all").then((res) => {
       if (res.data.success) {
-        this.setState({
-          hotels: res.data.existingHotels,
-        });
-
-        console.log(this.state.hotels);
+        this.setState({ hotels: res.data.existingHotels });
       }
     });
   }
@@ -49,18 +31,22 @@ export default class AllHotel extends Component {
       method: `DELETE`,
     }).then((result) => {
       result.json().then((resp) => {
-        console.warn(resp);
-        alert("Deleted Succsessfull");
+        alert("Deleted Successfully");
         this.retriveHotels();
       });
     });
   }
 
   render() {
+    const { hotels, searchQuery } = this.state;
+    const filteredHotels = hotels.filter((hotel) =>
+      hotel.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
       <div className={styles.body}>
-        <div className={styles.mainContent}>
-          {/* sidebar */}
+        <div className="row">
+          {/* Sidebar */}
           <div className="col-md-3 col-lg-2">
             <div
               className="sidebar"
@@ -70,10 +56,10 @@ export default class AllHotel extends Component {
                 left: 0,
                 height: "100vh",
                 width: "240px",
-                backgroundColor: "#2c2c54", // Dark Purple background color
+                backgroundColor: "#2c2c54",
                 zIndex: 1000,
-                borderRight: "2px solid #ddd", // Divider to match style
-                paddingTop: "20px", // Adjust padding to ensure it's spaced properly
+                borderRight: "2px solid #ddd",
+                paddingTop: "20px",
               }}
             >
               <h3 className="text-center text-white mb-4">Admin Panel</h3>
@@ -119,8 +105,6 @@ export default class AllHotel extends Component {
                   </Link>
                 </li>
               </ul>
-
-              {/* Logout Button */}
               <div className="mt-auto">
                 <Link
                   to="/home"
@@ -131,117 +115,105 @@ export default class AllHotel extends Component {
               </div>
             </div>
           </div>
-          {/* main box */}
-          <main className={styles.Main1}>
-            <h2>Over View</h2>
-            <div className={styles.dashboardCard}>
-              <div className={styles.cardSingle}>
-                <div className={styles.cardBody}>
-                  <span className={styles.boxicon}>
-                    <Link to="/add/hotel" className={styles.sidelinks}>
-                      <i className={styles.logo3}>
-                        <FaBuilding />
-                      </i>
-                      <span className={styles.links_name}>
-                        Add Hotel Details
-                      </span>
-                    </Link>
-                  </span>
+
+          {/* Hotels Table */}
+          <div
+            className="col-md-9 col-lg-10 ms-auto"
+            style={{ marginLeft: "240px" }}
+          >
+            <main className={styles.Main1}>
+              <h2 className="mb-4 text-center">All Hotel Details</h2>
+
+              {/* Filter and Search Row */}
+              <div className="d-flex justify-content-between align-items-center mb-4 px-3">
+                <input
+                  type="text"
+                  className="form-control me-2"
+                  style={{ maxWidth: "300px" }}
+                  placeholder="Search a hotel"
+                  value={this.state.searchQuery}
+                  onChange={(e) =>
+                    this.setState({ searchQuery: e.target.value })
+                  }
+                />
+                <div className="d-flex align-items-center gap-2">
+                  <select className="form-select">
+                    <option>Filter by</option>
+                    <option>Type</option>
+                    <option>Location</option>
+                  </select>
+                  <select className="form-select">
+                    <option>Sort by</option>
+                    <option>Name</option>
+                    <option>Price</option>
+                    <option>Rooms</option>
+                  </select>
+                  <button className="btn btn-outline-secondary">
+                    <i className="bi bi-sliders"></i>
+                  </button>
                 </div>
               </div>
 
-              <div className={styles.cardSingle}>
-                <div className={styles.cardBody}>
-                  <span className={styles.boxicon}>
-                    <Link to="/print/hotel" className={styles.sidelinks}>
-                      <i className={styles.logo3}>
-                        <ImPrinter />
-                      </i>
-                      <span className={styles.links_name}>
-                        Print Hotel Details
-                      </span>
-                    </Link>
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.cardSingle}>
-                <div className={styles.cardBody}>
-                  <span className={styles.boxicon}>
-                    <GiCarKey />
-                  </span>
-                  <div className={styles.cardname}>
-                    <h5>Avalable Rooms</h5>
-                    <h4>516</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* table */}
-            <div class={`text-center ${styles.table_responsive}`}>
-              <font
-                face="Comic sans MS"
-                size="6"
-                class="pb-1  "
-                style={{ fontFamily: "sans-serif" }}
-              >
-                {" "}
-                <strong>All hotels Details </strong>{" "}
-              </font>
-
-              <section
-                class="p-3"
-                style={{ backgroundColor: "#fff", width: "1500px" }}
-              >
-                <div className="table-responsive">
-                  <table className={styles.content_table}>
-                    <thead className={styles.dark}>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Hotel Name</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">No Of Rooms</th>
-                        <th scope="col">Update</th>
-                        <th scope="col">Delete</th>
+              <div className="table-responsive px-3">
+                <table className="table align-middle">
+                  <thead
+                    style={{
+                      backgroundColor: "#f5f6fa",
+                      color: "purple",
+                      fontWeight: "bold",
+                      fontSize: "20px",
+                    }}
+                  >
+                    <tr>
+                      <th>S.N.</th>
+                      <th>Hotel Name</th>
+                      <th>Type</th>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Rooms</th>
+                      <th>Update</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredHotels.map((hotel, index) => (
+                      <tr
+                        key={hotel._id}
+                        style={{
+                          backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
+                        }}
+                      >
+                        <td>{index + 1}</td>
+                        <td>
+                          <strong>{hotel.name}</strong>
+                        </td>
+                        <td>{hotel.type}</td>
+                        <td>{hotel.location}</td>
+                        <td>${hotel.price}</td>
+                        <td>{hotel.no_of_rooms} rooms</td>
+                        <td>
+                          <Link
+                            to={`/update/hotel/${hotel._id}`}
+                            className="btn btn-outline-primary btn-sm"
+                          >
+                            <i className="bi bi-pencil-square"></i>
+                          </Link>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => this.onDelete(hotel._id)}
+                            className="btn btn-outline-danger btn-sm"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-
-                    <tbody>
-                      {this.state.hotels.map((hotels, index) => (
-                        <tr>
-                          <td scope="row">{index + 1}</td>
-                          <td>{hotels.name}</td>
-                          <td>{hotels.type}</td>
-                          <td>{hotels.location}</td>
-                          <td>{hotels.price}</td>
-                          <td>{hotels.no_of_rooms}</td>
-
-                          <td>
-                            <Link
-                              to={`/update/hotel/${hotels._id}`}
-                              className={styles.btn_table}
-                            >
-                              Update
-                            </Link>
-                          </td>
-                          <td>
-                            <button
-                              class={styles.btn_table1}
-                              onClick={() => this.onDelete(hotels._id)}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            </div>
-          </main>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     );
