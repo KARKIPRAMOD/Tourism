@@ -66,7 +66,7 @@ exports.updateHotel = async (req, res) => {
     type,
     location,
     price,
-    no_of_rooms,
+    no_of_rooms, // Ensure this is updated correctly
     description,
   };
 
@@ -95,6 +95,7 @@ exports.updateHotel = async (req, res) => {
       error: err.message,
     });
   }
+
 };
 
 // Delete hotel

@@ -347,6 +347,10 @@ export default class GuideReport extends Component {
 
                     <p>Rs. {tourguide.amount}</p>
 
+                    <p>{tourguide.description}</p>
+
+                    <p>REserved For: </p>
+
                     {/* CTA Button */}
                     <button
                       onClick={() => this.openModal(tourguide)}
