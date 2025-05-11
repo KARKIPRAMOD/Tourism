@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ProfileSidebar from "./Profile"; // Import the sidebar that contains user profile
+import ProfileSidebar from "./Profile";
 import { Link } from "react-router-dom";
 
 const ReservedTourGuides = ({ userId }) => {
@@ -22,12 +22,9 @@ const ReservedTourGuides = ({ userId }) => {
       });
 
     axios
-      .get(
-        `http://localhost:8070/tourguideReservation/reservedTourGuides/${userId}`
-      )
+      .get(`http://localhost:8070/tourguideReservation/reservedTourGuides/${userId}`)
       .then((response) => {
         const reservations = response.data;
-        console.log(reservations);
         setReservations(reservations);
         setLoading(false);
 
@@ -64,48 +61,8 @@ const ReservedTourGuides = ({ userId }) => {
     return <div>You haven't logged in to your account.</div>;
   }
 
-  const handleConfirmReservation = (reservationId) => {
-    axios
-      .put(
-        `http://localhost:8070/tourguideReservation/confirm/${reservationId}`
-      )
-      .then((response) => {
-        alert("Reservation confirmed!");
-        setReservations(
-          reservations.map((reservation) =>
-            reservation._id === reservationId
-              ? { ...reservation, isConfirmed: true }
-              : reservation
-          )
-        );
-      })
-      .catch((error) => {
-        alert("Error confirming reservation.");
-        console.error("Error confirming reservation:", error);
-      });
-  };
-
-  const handleRejectReservation = (reservationId) => {
-    axios
-      .delete(
-        `http://localhost:8070/tourguideReservation/delete/${reservationId}`
-      )
-      .then((response) => {
-        alert("Reservation rejected!");
-        setReservations(
-          reservations.filter(
-            (reservation) => reservation._id !== reservationId
-          )
-        );
-      })
-      .catch((error) => {
-        alert("Error rejecting reservation.");
-        console.error("Error rejecting reservation:", error);
-      });
-  };
-
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={{ display: "flex", minHeight: "100vh", fontFamily: "Arial, sans-serif" }}>
       <ProfileSidebar userData={userData} userId={userId} />
       <main style={{ flexGrow: 1, padding: "20px" }}>
         {error && <div className="alert alert-danger">{error}</div>}
@@ -115,7 +72,7 @@ const ReservedTourGuides = ({ userId }) => {
           <p>No reserved tour guides found.</p>
         ) : (
           <div>
-            <h3>Your Reserved Tour Guides</h3>
+            <h2 style={{ marginBottom: "20px", color: "#2c3e50" }}>Your Reserved Tour Guides</h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {reservations.map((reservation) => {
                 const tourGuideId =
@@ -128,18 +85,20 @@ const ReservedTourGuides = ({ userId }) => {
                     key={reservation._id}
                     style={{
                       width: "300px",
-                      borderRadius: "12px",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
                       overflow: "hidden",
                       backgroundColor: "#fff",
+                      transition: "transform 0.3s",
                     }}
                   >
                     <img
                       src={
-                        `http://localhost:8070/uploads/tourguide_pictures/${guide?.guide.image}` ||
-                        "https://media.istockphoto.com/id/1369171053/photo/group-of-sporty-people-walks-in-mountains-at-sunset-with-backpacks.jpg?s=612x612&w=0&k=20&c=ajQuWt2YRWd0FPaCpdKz2Tt3WX2NI1ddeZjf8HIxlwU="
+                        guide?.guide?.image
+                          ? `http://localhost:8070/uploads/tourguide_pictures/${guide.guide.image}`
+                          : "https://via.placeholder.com/300x200"
                       }
-                      alt={guide?.fullName}
+                      alt={guide?.guide?.fullName}
                       style={{
                         width: "100%",
                         height: "200px",
@@ -147,43 +106,43 @@ const ReservedTourGuides = ({ userId }) => {
                       }}
                     />
                     <div style={{ padding: "16px" }}>
-                      <h5 style={{ margin: 0 }}>
-                        {guide?.guide?.fullName || "Loading..."}
-                      </h5>
-                      <p style={{ color: "#666", fontSize: "14px" }}>
-                        Age: {guide?.guide?.age || "Loading..."} <br />
-                        Date:{" "}
-                        {new Date(
-                          reservation.startDate
-                        ).toLocaleDateString()} -{" "}
-                        {new Date(reservation.endDate).toLocaleDateString()}
-                      </p>
-                      <h5 style={{ margin: 0 }}>
-                        {reservation.isConfirmed ? "Confirmed" : "Unconfirmed"}
-                      </h5>
-
-                      <div
+                      <h4
                         style={{
-                          display: "flex",
-                          gap: "8px",
-                          flexWrap: "wrap",
+                          margin: "0 0 10px 0",
+                          fontSize: "18px",
+                          fontWeight: "600",
+                          color: "#2e2e2e",
+                          textTransform: "capitalize",
                         }}
                       >
-                        <span style={tagStyle("orange")}>Family</span>
-                        <span style={tagStyle("green")}>
-                          {guide?.location || "Location"}
-                        </span>
+                        {guide?.guide?.fullName || "Loading..."}
+                      </h4>
+                      <p style={{ color: "#555", fontSize: "14px", marginBottom: "8px" }}>
+                        <strong>Age:</strong> {guide?.guide?.age || "N/A"}
+                      </p>
+                      <p style={{ color: "#777", fontSize: "13px", lineHeight: "1.4" }}>
+                        <strong>From:</strong> {new Date(reservation.startDate).toLocaleDateString()} <br />
+                        <strong>To:</strong> {new Date(reservation.endDate).toLocaleDateString()}
+                      </p>
+                      <p>For : NRP <strong> {guide?.guide?.amount } /Day</strong></p>
+                      <div style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}>
+                      <div
+                        style={{
+                          display: "inline-block",
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          backgroundColor: reservation.isConfirmed ? "#e6fcf5" : "#fff4e6",
+                          color: reservation.isConfirmed ? "#0ca678" : "#e8590c",
+                          fontWeight: "600",
+                          fontSize: "13px",
+                          border: `1px solid ${reservation.isConfirmed ? "#96f2d7" : "#ffc078"}`,
+                        }}
+                      >
+                        {reservation.isConfirmed ? "✔ Confirmed" : "⏳ Unconfirmed"}
                       </div>
-                      {reservation.isConfirmed ? (
-                        <span
-                          style={{
-                            color: "green",
-                            fontWeight: "bold",
-                          }}
-                        ></span>
-                      ) : (
-                        <></>
-                      )}
+                    </div>
+
+
                     </div>
                   </div>
                 );
@@ -194,24 +153,6 @@ const ReservedTourGuides = ({ userId }) => {
       </main>
     </div>
   );
-};
-
-const tagStyle = (color) => ({
-  backgroundColor: color === "orange" ? "#FFE8CC" : "#D3F9D8",
-  color: color === "orange" ? "#FF922B" : "#37B24D",
-  fontSize: "12px",
-  padding: "2px 8px",
-  borderRadius: "8px",
-});
-
-const editButtonStyle = {
-  marginTop: "10px",
-  padding: "6px 12px",
-  backgroundColor: "#F1F3F5",
-  border: "1px solid #CED4DA",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
 };
 
 export default ReservedTourGuides;

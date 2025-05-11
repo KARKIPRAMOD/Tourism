@@ -54,3 +54,18 @@ main {
     height: 120px;
   }
 }
+.nocard img {
+  max-height: 250px;
+}
+
+.btn_update {
+  background-color: #007bff;
+  color: white;
+  border-radius: 30px;
+  transition: background 0.3s ease;
+  text-decoration: none;
+}
+
+.btn_update:hover {
+  background-color: #0056b3;
+}

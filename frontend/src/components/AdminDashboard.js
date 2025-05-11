@@ -165,7 +165,7 @@ function AdminDashboard() {
             </li>
             <li>
               <Link
-                to="/all/hotel"
+                to="/adminHotel"
                 className="d-flex align-items-center text-white px-3 py-2"
               >
                 <i className="bi bi-building me-2"></i> Hotels
@@ -173,7 +173,7 @@ function AdminDashboard() {
             </li>
             <li>
               <Link
-                to="/manage/AllPacks"
+                to="/adminPackage"
                 className="d-flex align-items-center text-white px-3 py-2"
               >
                 <i className="bi bi-card-list me-2"></i> Packages
@@ -246,7 +246,7 @@ function AdminDashboard() {
                 style={{ backgroundColor: "#3f51b5", marginTop: "10px" }}
               >
                 <div className="card-footer">
-                  <Link to="/add/tourguide" className="text-white">
+                  <Link to="/all/tourguide" className="text-white">
                     Manage Tour Guides
                   </Link>
                 </div>

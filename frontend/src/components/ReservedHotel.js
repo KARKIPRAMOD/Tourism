@@ -13,17 +13,20 @@ const ReservedHotel = ({ userId }) => {
   useEffect(() => {
     if (!userId) return;
 
+    // Fetch user data
     axios
       .get(`http://localhost:8070/user/${userId}`)
       .then((res) => setUserData(res.data.user))
       .catch(() => setError("Failed to load user data"));
 
+    // Fetch reservations
     axios
       .get(`http://localhost:8070/HotelReservation/reservedHotels/${userId}`)
       .then((res) => {
         const reservations = res.data.reservations || [];
         setReservations(reservations);
 
+        // Fetch hotel details for each reservation
         const hotelRequests = reservations.map((reservation) => {
           const hotelId =
             typeof reservation.hotel === "object"
@@ -89,12 +92,20 @@ const ReservedHotel = ({ userId }) => {
                 }
 
                 const hotel = hotels[hotelId];
-                console.log(hotel);
+                const isConfirmed = reservation.isConfirmed; // ✅ Defined here
+
                 return (
                   <HotelCard
                     key={reservation._id}
                     hotel={hotel}
                     reservation={reservation}
+                    showCancel={!isConfirmed}
+                    buttonStyle={{
+                      backgroundColor: isConfirmed ? "green" : "red",
+                      cursor: isConfirmed ? "not-allowed" : "pointer",
+                    }}
+                    buttonText={isConfirmed ? "Confirmed" : "Not Confirmed"}
+                    buttonDisabled={isConfirmed}
                   />
                 );
               })}

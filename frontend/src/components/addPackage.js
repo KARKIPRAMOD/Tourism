@@ -16,7 +16,12 @@ function AddPackage() {
   const [tourGuide, setGuide] = useState("");
   const [TotPrice, setPrice] = useState("");
   const [images, setImages] = useState([]); // Change state to handle multiple images
-
+  const handleLogout = () => {
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      window.location = "/home";
+  };
   function handleImageChange(e) {
     setImages(e.target.files); // Store all selected files in the state
   }
@@ -35,7 +40,7 @@ function AddPackage() {
       tourGuide,
       TotPrice,
     };
-
+ 
     const formData = new FormData();
     formData.append("packName", packName);
     formData.append("packID", packID);
@@ -103,7 +108,7 @@ function AddPackage() {
           </li>
           <li>
             <Link
-              to="/all/hotel"
+              to="/adminHotel"
               className="d-flex align-items-center text-white px-3 py-2"
             >
               <i className="bi bi-building me-2"></i> Hotels
@@ -111,7 +116,7 @@ function AddPackage() {
           </li>
           <li>
             <Link
-              to="/manage/AllPacks"
+              to="/adminPackage"
               className="d-flex align-items-center text-white px-3 py-2"
             >
               <i className="bi bi-card-list me-2"></i> Packages
@@ -129,12 +134,13 @@ function AddPackage() {
 
         {/* Logout Button */}
         <div className="mt-auto">
-          <Link
-            to="/home"
-            className="d-flex align-items-center text-white px-3 py-2"
-          >
-            <i className="bi bi-box-arrow-right me-2"></i> Logout
-          </Link>
+         <div
+                onClick={handleLogout}
+                className="d-flex align-items-center text-white px-3 py-2"
+                style={{ cursor: "pointer" }}
+              >
+                <i className="bi bi-box-arrow-right me-2"></i> Logout
+              </div>
         </div>
       </div>
 

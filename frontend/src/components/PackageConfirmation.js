@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const TourGuideReservationConfirmation = () => {
+const PackageConfirmation = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     axios
-      .get("http://localhost:8070/tourguideReservation/")
+      .get("http://localhost:8070/reservePackageRouter/") 
       .then((response) => {
-        setReservations(response.data);
+        if (Array.isArray(response.data.reservations)) {
+          setReservations(response.data.reservations);
+        } else {
+          setReservations([]);  // Ensuring empty array if the response is not in the expected format
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -22,12 +26,7 @@ const TourGuideReservationConfirmation = () => {
 
   const handleConfirm = (reservationId) => {
     axios
-      .put(
-        `http://localhost:8070/tourguideReservation/confirm/${reservationId}`,
-        {
-          isConfirmed: true,
-        }
-      )
+      .put(`http://localhost:8070/reservePackageRouter/confirm/${reservationId}`)
       .then((response) => {
         alert("Reservation confirmed!");
         setReservations(
@@ -47,17 +46,13 @@ const TourGuideReservationConfirmation = () => {
   const handleCancel = (reservationId) => {
     axios
       .put(
-        `http://localhost:8070/tourguideReservation/confirm/${reservationId}`,
-        {
-          isConfirmed: false,
-        }
+        `http://localhost:8070/reservePackageRouter/confirm/${reservationId}`,
+        { isConfirmed: false }
       )
       .then((response) => {
         alert("Reservation cancelled!");
         setReservations(
-          reservations.filter(
-            (reservation) => reservation._id !== reservationId
-          )
+          reservations.filter((reservation) => reservation._id !== reservationId)
         );
       })
       .catch((err) => {
@@ -65,6 +60,7 @@ const TourGuideReservationConfirmation = () => {
         console.error(err);
       });
   };
+
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
@@ -125,11 +121,11 @@ const TourGuideReservationConfirmation = () => {
           </li>
           <li>
             <Link
-              to="/all/user"
+               to="/all/user"
               className="d-flex align-items-center text-white px-3 py-2"
-            >
+              >
               <i className="bi bi-person-fill me-2"></i> Users
-            </Link>
+              </Link>
           </li>
         </ul>
 
@@ -147,7 +143,7 @@ const TourGuideReservationConfirmation = () => {
 
       {/* Main Content */}
       <div style={{ flexGrow: 1, padding: "20px", marginLeft: "240px" }}>
-        <h2>Tour Guide Reservations</h2>
+        <h2>Package Reservations</h2>
         {error && <div className="alert alert-danger">{error}</div>}
         {loading ? (
           <p>Loading reservations...</p>
@@ -159,9 +155,9 @@ const TourGuideReservationConfirmation = () => {
               <div className="col-md-4" key={reservation._id}>
                 <div className="card mb-3">
                   <div className="card-body">
-                    <h5 className="card-title">Tour Guide Reservation</h5>
+                    <h5 className="card-title">Package Reservation</h5>
                     <p className="card-text">
-                      <strong>Tour Guide:</strong> {reservation.tourguide.fullName}
+                      <strong>Package Name:</strong> {reservation.package.name}
                     </p>
                     <p className="card-text">
                       <strong>Start Date:</strong>{" "}
@@ -209,4 +205,4 @@ const TourGuideReservationConfirmation = () => {
   );
 };
 
-export default TourGuideReservationConfirmation;
+export default PackageConfirmation;

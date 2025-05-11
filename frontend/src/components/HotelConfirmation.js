@@ -2,28 +2,34 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const TourGuideReservationConfirmation = () => {
+const HotelReservationConfirmation = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8070/tourguideReservation/")
-      .then((response) => {
-        setReservations(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Failed to load reservations.");
-        setLoading(false);
-      });
-  }, []);
+  axios
+    .get("http://localhost:8070/HotelReservation/") // Ensure this endpoint fetches all reservations
+    .then((response) => {
+      // Accessing the reservations array properly
+      if (Array.isArray(response.data.reservations)) {
+        setReservations(response.data.reservations);  // Setting the reservations correctly
+      } else {
+        setReservations([]); // Set to empty array if data is not an array
+      }
+      setLoading(false);
+    })
+    .catch((err) => {
+      setError("Failed to load reservations.");
+      setLoading(false);
+    });
+}, []);
+
 
   const handleConfirm = (reservationId) => {
     axios
       .put(
-        `http://localhost:8070/tourguideReservation/confirm/${reservationId}`,
+        `http://localhost:8070/HotelReservation/confirm/${reservationId}`,
         {
           isConfirmed: true,
         }
@@ -47,7 +53,7 @@ const TourGuideReservationConfirmation = () => {
   const handleCancel = (reservationId) => {
     axios
       .put(
-        `http://localhost:8070/tourguideReservation/confirm/${reservationId}`,
+        `http://localhost:8070/HotelReservation/confirm/${reservationId}`,
         {
           isConfirmed: false,
         }
@@ -65,6 +71,7 @@ const TourGuideReservationConfirmation = () => {
         console.error(err);
       });
   };
+
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
@@ -147,7 +154,7 @@ const TourGuideReservationConfirmation = () => {
 
       {/* Main Content */}
       <div style={{ flexGrow: 1, padding: "20px", marginLeft: "240px" }}>
-        <h2>Tour Guide Reservations</h2>
+        <h2>Hotel Reservations</h2>
         {error && <div className="alert alert-danger">{error}</div>}
         {loading ? (
           <p>Loading reservations...</p>
@@ -159,17 +166,16 @@ const TourGuideReservationConfirmation = () => {
               <div className="col-md-4" key={reservation._id}>
                 <div className="card mb-3">
                   <div className="card-body">
-                    <h5 className="card-title">Tour Guide Reservation</h5>
                     <p className="card-text">
-                      <strong>Tour Guide:</strong> {reservation.tourguide.fullName}
+                      <strong>Hotel Name:</strong> {reservation.hotel.name}
                     </p>
                     <p className="card-text">
                       <strong>Start Date:</strong>{" "}
-                      {new Date(reservation.startDate).toLocaleDateString()}
+                      {new Date(reservation.fromDate).toLocaleDateString()}
                     </p>
                     <p className="card-text">
                       <strong>End Date:</strong>{" "}
-                      {new Date(reservation.endDate).toLocaleDateString()}
+                      {new Date(reservation.toDate).toLocaleDateString()}
                     </p>
                     <div className="d-flex justify-content-between">
                       {/* Show the buttons only for unconfirmed reservations */}
@@ -209,4 +215,4 @@ const TourGuideReservationConfirmation = () => {
   );
 };
 
-export default TourGuideReservationConfirmation;
+export default HotelReservationConfirmation;

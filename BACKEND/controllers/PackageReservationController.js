@@ -26,7 +26,6 @@ exports.getUserReservations = async (req, res) => {
   try {
     const reservations = await PackageReservation.find({
       user: userId,
-      isConfirmed: true,
     }).populate("package");
 
     res.status(200).json(reservations);
@@ -57,5 +56,20 @@ exports.confirmReservation = async (req, res) => {
     res
       .status(500)
       .json({ message: "Confirmation failed", error: err.message });
+  }
+};
+
+exports.getAllReservations = async (req, res) => {
+  try {
+    // Fetch all reservations, populate user and package details
+    const reservations = await PackageReservation.find().populate("user package");
+
+    if (!reservations || reservations.length === 0) {
+      return res.status(404).json({ message: "No reservations found" });
+    }
+
+    res.status(200).json({ success: true, reservations });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error fetching reservations", error: err.message });
   }
 };

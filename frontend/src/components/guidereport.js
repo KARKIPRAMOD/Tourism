@@ -102,6 +102,94 @@ const styles = {
     color: "#999",
     cursor: "pointer",
   },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
+  modalContent: {
+    position: "relative",
+    backgroundColor: "#fff",
+    padding: "30px",
+    borderRadius: "15px",
+    width: "80%",
+    maxWidth: "600px",
+    textAlign: "center",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    transition: "transform 0.3s ease-out",
+  },
+  modalCloseBtn: {
+    position: "absolute",
+    top: "15px",
+    right: "20px",
+    background: "transparent",
+    border: "none",
+    fontSize: "1.8rem",
+    color: "#999",
+    cursor: "pointer",
+  },
+  modalTitle: {
+    fontSize: "2rem",
+    color: "#007bff",
+    marginBottom: "20px",
+    fontWeight: "600",
+  },
+  modalDescription: {
+    marginBottom: "25px",
+    fontSize: "1.1rem",
+    color: "#444",
+  },
+  datePickerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "25px",
+  },
+  datePickerGroup: {
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  },
+  icon: {
+    fontSize: "1.4rem",
+    color: "#007bff",
+  },
+  label: {
+    fontWeight: "600",
+    fontSize: "1rem",
+    color: "#444",
+  },
+  datePicker: {
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    fontSize: "1rem",
+    color: "#555",
+    width: "100%",
+    maxWidth: "220px",
+  },
+  confirmButton: {
+    width: "100%",
+    padding: "15px",
+    backgroundColor: "#28a745",
+    color: "white",
+    borderRadius: "8px",
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+    marginTop: "30px",
+  },
+  confirmButtonHover: {
+    backgroundColor: "#218838",
+  },
 };
 
 
@@ -355,36 +443,27 @@ compareTourguideReservations = () => {
                     padding: "0.25rem 0.5rem",
                     backgroundColor: "#e5e7eb",
                     color: "#374151",
-                    fontSize: "0.75rem",
+                    fontSize: "1rem",
                     borderRadius: "0.375rem",
                   }}
                 >
+                <i className="fas fa-location-dot location-icon"></i>
                   {tourguide.address || "Japan"}
                 </span>
-
-                {/* Bio Preview */}
-                <p className="text-sm text-gray-600 mt-3 line-clamp-3">
-                  {tourguide.description ||
-                    "I was born and grew up in Yokohama. I used to work in Tokyo for more than 20 years..."}
-                </p>
-
                 {/* Additional Info */}
                 <div className="info-section">
                   <p className="info-item">
-                    <i className="fas fa-venus-mars"></i> {tourguide.gender}
+                    <i className="fas fa-venus-mars"></i> {tourguide.gender} <i style={{marginLeft: "50px"}} className="fas fa-phone"></i> {tourguide.contactNumber}
                   </p>
                   <p className="info-item">
-                    <i className="fas fa-phone"></i> {tourguide.contactNumber}
+                    
                   </p>
                   <p className="info-item">
                     <i className="fas fa-envelope"></i> {tourguide.eMail}
                   </p>
                   <p className="info-item big-text">
                     <i className="fas fa-briefcase"></i>
-                    <strong> {tourguide.workExperience}</strong>
-                  </p>
-                  <p className="info-item big-text">
-                    <i className="fas fa-money-bill-wave"></i> Rs. {tourguide.amount}
+                    <strong> {tourguide.workExperience}     <i style={{marginLeft: "50px"}} className="fas fa-money-bill-wave"></i> Rs. {tourguide.amount}</strong>
                   </p>
                 </div>
 
@@ -412,7 +491,7 @@ compareTourguideReservations = () => {
                   style={{
                     borderRadius: "8px",
                     width: "100%",
-                    backgroundColor: "#0069cb",
+                    backgroundColor: "red",
                     border: "none",
                   }}
                   className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all text-sm font-medium"
@@ -436,47 +515,18 @@ compareTourguideReservations = () => {
             <button style={styles.modalCloseBtn} onClick={this.closeModal}>
               &times;
             </button>
-            <h2
-              style={{
-                fontSize: "1.8rem",
-                color: "#007bff",
-                marginBottom: "10px",
-              }}
-            >
+            <h2 style={styles.modalTitle}>
               Reserve Tour Guide
             </h2>
-            <p
-              style={{
-                marginBottom: "25px",
-                fontSize: "1.1rem",
-                color: "#444",
-              }}
-            >
+            <p style={styles.modalDescription}>
               You're about to reserve{" "}
               <strong>{selectedGuide.fullName}</strong>
             </p>
 
-            <div
-              style={{
-                ...styles.datePickerContainer,
-                flexDirection: "column",
-                gap: "20px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
-                <i
-                  className="fas fa-calendar-alt"
-                  style={{ color: "#007bff", fontSize: "1.2rem" }}
-                ></i>
-                <label style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                  From:
-                </label>
+            <div style={styles.datePickerContainer}>
+              <div style={styles.datePickerGroup}>
+                <i className="fas fa-calendar-alt" style={styles.icon}></i>
+                <label style={styles.label}>From:</label>
                 <DatePicker
                   selected={dateFrom}
                   onChange={(date) => this.setState({ dateFrom: date })}
@@ -484,23 +534,13 @@ compareTourguideReservations = () => {
                   startDate={dateFrom}
                   endDate={dateTo}
                   placeholderText="Select start date"
+                  style={styles.datePicker}
                 />
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
-                <i
-                  className="fas fa-calendar-check"
-                  style={{ color: "#007bff", fontSize: "1.2rem" }}
-                ></i>
-                <label style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                  To:
-                </label>
+              <div style={styles.datePickerGroup}>
+                <i className="fas fa-calendar-check" style={styles.icon}></i>
+                <label style={styles.label}>To:</label>
                 <DatePicker
                   selected={dateTo}
                   onChange={(date) => this.setState({ dateTo: date })}
@@ -509,21 +549,24 @@ compareTourguideReservations = () => {
                   endDate={dateTo}
                   minDate={dateFrom}
                   placeholderText="Select end date"
+                  style={styles.datePicker}
                 />
               </div>
             </div>
 
             <button
-              style={{ ...styles.confirmButton, marginTop: "20px" }}
               onClick={() =>
                 this.handleReserve(selectedGuide.fullName, selectedGuide._id)
               }
+              style={styles.confirmButton}
+              className="transition-all"
             >
               Confirm Reservation
             </button>
           </div>
         </div>
       )}
+
     </div>
 
       </>

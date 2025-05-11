@@ -33,7 +33,6 @@ exports.getUserReservations = async (req, res) => {
   try {
     const reservations = await Reservation.find({
       user: userId,
-      isConfirmed: true,
     }).populate("hotel");
 
     res.status(200).json({
@@ -69,3 +68,22 @@ exports.confirmReservation = async (req, res) => {
       .json({ message: "Confirmation failed", error: err.message });
   }
 };
+
+// For getting all reservations (Admin or anyone with permission)
+exports.getAllReservations = async (req, res) => {
+  try {
+    const reservations = await Reservation.find().populate("hotel user");
+
+    if (reservations.length === 0) {
+      return res.status(404).json({ message: "No reservations found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      reservations,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching reservations", error: err.message });
+  }
+};
+

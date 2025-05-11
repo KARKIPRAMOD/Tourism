@@ -1,9 +1,10 @@
 import React from "react";
 
 const PackageReservation = ({ pkg, reservation }) => {
-  const imageUrl = pkg?.image
-    ? `http://localhost:8070/uploads/package_pictures/${pkg.image}`
-    : "https://via.placeholder.com/300x200?text=No+Image";
+  const imageUrl = pkg?.Images?.[0]
+  ? `http://localhost:8070/${pkg.Images[0].replace(/\\/g, "/")}`
+  : "https://via.placeholder.com/300x200?text=No+Image";
+
 
   const start = new Date(reservation.startDate).toLocaleDateString("en-US");
 
@@ -36,13 +37,27 @@ const PackageReservation = ({ pkg, reservation }) => {
           <br />
           Total Days: {pkg?.NumOfDays}
         </p>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <span style={tagStyle("#dbeafe", "#2563eb")}>Package</span>
-          <span style={tagStyle("#dcfce7", "#16a34a")}>Reserved</span>
-        </div>
-        <div style={{ marginTop: "12px" }}>
-          <button style={editButtonStyle}>Edit Reservation</button>
-          <button style={cancelButtonStyle}>Cancel Reservation</button>
+
+        {/* Centered confirmation badge */}
+        <div style={{ textAlign: "center", marginTop: "10px" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: "6px 14px",
+              borderRadius: "20px",
+              backgroundColor: reservation.isConfirmed ? "#e6fcf5" : "#fff4e6",
+              color: reservation.isConfirmed ? "#0ca678" : "#e8590c",
+              fontWeight: "600",
+              fontSize: "13px",
+              border: `1px solid ${
+                reservation.isConfirmed ? "#96f2d7" : "#ffc078"
+              }`,
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            {reservation.isConfirmed ? "✔ Confirmed" : "⏳ Unconfirmed"}
+          </div>
         </div>
       </div>
     </div>
@@ -57,25 +72,6 @@ const tagStyle = (bgColor, color) => ({
   borderRadius: "8px",
 });
 
-const editButtonStyle = {
-  marginTop: "10px",
-  padding: "6px 12px",
-  backgroundColor: "#f8fafc",
-  border: "1px solid #cbd5e1",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
-  marginRight: "8px",
-};
 
-const cancelButtonStyle = {
-  marginTop: "10px",
-  padding: "6px 12px",
-  backgroundColor: "#f8fafc",
-  border: "1px solid #f87171",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
-};
 
 export default PackageReservation;

@@ -5,7 +5,7 @@ const HotelCard = ({ hotel, reservation }) => {
 
   const start = new Date(reservation.fromDate).toLocaleDateString("en-US");
   const end = new Date(reservation.toDate).toLocaleDateString("en-US");
-  console.log(reservation);
+
   return (
     <div
       style={{
@@ -28,36 +28,34 @@ const HotelCard = ({ hotel, reservation }) => {
       <div style={{ padding: "16px" }}>
         <h5 style={{ margin: 0 }}>{hotel?.name || "Loading..."}</h5>
         <p style={{ color: "#666", fontSize: "14px" }}>
-          {hotel?.location || "Unknown Location"} <br />
-          <p>{hotel.description}</p>
-          Date: {start} - {end}
+          {hotel?.location || "Unknown Location"}
         </p>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <span style={tagStyle("#fef9c3", "#ca8a04")}>Hotel</span>
-          <span style={tagStyle("#dcfce7", "#16a34a")}>Reserved</span>
+        <p>{hotel.description}</p>
+        <p>Date: {start} - {end}</p>
+
+        {/* Confirmation badge */}
+        <div style={{ textAlign: "center", marginTop: "10px" }}>
+        <div
+          style={{
+            display: "inline-block",
+            padding: "6px 14px",
+            borderRadius: "20px",
+            backgroundColor: reservation.isConfirmed ? "#e6fcf5" : "#fff4e6",
+            color: reservation.isConfirmed ? "#0ca678" : "#e8590c",
+            fontWeight: "600",
+            fontSize: "13px",
+            border: `1px solid ${reservation.isConfirmed ? "#96f2d7" : "#ffc078"}`,
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
+          {reservation.isConfirmed ? "✔ Confirmed" : "⏳ Unconfirmed"}
         </div>
-        <button style={editButtonStyle}>Cancel</button>
+</div>
+
       </div>
     </div>
   );
-};
-
-const tagStyle = (bgColor, color) => ({
-  backgroundColor: bgColor,
-  color: color,
-  fontSize: "12px",
-  padding: "4px 10px",
-  borderRadius: "8px",
-});
-
-const editButtonStyle = {
-  marginTop: "10px",
-  padding: "6px 12px",
-  backgroundColor: "#f8fafc",
-  border: "1px solid #cbd5e1",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
 };
 
 export default HotelCard;
