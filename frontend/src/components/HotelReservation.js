@@ -61,7 +61,6 @@ function HotelReservation() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>🏨 Hotel Reservation</h1>
 
       <div style={styles.mainContent}>
         {/* Left side: Images */}
@@ -107,14 +106,17 @@ function HotelReservation() {
             <div style={styles.extraInfo}>
               <h3 style={styles.extraHeading}>📋 Hotel Policies & Amenities</h3>
               <ul style={styles.amenitiesList}>
-                <li>🕐 Check-in: 12:00 PM</li>
-                <li>🕛 Check-out: 11:00 AM</li>
-                <li>🍽️ Complimentary breakfast</li>
-                <li>📶 Free Wi-Fi</li>
-                <li>🚗 Parking available</li>
-                <li>🧼 Daily housekeeping</li>
+                <li style={styles.amenityItem}><span style={styles.amenityCard}>🕐 Check-in: 12:00 PM</span></li>
+                <li style={styles.amenityItem}><span style={styles.amenityCard}>🕛 Check-out: 11:00 AM</span></li>
+                                <li style={styles.amenityItem}><span style={styles.amenityCard}>🧼 Daily housekeeping</span></li>
 
+                  <li style={styles.amenityItem}><span style={styles.amenityCard}>🚗 Parking available</span></li>
+                <li style={styles.amenityItem}><span style={styles.amenityCard}>🍽️ Complimentary breakfast</span></li>
+                <li style={styles.amenityItem}><span style={styles.amenityCard}>📶 Free Wi-Fi</span></li>
               </ul>
+
+
+
             </div>
           </div>
 
@@ -246,11 +248,29 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
   },
-  amenitiesList: {
+ amenitiesList: {
     listStyle: "none",
     paddingLeft: "0",
+    margin: "0",
     color: "#4b5563",
     fontSize: "15px",
+    display: "flex",
+    flexWrap: "wrap", // allows wrapping to the next row
+    gap: "25px", // consistent gap between items (both horizontally and vertically)
+  },
+  amenityCard: {
+    backgroundColor: "#fff", // card background
+    borderRadius: "8px", // rounded corners
+    padding: "12px", // inner padding
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // card shadow effect
+    fontWeight: "bold", // bold text
+    flex: "0 0 calc(50% - 15px)", // each card takes 50% of the row width minus the gap
+    color: "#333", // text color
+    textOverflow: "ellipsis", // handles overflowing text
+    whiteSpace: "nowrap", // prevents text from wrapping into a new line
+    overflow: "hidden", // ensures no text overflows outside the card
+    maxWidth: "calc(50% - 15px)", // ensures card width remains fixed
+    boxSizing: "border-box", // includes padding and border in the element's total width and height
   },
    form: {
     backgroundColor: "#f9fafb",
@@ -277,7 +297,7 @@ const styles = {
     display: "inline-block", // ensures the input stays in the same row
   },
   button: {
-    backgroundColor: "#2563eb",
+    backgroundColor: "red",
     color: "#fff",
     padding: "12px",
     borderRadius: "8px",
