@@ -38,6 +38,8 @@ const tourguideRouter = require("./routes/tourguides.js");
 const whatsappRouter = require("./routes/whatsapp");
 const adminRouter = require("./routes/admin-route");
 const feedBackRouter = require("./routes/feedBack");
+const tourUpdatesRouter = require('./routes/ToursUpdate');  // Import the new routes
+
 
 //reservation
 const reserveGuideRouter = require("./routes/TourguideReservation.js");
@@ -88,6 +90,9 @@ app.use("/feedBack", feedBackRouter);
 app.use("/tourguideReservation", reserveGuideRouter);
 app.use("/HotelReservation", reserveHotelRouter);
 app.use("/reservePackageRouter", reservePackageRouter);
+
+app.use('/tourupdates', tourUpdatesRouter);  
+
 console.log("Test");
 
 // Start server

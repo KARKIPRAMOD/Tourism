@@ -29,17 +29,17 @@ const PackageSchema = new mongoose.Schema({
 
   Hotel: {
     type: String,
-    required: false,
+    required: true,
   },
 
   Transport: {
     type: String,
-    required: false,
+    required: true,
   },
 
   TourGuide: {
     type: String,
-    required: false,
+    required: true,
   },
 
   TotPrice: {
@@ -51,6 +51,11 @@ const PackageSchema = new mongoose.Schema({
     type: [String],
     required: false,
   },
+
+  description:{
+    type:String,
+    required: true,
+  }
 });
 
 const Package = mongoose.model("TourPackage", PackageSchema);

@@ -207,7 +207,6 @@ function AdminDashboard() {
           style={{ marginLeft: "240px" }}
         >
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h1 className="h2">Admin Dashboard</h1>
             <button
               onClick={fetchDashboardData}
               className="btn btn-sm btn-outline-primary"
@@ -318,13 +317,32 @@ function AdminDashboard() {
               >
                 <div className="card-body">
                   <h6 className="card-title">Users</h6>
-                  <h2 className="display-4 fw-bold">
+                  <h2 className="display-4 fw-bold" >
                     {dashboardData.userCount}
                   </h2>
                 </div>
                 <div className="card-footer">
                   <Link to="/all/user" className="text-white">
                     View Reports
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4 col-lg-3">
+              <div
+                className="card text-white"
+                style={{ backgroundColor: "#ff5722" }}
+              >
+                <div className="card-body">
+                  <h6 className="card-title">Tour Updates</h6>
+                  <h2 className="display-4 fw-bold" >
+                    {dashboardData.userCount}
+                  </h2>
+                </div>
+                <div className="card-footer">
+                  <Link to="/adminTourupdates" className="text-white">
+                    Add Tour Updates
                   </Link>
                 </div>
               </div>

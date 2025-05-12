@@ -11,11 +11,13 @@ function AddPackage() {
   const [Destination, setDesti] = useState("");
   const [NumOfDays, setDays] = useState("");
   const [NumOfPassen, setPass] = useState("");
-  const [hotel, setHotel] = useState("");
-  const [transport, setTrans] = useState("");
-  const [tourGuide, setGuide] = useState("");
+  const [Hotel, setHotel] = useState("");
+  const [Transport, setTrans] = useState("");
+  const [TourGuide, setGuide] = useState("");
   const [TotPrice, setPrice] = useState("");
   const [images, setImages] = useState([]); // Change state to handle multiple images
+  const [description, setDescription] = useState(""); // Change state to handle multiple images
+
   const handleLogout = () => {
       localStorage.removeItem("userRole");
       localStorage.removeItem("userId");
@@ -35,10 +37,11 @@ function AddPackage() {
       Destination,
       NumOfDays,
       NumOfPassen,
-      hotel,
-      transport,
-      tourGuide,
+      Hotel,
+      Transport,
+      TourGuide,
       TotPrice,
+      description
     };
  
     const formData = new FormData();
@@ -47,10 +50,12 @@ function AddPackage() {
     formData.append("Destination", Destination);
     formData.append("NumOfDays", NumOfDays);
     formData.append("NumOfPassen", NumOfPassen);
-    formData.append("hotel", hotel);
-    formData.append("transport", transport);
-    formData.append("tourGuide", tourGuide);
+    formData.append("Hotel", Hotel);
+    formData.append("Transport", Transport);
+    formData.append("TourGuide", TourGuide);
     formData.append("TotPrice", TotPrice);
+    formData.append("description", description);
+
 
     // Append all selected images to formData
     for (let i = 0; i < images.length; i++) {
@@ -237,7 +242,7 @@ function AddPackage() {
           <div className="row">
             {/* Right Side Form Fields */}
             <div className="form-group col-md-6">
-              <label htmlFor="hotel" className="font-weight-bold">
+              <label htmlFor="Hotel" className="font-weight-bold">
                 Hotel Name *
               </label>
               <input
@@ -251,7 +256,7 @@ function AddPackage() {
             </div>
 
             <div className="form-group col-md-6">
-              <label htmlFor="transport" className="font-weight-bold">
+              <label htmlFor="Transport" className="font-weight-bold">
                 Transport Mode *
               </label>
               <input
@@ -265,7 +270,7 @@ function AddPackage() {
             </div>
 
             <div className="form-group col-md-6">
-              <label htmlFor="tourGuide" className="font-weight-bold">
+              <label htmlFor="TourGuide" className="font-weight-bold">
                 Tour Guide *
               </label>
               <input
@@ -288,6 +293,19 @@ function AddPackage() {
                 id="TotPrice"
                 placeholder="Enter total price"
                 onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group col-md-6">
+              <label htmlFor="TotPrice" className="font-weight-bold">
+               Description
+              </label>
+              <input
+                type="string"
+                className="form-control"
+                id="description"
+                placeholder="Description"
+                onChange={(e) => setDescription(e.target.value)}
                 required
               />
             </div>

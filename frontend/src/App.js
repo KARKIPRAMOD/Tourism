@@ -68,6 +68,8 @@ import ReservedHotel from "./components/ReservedHotel";
 import TourGuideConfirmation from "./components/TourGuideConfirmation";
 import HotelReservationConfirmation from "./components/HotelConfirmation";
 import PackageConfirmation from "./components/PackageConfirmation.js";  // Correct import statement
+import PackageDetails from "./components/PackageDetails";
+import TourUpdateForm from "./components/AdminTourUpdates.js"
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
@@ -282,6 +284,10 @@ const App = () => {
             <Route path="/adminHotel" component={HotelReservationConfirmation} />
 
             <Route path="/adminPackage" component={PackageConfirmation} />
+
+            <Route path="/package-details/:packageId" component={PackageDetails} />
+
+            <Route path="/adminTourupdates" component={TourUpdateForm} />
 
 
             {/* Admin Route */}

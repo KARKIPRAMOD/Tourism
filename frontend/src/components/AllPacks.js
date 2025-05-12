@@ -16,9 +16,9 @@ export default class AllPacks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      packages: [],  // Array to hold the package data
-      searchQuery: "",  // Search query to filter packages
-      isAuthorized: false,  // Authorization flag
+      packages: [], // Array to hold the package data
+      searchQuery: "", // Search query to filter packages
+      isAuthorized: false, // Authorization flag
     };
   }
 
@@ -30,28 +30,27 @@ export default class AllPacks extends Component {
       if (this.state.isAuthorized) {
         this.retrievePackages(); // Fetch packages if authorized
       } else {
-        window.location.href = "/user/login";  // Redirect to login if not authorized
+        window.location.href = "/user/login"; // Redirect to login if not authorized
       }
     });
   }
 
   // Fetch packages from the backend
- retrievePackages() {
-  axios
-    .get("http://localhost:8070/package/all")
-    .then((res) => {
-      console.log(res.data); // Check the structure of the response
-      if (res.data.success) {
-        this.setState({
-          packages: res.data.existingPackages || [], // Adjust this line if needed
-        });
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching packages:", error);
-    });
-}
-
+  retrievePackages() {
+    axios
+      .get("http://localhost:8070/package/all")
+      .then((res) => {
+        console.log(res.data); // Check the structure of the response
+        if (res.data.success) {
+          this.setState({
+            packages: res.data.existingPackages || [], // Adjust this line if needed
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching packages:", error);
+      });
+  }
 
   // Handle search input and filter packages based on packName
   handleTextSearch = (e) => {
@@ -180,8 +179,8 @@ export default class AllPacks extends Component {
                   className="form-control me-2"
                   style={{ maxWidth: "300px" }}
                   placeholder="Search for a package"
-                  value={this.state.searchQuery}  // Controlled input value
-                  onChange={this.handleTextSearch}  // Handling onChange
+                  value={this.state.searchQuery} // Controlled input value
+                  onChange={this.handleTextSearch} // Handling onChange
                 />
               </div>
 
@@ -206,6 +205,7 @@ export default class AllPacks extends Component {
                       <th>Transport</th>
                       <th>Tour Guide</th>
                       <th>Total Price (Rs)</th>
+                      <th>Image</th> {/* Add an extra column for the image */}
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -224,6 +224,18 @@ export default class AllPacks extends Component {
                           <td>{pkg.TourGuide}</td>
                           <td>{pkg.TotPrice}</td>
                           <td>
+                            {/* Displaying the image */}
+                            {pkg.Images && pkg.Images.length > 0 ? (
+                              <img
+                                src={`http://localhost:8070/${pkg.Images[0]}`}
+                                alt={pkg.packName}
+                                style={{ width: "100px", height: "auto" }}
+                              />
+                            ) : (
+                              <span>No Image</span>
+                            )}
+                          </td>
+                          <td>
                             <button
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => this.onDelete(pkg._id)}
@@ -235,7 +247,7 @@ export default class AllPacks extends Component {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="11" className="text-center">
+                        <td colSpan="12" className="text-center">
                           No packages found.
                         </td>
                       </tr>

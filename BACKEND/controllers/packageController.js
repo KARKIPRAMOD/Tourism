@@ -15,6 +15,7 @@ const addPackage = async (req, res) => {
       Transport,
       TourGuide,
       TotPrice,
+      description
     } = req.body;
 
     // Collect image paths if any images are uploaded
@@ -31,6 +32,8 @@ const addPackage = async (req, res) => {
       TourGuide,
       TotPrice,
       Images: images, // Save the image paths in the database
+      description
+
     });
 
     // Save the package to the database
