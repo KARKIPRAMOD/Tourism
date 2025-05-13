@@ -10,6 +10,7 @@ const {
   registerTourGuide,
   updateTourGuide,
   deleteTourGuide,
+  loginTourguide
 } = require("../controllers/tourguideController");
 
 // Multer setup
@@ -28,6 +29,8 @@ const upload = multer({ storage });
 router.get("/", getAllTourGuides);
 router.get("/all", getAllTourGuides);
 router.get("/count", getTourGuideCount);
+router.post("/login", loginTourguide);
+
 router.get("/:id", getTourGuideById);
 
 // Admin-protected routes

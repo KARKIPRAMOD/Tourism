@@ -69,8 +69,8 @@ const ReservedHotel = ({ userId }) => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      <ProfileSidebar userData={userData} userId={userId} />
-      <main style={{ flexGrow: 1, padding: "20px" }}>
+          <ProfileSidebar userData={userData} userId={userId} />
+        <main style={{ flexGrow: 1, padding: "20px",marginLeft:"320px" }}>
         {error && <div className="alert alert-danger">{error}</div>}
         {loading ? (
           <p>Loading reserved hotels...</p>
@@ -78,7 +78,17 @@ const ReservedHotel = ({ userId }) => {
           <p>No reserved hotels found.</p>
         ) : (
           <div>
-            <h3>Your Reserved Hotels</h3>
+            <h2
+            style={{
+              
+              color: "#007bff", // Blue color for the title
+              fontWeight: "600",
+              textAlign: "center", // Center the title
+              width: "fit-content", // Make the box width fit the content
+              margin: "0 auto", // Center the box horizontally
+              marginBottom: "30px", 
+            }}
+          >Your Reserved Hotels</h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {reservations.map((reservation) => {
                 const hotelId =

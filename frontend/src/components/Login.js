@@ -11,13 +11,9 @@ export default function Login({ login }) {
     password: "",
   };
 
-  const [data, setData] = useState();
-  const [userEnteredInfo, setUserEnteredInfo] = useState(
-    initialUserEnteredInfo
-  );
+  const [userEnteredInfo, setUserEnteredInfo] = useState(initialUserEnteredInfo);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [loginType, setLoginType] = useState("user"); // Default to "user" login
   const history = useHistory();
 
   const handleInputChange = (event) => {
@@ -43,6 +39,47 @@ export default function Login({ login }) {
           // Redirect based on role
           if (userRole === "admin") {
             history.push("/admin/dashboard");
+          } else if (userRole === "tourguide") {
+            localStorage.setItem("hideNavbar", "true");
+            history.push("/tourguide/dashboard");
+          } else {
+            window.location = "/home";
+          }
+        } else {
+          setError(res.data.message || "Invalid credentials");
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error("Login error:", err.response?.data || err.message);
+        setError(
+          err.response?.data?.message ||
+            "Login failed. Please check your credentials."
+        );
+      });
+  }
+
+  // Handle tourguide login
+  function loginTourguide(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    axios
+      .post("http://localhost:8070/tourguide/login", userEnteredInfo) // New endpoint for tourguide login
+      .then((res) => {
+        setLoading(false);
+        if (res.data.success) {
+          const userRole = res.data.user.role;
+          localStorage.setItem("userRole", userRole);
+          login(res.data.user._id);
+
+          // Redirect based on role
+          if (userRole === "admin") {
+            history.push("/admin/dashboard");
+          } else if (userRole === "tourguide") {
+            localStorage.setItem("hideNavbar", "true");
+            history.push("/tourguide/dashboard");
           } else {
             window.location = "/home";
           }
@@ -111,7 +148,7 @@ export default function Login({ login }) {
     }
   };
 
-  // Handle login (either user or admin)
+  // Handle login (either user, tourguide or admin)
   const handleLogin = (e) => {
     if (
       userEnteredInfo.user_name.toLowerCase() === "admin" &&
@@ -120,8 +157,9 @@ export default function Login({ login }) {
       // Admin login works when user_name is "admin" and password is "admin"
       handleAdminLogin(e);
     } else {
+      // Try user login, if fails try tourguide login
       loginUser(e);
-    }
+      loginTourguide(e)    }
   };
 
   return (
@@ -139,7 +177,9 @@ export default function Login({ login }) {
             >
               <div className="card-body p-5 text-center">
                 <h2 className="mb-4">
-                  {loginType === "admin" ? "Admin Sign in" : "User Sign in"}
+                  {userEnteredInfo.user_name.includes("tourguide")
+                    ? "Tourguide Sign in"
+                    : "User Sign in"}
                 </h2>
 
                 {/* Error display */}
@@ -154,9 +194,7 @@ export default function Login({ login }) {
                     type="text"
                     id="user_name"
                     className="form-control"
-                    placeholder={
-                      loginType === "admin" ? "Admin Email" : "Username"
-                    }
+                    placeholder="Username"
                     value={userEnteredInfo.user_name}
                     onChange={handleInputChange}
                     name="user_name"
@@ -209,7 +247,9 @@ export default function Login({ login }) {
                     </span>
                   ) : (
                     <span>
-                      {loginType === "admin" ? "Admin Login" : "Login"}
+                      {userEnteredInfo.user_name.includes("tourguide")
+                        ? "Tourguide Login"
+                        : "Login"}
                     </span>
                   )}
                 </button>

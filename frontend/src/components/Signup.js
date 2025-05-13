@@ -260,8 +260,8 @@ const Signup = () => {
                 <hr className="my-4" style={{ opacity: "0.15" }} />
 
                 <div className="d-flex align-items-center justify-content-center pb-4">
-                  <p className="mb-0 me-2">Already have an account?</p>
-                  <Link to={"/user/login"}>Sign in</Link>
+                  <p className="mb-0 me-2">Signin as Tour Guide </p>
+                  <Link to={"/add/tourguide"}>Register</Link>
                 </div>
               </div>
             </div>

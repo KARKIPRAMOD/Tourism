@@ -1,4 +1,4 @@
-const Tourguide = require("../models/tourguide");
+const Tourguide = require("../models/Tourguide");
 const path = require("path");
 const fs = require("fs");
 
@@ -11,6 +11,8 @@ if (!fs.existsSync(uploadDir)) {
 // Register new tour guide
 exports.registerTourGuide = async (req, res) => {
   const {
+    user_name,
+    password,  // Password is stored in plain text
     fullName,
     age,
     address,
@@ -26,21 +28,27 @@ exports.registerTourGuide = async (req, res) => {
   const image = req.file ? req.file.filename : "default.jpg";
 
   try {
+    // Check if the username, email, or NIC already exists
     const existing = await Tourguide.findOne({
-      $or: [{ nicNumber }, { eMail }],
+      $or: [{ user_name }, { eMail }, { nicNumber }],
     });
 
     if (existing) {
       return res.status(400).json({
         success: false,
         message:
-          existing.nicNumber === nicNumber
-            ? "Tour guide with this NIC already exists"
-            : "Tour guide with this email already exists",
+          existing.user_name === user_name
+            ? "Tour guide with this username already exists"
+            : existing.eMail === eMail
+            ? "Tour guide with this email already exists"
+            : "Tour guide with this NIC already exists",
       });
     }
 
+    // Create the new tour guide object
     const newGuide = new Tourguide({
+      user_name,
+      password,  // Store the password in plain text
       fullName,
       age,
       address,
@@ -54,6 +62,7 @@ exports.registerTourGuide = async (req, res) => {
       description,
     });
 
+    // Save the new tour guide to the database
     await newGuide.save();
     res.status(201).json({
       success: true,
@@ -159,6 +168,40 @@ exports.getTourGuideCount = async (req, res) => {
   try {
     const count = await Tourguide.countDocuments();
     res.json({ success: true, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+exports.loginTourguide = async (req, res) => {
+  const { user_name, password } = req.body;
+
+  try {
+    // Check if the tourguide exists in the database
+    const user = await Tourguide.findOne({ user_name });
+
+    if (!user) {
+      return res.json({ success: false, message: "Tourguide not found" });
+    }
+
+    // Check if password matches
+    if (user.password !== password) {
+      return res.json({ success: false, message: "Invalid password" });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        _id: user._id,
+        user_name: user.user_name,
+        fullName: user.fullName,
+        role: user.role || "tourguide",
+        eMail: user.eMail,
+        contactNumber: user.contactNumber,
+        image: user.image,
+      },
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -5,6 +5,7 @@ const {
   confirmReservation,
   getUserReservations,
   getAllReservations,
+  getTourguideReservations
 } = require("../controllers/TourguideReservationController");
 
 // POST - Make a new reservation
@@ -42,5 +43,8 @@ router.put("/confirm/:reservationId", confirmReservation);
 
 // GET - Show confirmed reservations for a user
 router.get("/reservedTourGuides/:userId", getUserReservations);
+
+router.get("/reservedforTourGuides/:tourguideId", getTourguideReservations);
+
 
 module.exports = router;

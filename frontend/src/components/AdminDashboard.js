@@ -226,35 +226,6 @@ function AdminDashboard() {
             <div className="col-md-4 col-lg-3">
               <div
                 className="card text-white"
-                style={{ backgroundColor: "#3f51b5" }}
-              >
-                <div className="card-body">
-                  <h6 className="card-title">Tour Guides</h6>
-                  <h2 className="display-4 fw-bold">
-                    {dashboardData.tourGuideCount}
-                  </h2>
-                </div>
-                <div className="card-footer">
-                  <Link to="/add/tourguide" className="text-white">
-                    Add Tour Guides
-                  </Link>
-                </div>
-              </div>
-              <div
-                className="card text-white"
-                style={{ backgroundColor: "#3f51b5", marginTop: "10px" }}
-              >
-                <div className="card-footer">
-                  <Link to="/all/tourguide" className="text-white">
-                    Manage Tour Guides
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-4 col-lg-3">
-              <div
-                className="card text-white"
                 style={{ backgroundColor: "#4caf50" }}
               >
                 <div className="card-body">
@@ -327,6 +298,25 @@ function AdminDashboard() {
                   </Link>
                 </div>
               </div>
+            </div>
+            <div className="col-md-4 col-lg-3">
+              <div
+                className="card text-white"
+                style={{ backgroundColor: "#3f51b5" }}
+              >
+                <div className="card-body">
+                  <h6 className="card-title">Tour Guides</h6>
+                  <h2 className="display-4 fw-bold">
+                    {dashboardData.tourGuideCount}
+                  </h2>
+                </div>
+                <div className="card-footer">
+                  <Link to="/all/tourguide" className="text-white">
+                    Manage Tour Guides
+                  </Link>
+                </div>
+              </div>
+             
             </div>
 
             <div className="col-md-4 col-lg-3">

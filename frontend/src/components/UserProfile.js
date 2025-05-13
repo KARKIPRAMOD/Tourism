@@ -1,4 +1,3 @@
-// src/components/UserProfile.js
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -40,19 +39,16 @@ const UserProfile = ({ userId }) => {
   }
 
   return (
-    <div className="container-fluid">
-      <div className="row min-vh-100">
-        <div className="col-md-3 p-0 border-end bg-white shadow-sm">
-          <ProfileSidebar userData={userData} userId={userId} />
-        </div>
-
-        <main className="col-md-9 p-4 bg-light">
+    <div className="container-fluid p-0">
+      <div className="row min-vh-100 g-0">
+        <ProfileSidebar userData={userData} userId={userId} />
+        <main className="col-md-9 p-4 bg-light" style={{ marginLeft: "320px" }}>
           {error && <div className="alert alert-danger">{error}</div>}
 
           {userData ? (
             <div className="card shadow rounded-4 p-4 bg-white">
-              {/* Profile Summary */}
-              <div className="d-flex align-items-center gap-4 mb-4">
+              {/* Profile Header */}
+              <div className="d-flex align-items-center gap-4 mb-4  text-white p-3 rounded-3">
                 <img
                   src={
                     userData.profile_picture
@@ -64,40 +60,59 @@ const UserProfile = ({ userId }) => {
                   style={{ width: "100px", height: "100px", objectFit: "cover" }}
                 />
                 <div>
-                  <h4 className="mb-1">{userData.full_name}</h4>
+                  <h4 className="mb-1" style={{color:"black"}}>{userData.full_name}</h4>
                   <div className="text-muted">
                     <i className="bi bi-shield-person me-1"></i>{userData.role}
                   </div>
-                
                 </div>
               </div>
 
               <hr />
 
-              {/* Personal Info */}
+              {/* Personal Info Section */}
               <section className="mb-4">
                 <h5 className="text-primary fw-semibold mb-3">
                   <i className="bi bi-person-lines-fill me-2"></i> Personal Information
                 </h5>
+
                 <div className="row">
+                  {/* First Half of Information */}
                   <div className="col-md-6 mb-3">
-                    <p><i className="bi bi-person me-2"></i><strong>First Name:</strong> {userData.full_name.split(" ")[0]}</p>
-                    <p><i className="bi bi-envelope me-2"></i><strong>Email:</strong> {userData.email}</p>
-                    <p><i className="bi bi-journal-text me-2"></i><strong>Bio:</strong> {userData.bio || userData.role}</p>
-                    <p>  <div className="text-muted">
-                    <i className="bi bi-geo-alt-fill me-1"></i>{userData.address}
-                  </div></p>
+                    <div className="card shadow-sm border-light mb-3">
+                      <div className="card-header bg-info text-white">
+                        <strong>Personal Details</strong>
+                      </div>
+                      <div className="card-body">
+                        <p><i className="bi bi-person me-2"></i><strong>First Name:</strong> {userData.full_name.split(" ")[0]}</p>
+                         <p><i className="bi bi-person me-2"></i><strong>Last Name:</strong> {userData.full_name.split(" ")[1] || ""}</p>
+
+                        <p><i className="bi bi-journal-text me-2"></i><strong>Bio:</strong> {userData.bio || userData.role}</p>
+                        <p>
+                          <div className="text-muted">
+                            <i className="bi bi-geo-alt-fill me-1"></i>{userData.address}
+                          </div>
+                        </p>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Second Half of Information */}
                   <div className="col-md-6 mb-3">
-                    <p><i className="bi bi-person me-2"></i><strong>Last Name:</strong> {userData.full_name.split(" ")[1] || ""}</p>
-                    <p><i className="bi bi-telephone me-2"></i><strong>Phone:</strong> {userData.phone || "Not provided"}</p>
+                    <div className="card shadow-sm border-light mb-3">
+                      <div className="card-header bg-warning text-white">
+                        <strong>Contact Info</strong>
+                      </div>
+                      <div className="card-body">
+                        <p><i className="bi bi-telephone me-2"></i><strong>Phone:</strong> {userData.phone || "Not provided"}</p>
+                       <p><i className="bi bi-envelope me-2"></i><strong>Email:</strong> {userData.email}</p>
+
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
 
               <hr />
-
-       
             </div>
           ) : (
             <div className="text-center p-5">

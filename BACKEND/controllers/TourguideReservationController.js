@@ -85,6 +85,28 @@ exports.getUserReservations = async (req, res) => {
   }
 };
 
+exports.getTourguideReservations = async (req, res) => {
+  try {
+    const { tourguideId } = req.params;
+
+    const reservations = await TourguideReservation.find({
+      tourguide: tourguideId,  // Filter by tourguide ID
+    })
+      .populate("user", "user_name") // Populate user details
+      .sort({ startDate: 1 }); // Sort by start date
+
+    if (!reservations.length) {
+      return res.status(404).json({ message: "No reservations found for this tourguide" });
+    }
+
+    res.status(200).json(reservations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 exports.getAllReservations = async (req, res) => {
   try {
     // Fetch all reservations, sorted by start date

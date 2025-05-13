@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
   Redirect,
+  useLocation,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -70,12 +71,15 @@ import HotelReservationConfirmation from "./components/HotelConfirmation";
 import PackageConfirmation from "./components/PackageConfirmation.js";  // Correct import statement
 import PackageDetails from "./components/PackageDetails";
 import TourUpdateForm from "./components/AdminTourUpdates.js"
+import TourGuideDashboard from "./components/TourGuideDashboard.js"
+import TourguideAdditionalInfo from"./components/additioaldetaails.js"
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
     return localStorage.getItem("userId") || null;
   });
 
+  const isProfilePage = window.location.pathname.includes("/profile");
   const isAuthorizedForTourGuide = () => {
     const userRole = localStorage.getItem("userRole");
     return userRole === "admin" || userRole === "tourmanager";
@@ -83,71 +87,94 @@ const App = () => {
 
   const userRole = localStorage.getItem("userRole");
 
+  const isNavbarVisible = localStorage.getItem("hideNavbar") !== "true"; // Hide navbar if flag is set
+
   async function login(userId = null) {
     setUserId(userId);
     if (userId) {
       localStorage.setItem("userId", userId);
     }
   }
+ 
 
   async function logout() {
     setUserId(null);
     localStorage.removeItem("userId");
     localStorage.removeItem("userRole");
+     localStorage.removeItem("hideNavbar"); 
     window.location.reload();
   }
 
   return (
     <Router>
       <div className="App min-vh-100" style={{ backgroundColor: "#f7f7f7" }}>
-        {/* Conditionally render Navbar for non-admin users */}
-        {userRole !== "admin" && (
-          <nav className={`navbar-fixed-top ${styles.nav}`}>
-            <div className={`container ${styles.parentnav}`}>
-              <img src={logo} alt="Travelo logo" className={styles.logo}></img>
-              <div className={styles.topnav_center}>
-                <ul>
-                  <li>
-                    <Link to="/home">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/view/hotel">Hotels</Link>
-                  </li>
-                  <li>
-                    <Link to="/guidereport">Tour Guides</Link>
-                  </li>
-                  <li>
-                    <Link to="/view/cuspackage">Tour Packages</Link>
-                  </li>
-                  <li>
-                    <Link to={`/profile/home/${userId}`}>Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/tour-updates">Tour Updates</Link>
-                  </li>
-                </ul>
-              </div>
+       {isNavbarVisible && userRole !== "admin" && (
+  <nav className={`navbar-fixed-top ${styles.nav}`}>
+    <div className={`container ${styles.parentnav}`}>
+      <img src={logo} alt="Travelo logo" className={styles.logo}></img>
+      <div className={styles.topnav_center}>
+        <ul>
+          <li>
+            <Link to="/home">Home</Link>
+          </li>
+          <li>
+            <Link to="/view/hotel">Hotels</Link>
+          </li>
+          <li>
+            <Link to="/guidereport">Tour Guides</Link>
+          </li>
+          <li>
+            <Link to="/view/cuspackage">Tour Packages</Link>
+          </li>
+          <li>
+            {/* Profile Link: Force reload when clicked */}
+            <a
+              href={`/profile/home/${userId}`} // Using a regular anchor tag
+              onClick={(e) => {
+                  if (!userId) {
+                localStorage.setItem("hideNavbar", "false");
+              } else {
+                // Set the flag to hide the navbar (if needed)
+                localStorage.setItem("hideNavbar", "true"); // Set the flag to hide the navbar
+              }
 
-              {userId ? (
-                <div>
-                  <Link
-                    to={"/home"}
-                    onClick={logout}
-                    className={styles.btn_login}
-                  >
-                    Logout
-                  </Link>
-                </div>
-              ) : (
-                <>
-                  <Link to={"/user/login"} className={styles.btn_login}>
-                    Login
-                  </Link>
-                </>
-              )}
-            </div>
-          </nav>
-        )}
+              // Force navigation to the Profile page
+              window.location.href = `/profile/home/${userId}`;
+
+              // Trigger a full page reload
+              window.location.reload();
+              }}
+            >
+              Profile
+            </a>
+          </li>
+          <li>
+            <Link to="/tour-updates">Tour Updates</Link>
+          </li>
+        </ul>
+      </div>
+
+      {userId ? (
+        <div>
+          <Link
+            to={"/home"}
+            onClick={logout}
+            className={styles.btn_login}
+          >
+            Logout
+          </Link>
+        </div>
+      ) : (
+        <>
+          <Link to={"/user/login"} className={styles.btn_login}>
+            Login
+          </Link>
+        </>
+      )}
+    </div>
+  </nav>
+)}
+
 
         <div>
           <Switch>
@@ -225,16 +252,8 @@ const App = () => {
             />
 
             <Route path="/all/tourguide" component={AllTourguides} />
-            <Route
-              path="/add/tourguide"
-              render={(props) =>
-                isAuthorizedForTourGuide() ? (
-                  <AddTourguide {...props} />
-                ) : (
-                  <Redirect to="/user/login" />
-                )
-              }
-            />
+            <Route path="/add/tourguide" render={(props) => <AddTourguide {...props} />} />
+
             <Route path="/update/tourguide/:id" component={UpdateTourguide} />
             <Route path="/admin/hotel" component={Navbar} />
             <Route
@@ -288,6 +307,10 @@ const App = () => {
             <Route path="/package-details/:packageId" component={PackageDetails} />
 
             <Route path="/adminTourupdates" component={TourUpdateForm} />
+
+            <Route path="/tourguide/dashboard" component={TourGuideDashboard} />
+
+            <Route path="/add/details" component={TourguideAdditionalInfo} />
 
 
             {/* Admin Route */}

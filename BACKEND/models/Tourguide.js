@@ -1,7 +1,17 @@
 const mongoose = require("mongoose");
-const router = require("../routes/tourguides");
 
 const tourguideSchema = new mongoose.Schema({
+  user_name: {
+    type: String,
+    required: true,
+    unique: true, // Ensure the username is unique
+  },
+
+  password: {
+    type: String,
+    required: true,
+  },
+
   fullName: {
     type: String,
     required: true,
@@ -36,6 +46,7 @@ const tourguideSchema = new mongoose.Schema({
   eMail: {
     type: String,
     required: true,
+    unique: true,  // Ensure the email is unique
   },
 
   workExperience: {
@@ -56,6 +67,10 @@ const tourguideSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    default: "tourguide", // Automatically assigns the role as "tourguide"
   },
 });
 

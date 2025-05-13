@@ -98,10 +98,12 @@ export default class CusPack extends Component {
                     <p className="text-muted" style={{ fontSize: "0.9rem" }}>
                       {pack.description || "A beautiful destination."}
                     </p>
+                         <p>NO Of Days: {pack.NumOfDays}</p>
+                      <p>Destination: {pack.Destination}</p>
                     <div className="d-flex align-items-center mb-2">
                       <span className="me-2 text-warning">★★★★☆</span>
                       <span className="fw-bold text-dark">
-                        ₹ {pack.TotPrice} / Person
+                        NRS {pack.TotPrice} / Person
                       </span>
                     </div>
                   </div>
