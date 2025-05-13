@@ -46,12 +46,7 @@ function TourGuideDashboard() {
         axios.get(`http://localhost:8070/tourguide/profile/${userId}`),  // Fetch tour guide profile
         axios.get(`http://localhost:8070/tourguideReservation/reservedforTourGuides/${userId}`) // Fetch reserved tour guides for this user
       ]);
-      
-      // Log the responses to the console to inspect the data
-      console.log("Profile Response:", responses[0]);
-      console.log("Reserved Guides Response:", responses[1]);
 
-      // Handle responses and assign data to state
       const data = {
         tourGuideProfile: responses[0].status === "fulfilled" ? responses[0].value.data : {},
         reservedTourGuides: responses[1].status === "fulfilled" ? responses[1].value.data : [], // Correctly accessing data
@@ -85,8 +80,61 @@ function TourGuideDashboard() {
   return (
     <div className="container-fluid py-4">
       <div className="row">
-        {/* Sidebar omitted for brevity */}
-        
+        {/* Sidebar */}
+        <div
+          className="sidebar p-4"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            height: "100vh",
+            width: "240px",
+            backgroundColor: "#2c2c54",
+            zIndex: 1000,
+            borderRight: "2px solid #ddd",
+            paddingTop: "20px",
+          }}
+        >
+          <h3 className="text-center text-white mb-4">Tour Guide Panel</h3>
+          <ul className="list-unstyled">
+            <li>
+              <a
+                href="/tourguide/dashboard"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-house-door me-2"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a
+                href="/tourguide/bookings"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-calendar-check me-2"></i> Bookings
+              </a>
+            </li>
+            <li>
+              <a
+                href="/tourguide/profile"
+                className="d-flex align-items-center text-white px-3 py-2"
+              >
+                <i className="bi bi-person-circle me-2"></i> Profile
+              </a>
+            </li>
+          </ul>
+
+          {/* Logout Button */}
+          <div className="mt-auto">
+            <div
+              onClick={handleLogout}
+              className="d-flex align-items-center text-white px-3 py-2"
+              style={{ cursor: "pointer" }}
+            >
+              <i className="bi bi-box-arrow-right me-2"></i> Logout
+            </div>
+          </div>
+        </div>
+
         {/* Tour Guide Dashboard Main Content */}
         <div className="col-md-9 col-lg-10 ms-auto" style={{ marginLeft: "240px" }}>
           <h2>Your Reserved Tour Guides</h2>
