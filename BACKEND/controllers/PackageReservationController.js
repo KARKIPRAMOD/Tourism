@@ -62,7 +62,10 @@ exports.confirmReservation = async (req, res) => {
 exports.getAllReservations = async (req, res) => {
   try {
     // Fetch all reservations, populate user and package details
-    const reservations = await PackageReservation.find().populate("user package");
+    const reservations = (await PackageReservation.find().populate("user package")
+      .populate("user", "full_name email profile_picture phone")
+)
+    
 
     if (!reservations || reservations.length === 0) {
       return res.status(404).json({ message: "No reservations found" });

@@ -17,7 +17,6 @@ export default class AllPacks extends Component {
     super(props);
     this.state = {
       packages: [], // Array to hold the package data
-      searchQuery: "", // Search query to filter packages
       isAuthorized: false, // Authorization flag
     };
   }
@@ -38,25 +37,27 @@ export default class AllPacks extends Component {
   // Fetch packages from the backend
   retrievePackages() {
     axios
-      .get("http://localhost:8070/package/all")
+      .get("http://localhost:8070/package/all") // Assuming the backend returns an array of packages
       .then((res) => {
-        console.log(res.data); // Check the structure of the response
-        if (res.data.success) {
+        console.log("API Response:", res.data); // Log the full response to check the structure
+        if (Array.isArray(res.data)) {
           this.setState({
-            packages: res.data.existingPackages || [], // Adjust this line if needed
+            packages: res.data, // Set the state with the array of packages
+          });
+        } else {
+          console.error("Packages are not in the expected format.");
+          this.setState({
+            packages: [],
           });
         }
       })
       .catch((error) => {
         console.error("Error fetching packages:", error);
+        this.setState({
+          packages: [],
+        });
       });
   }
-
-  // Handle search input and filter packages based on packName
-  handleTextSearch = (e) => {
-    const searchTerm = e.currentTarget.value;
-    this.setState({ searchQuery: searchTerm });
-  };
 
   // Handle deleting a package
   onDelete(id) {
@@ -87,11 +88,6 @@ export default class AllPacks extends Component {
         </div>
       );
     }
-
-    // Filter packages based on the search query
-    const filteredPackages = this.state.packages.filter((pkg) =>
-      pkg.packName.toLowerCase().includes(this.state.searchQuery.toLowerCase())
-    );
 
     return (
       <div className={styles.body}>
@@ -172,18 +168,6 @@ export default class AllPacks extends Component {
             <main className={styles.Main1}>
               <h2 className="mb-4 text-center">All Package Details</h2>
 
-              {/* Filter and Search Row */}
-              <div className="d-flex justify-content-between align-items-center mb-4 px-3">
-                <input
-                  type="text"
-                  className="form-control me-2"
-                  style={{ maxWidth: "300px" }}
-                  placeholder="Search for a package"
-                  value={this.state.searchQuery} // Controlled input value
-                  onChange={this.handleTextSearch} // Handling onChange
-                />
-              </div>
-
               <div className="table-responsive px-3">
                 <table className="table align-middle">
                   <thead
@@ -197,7 +181,6 @@ export default class AllPacks extends Component {
                     <tr>
                       <th>S.N.</th>
                       <th>Package Name</th>
-                      <th>Package ID</th>
                       <th>Destination</th>
                       <th>Days</th>
                       <th>Passengers</th>
@@ -205,17 +188,15 @@ export default class AllPacks extends Component {
                       <th>Transport</th>
                       <th>Tour Guide</th>
                       <th>Total Price (Rs)</th>
-                      <th>Image</th> {/* Add an extra column for the image */}
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredPackages.length > 0 ? (
-                      filteredPackages.map((pkg, index) => (
+                    {this.state.packages.length > 0 ? (
+                      this.state.packages.map((pkg, index) => (
                         <tr key={pkg._id}>
                           <td>{index + 1}</td>
                           <td>{pkg.packName}</td>
-                          <td>{pkg.packID}</td>
                           <td>{pkg.Destination}</td>
                           <td>{pkg.NumOfDays}</td>
                           <td>{pkg.NumOfPassen}</td>
@@ -223,18 +204,7 @@ export default class AllPacks extends Component {
                           <td>{pkg.Transport}</td>
                           <td>{pkg.TourGuide}</td>
                           <td>{pkg.TotPrice}</td>
-                          <td>
-                            {/* Displaying the image */}
-                            {pkg.Images && pkg.Images.length > 0 ? (
-                              <img
-                                src={`http://localhost:8070/${pkg.Images[0]}`}
-                                alt={pkg.packName}
-                                style={{ width: "100px", height: "auto" }}
-                              />
-                            ) : (
-                              <span>No Image</span>
-                            )}
-                          </td>
+
                           <td>
                             <button
                               className="btn btn-outline-danger btn-sm"
@@ -247,7 +217,7 @@ export default class AllPacks extends Component {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="12" className="text-center">
+                        <td colSpan="10" className="text-center">
                           No packages found.
                         </td>
                       </tr>

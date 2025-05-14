@@ -9,12 +9,12 @@ const PackageConfirmation = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8070/reservePackageRouter/") 
+      .get("http://localhost:8070/reservePackageRouter/") // Ensure this endpoint fetches all reservations
       .then((response) => {
         if (Array.isArray(response.data.reservations)) {
           setReservations(response.data.reservations);
         } else {
-          setReservations([]);  // Ensuring empty array if the response is not in the expected format
+          setReservations([]); // Ensuring empty array if the response is not in the expected format
         }
         setLoading(false);
       })
@@ -121,11 +121,11 @@ const PackageConfirmation = () => {
           </li>
           <li>
             <Link
-               to="/all/user"
+              to="/all/user"
               className="d-flex align-items-center text-white px-3 py-2"
-              >
+            >
               <i className="bi bi-person-fill me-2"></i> Users
-              </Link>
+            </Link>
           </li>
         </ul>
 
@@ -155,6 +155,7 @@ const PackageConfirmation = () => {
               <div className="col-md-4" key={reservation._id}>
                 <div className="card mb-3">
                   <div className="card-body">
+                    {/* Package Information at the Top */}
                     <h5 className="card-title">Package Reservation</h5>
                     <p className="card-text">
                       <strong>Package Name:</strong> {reservation.package.name}
@@ -167,8 +168,44 @@ const PackageConfirmation = () => {
                       <strong>End Date:</strong>{" "}
                       {new Date(reservation.endDate).toLocaleDateString()}
                     </p>
-                    <div className="d-flex justify-content-between">
-                      {/* Show the buttons only for unconfirmed reservations */}
+
+                    {/* Line Between Package and User Details */}
+                    <hr style={{ borderTop: "2px solid #ddd" }} />
+
+                    {/* User Information at the Bottom */}
+                    <div className="user-info" style={{ position: "relative" }}>
+                      {/* User Image on Bottom Right */}
+                      {reservation.user.profile_picture && (
+                        <img
+                          src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
+                          alt={reservation.user.full_name}
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "20%",
+                            objectFit: "cover",
+                            border: "3px solid rgb(4, 4, 4)",
+                            position: "absolute", 
+                            right: "10px",
+                            bottom: "10px",
+                          }}
+                        />
+                      )}
+                      <p className="card-text">
+                        <strong>User Full Name:</strong>{" "}
+                        {reservation.user.full_name}
+                      </p>
+                      <p className="card-text">
+                        <strong>User Email:</strong> {reservation.user.email}
+                      </p>
+                      <p className="card-text">
+                        <strong>User Phone:</strong> {reservation.user.phone}
+                      </p>
+                    </div>
+
+                    {/* Reservation buttons */}
+                    <div className="d-flex justify-content-between" style={{margin:"20px"}}
+>
                       {!reservation.isConfirmed ? (
                         <>
                           <button
@@ -185,7 +222,6 @@ const PackageConfirmation = () => {
                           </button>
                         </>
                       ) : (
-                        // For confirmed reservations, show the cancel button
                         <button
                           onClick={() => handleCancel(reservation._id)}
                           className="btn btn-warning"

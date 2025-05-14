@@ -12,6 +12,7 @@ const TourGuideReservationConfirmation = () => {
       .get("http://localhost:8070/tourguideReservation/")
       .then((response) => {
         setReservations(response.data);
+        console.log(response.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -65,6 +66,7 @@ const TourGuideReservationConfirmation = () => {
         console.error(err);
       });
   };
+
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
@@ -158,44 +160,105 @@ const TourGuideReservationConfirmation = () => {
             {reservations.map((reservation) => (
               <div className="col-md-4" key={reservation._id}>
                 <div className="card mb-3">
-                  <div className="card-body">
-                    <h5 className="card-title">Tour Guide Reservation</h5>
-                    <p className="card-text">
-                      <strong>Tour Guide:</strong> {reservation.tourguide.fullName}
-                    </p>
-                    <p className="card-text">
-                      <strong>Start Date:</strong>{" "}
-                      {new Date(reservation.startDate).toLocaleDateString()}
-                    </p>
-                    <p className="card-text">
-                      <strong>End Date:</strong>{" "}
-                      {new Date(reservation.endDate).toLocaleDateString()}
-                    </p>
-                    <div className="d-flex justify-content-between">
-                      {/* Show the buttons only for unconfirmed reservations */}
-                      {!reservation.isConfirmed ? (
+                  <div className="card-body d-flex justify-content-between">
+                    {/* Left side: Reservation Info */}
+                    <div className="left-side" style={{ flex: 1 }}>
+                      <p className="card-text" style={{ fontWeight: "bold" }}>
+                        <strong>Booked BY:</strong>
+                      </p>
+
+                      {/* User Info */}
+                      {reservation.user && (
                         <>
-                          <button
-                            onClick={() => handleConfirm(reservation._id)}
-                            className="btn btn-success"
-                          >
-                            Confirm
-                          </button>
+                          {reservation.user.full_name && (
+                            <p className="card-text">
+                              <strong>User Name:</strong> {reservation.user.full_name}
+                            </p>
+                          )}
+                          <p className="card-text">
+                            <strong>User Email:</strong> {reservation.user.email}
+                          </p>
+                           <p className="card-text">
+                            <strong>User Phone:</strong> {reservation.user.phone}
+                          </p>
+                        </>
+                      )}
+
+                      <hr style={{ borderTop: "2px solid #ddd" }} /> {/* Line between user and tourguide */}
+
+                      <p className="card-text" style={{ fontWeight: "bold" }}>
+                        <strong>Booked :</strong>
+                      </p>
+
+                      <p className="card-text">
+                        <strong>Tour Guide :</strong> {reservation.tourguide.fullName}
+                      </p>
+                      <p className="card-text">
+                        <strong>From :</strong> {new Date(reservation.startDate).toLocaleDateString()}
+                      </p>
+                      <p className="card-text">
+                        <strong>To :</strong> {new Date(reservation.endDate).toLocaleDateString()}
+                      </p>
+
+                      {/* Reservation buttons */}
+                      <div className="d-flex justify-content-between"  style={{margin:"20px"}}>
+                        {!reservation.isConfirmed ? (
+                          <>
+                            <button
+                              onClick={() => handleConfirm(reservation._id)}
+                              className="btn btn-success"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => handleCancel(reservation._id)}
+                              className="btn btn-danger"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
                           <button
                             onClick={() => handleCancel(reservation._id)}
-                            className="btn btn-danger"
+                            className="btn btn-warning"
                           >
-                            Cancel
+                            Cancel Reservation
                           </button>
-                        </>
-                      ) : (
-                        // For confirmed reservations, show the cancel button
-                        <button
-                          onClick={() => handleCancel(reservation._id)}
-                          className="btn btn-warning"
-                        >
-                          Cancel Reservation
-                        </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right side: Images */}
+                    <div className="right-side" style={{ flex: 0.2, textAlign: "center" }}>
+                      {/* Tour guide image */}
+                      {reservation.tourguide.image && (
+                        <img
+                          src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
+                          alt={reservation.tourguide.fullName}
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "20%",
+                            objectFit: "cover",
+                            border: "3px solid rgb(5, 6, 6)",
+                          }}
+                        />
+                      )}
+
+                      {/* User profile picture */}
+                      {reservation.user.profile_picture && (
+                        <img
+                          src={`http://localhost:8070/uploads/tourguide_pictures/${reservation.tourguide.image}`}
+                          alt={reservation.user.full_name}
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "20%",
+                            objectFit: "cover",
+                            marginTop: "100px",
+                            border: "3px solid rgb(10, 10, 10)",
+                          }}
+                        />
                       )}
                     </div>
                   </div>

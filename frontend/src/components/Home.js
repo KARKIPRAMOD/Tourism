@@ -19,7 +19,6 @@ import ThingsToDo from "./ThingsToDo";
 import FeedBackComp from "./feedbackComp";
 import Footer from "./Footer";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { FaPlane, FaHotel, FaMapMarkedAlt, FaCar } from "react-icons/fa";
 const gradientHeader = (color1, color2) => ({
   fontWeight: "700",
   fontSize: "40px",
@@ -327,22 +326,18 @@ const Home = () => {
             {[
               {
                 title: "Flight Booking",
-                icon: <FaPlane size={30} color="#ff6a00" />,
                 desc: "Find the best flights at the best prices.",
               },
               {
                 title: "Hotel Reservations",
-                icon: <FaHotel size={30} color="#ff6a00" />,
                 desc: "Top-rated hotels with verified reviews.",
               },
               {
                 title: "Tour Guides",
-                icon: <FaMapMarkedAlt size={30} color="#ff6a00" />,
                 desc: "Licensed guides to enrich your travel experience.",
               },
               {
                 title: "Vehicle Rental",
-                icon: <FaCar size={30} color="#ff6a00" />,
                 desc: "Cars, bikes & more, ready when you are.",
               },
             ].map((service, index) => (
@@ -463,19 +458,20 @@ const Home = () => {
                   paddingTop: "2rem",
                 }}
               >
-                {thingToDO?.map((value, index) => {
-                  return (
-                    <Link to={`/${value.link}`}>
-                      <div className={styleHome.thigsToDo}>
-                        <ThingsToDo
-                          image={value.image}
-                          alt={value.alt}
-                          name={value.description}
-                        />
-                      </div>
-                    </Link>
-                  );
-                })}
+              {thingToDO?.map((value, index) => {
+  return (
+    <Link key={value.link} to={`/${value.link}`}>
+      <div className={styleHome.thigsToDo}>
+        <ThingsToDo
+          image={value.image}
+          alt={value.alt}
+          name={value.description}
+        />
+      </div>
+    </Link>
+  );
+})}
+
               </div>
               <div
                 style={{

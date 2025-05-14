@@ -72,7 +72,9 @@ exports.confirmReservation = async (req, res) => {
 // For getting all reservations (Admin or anyone with permission)
 exports.getAllReservations = async (req, res) => {
   try {
-    const reservations = await Reservation.find().populate("hotel user");
+    const reservations = await Reservation.find().populate("hotel user").
+    populate("user", "full_name email profile_picture phone") // Populating user details
+;
 
     if (reservations.length === 0) {
       return res.status(404).json({ message: "No reservations found" });

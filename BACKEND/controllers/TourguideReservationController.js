@@ -111,8 +111,8 @@ exports.getAllReservations = async (req, res) => {
   try {
     // Fetch all reservations, sorted by start date
     const reservations = await TourguideReservation.find({})
-      .populate("user", "fullName email") // Populating user details
-      .populate("tourguide", "fullName") // Populating tourguide details
+      .populate("user", "full_name email profile_picture phone") // Populating user details
+      .populate("tourguide", "fullName image") // Populating tourguide details
       .sort({ startDate: 1 }); // Sorting by start date
 
     if (!reservations.length) {

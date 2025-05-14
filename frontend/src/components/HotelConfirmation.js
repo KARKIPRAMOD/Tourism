@@ -8,23 +8,23 @@ const HotelReservationConfirmation = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-  axios
-    .get("http://localhost:8070/HotelReservation/") // Ensure this endpoint fetches all reservations
-    .then((response) => {
-      // Accessing the reservations array properly
-      if (Array.isArray(response.data.reservations)) {
-        setReservations(response.data.reservations);  // Setting the reservations correctly
-      } else {
-        setReservations([]); // Set to empty array if data is not an array
-      }
-      setLoading(false);
-    })
-    .catch((err) => {
-      setError("Failed to load reservations.");
-      setLoading(false);
-    });
-}, []);
-
+    axios
+      .get("http://localhost:8070/HotelReservation/") // Ensure this endpoint fetches all reservations
+      .then((response) => {
+        // Accessing the reservations array properly
+        if (Array.isArray(response.data.reservations)) {
+          setReservations(response.data.reservations); // Setting the reservations correctly
+          console.log(response.data);
+        } else {
+          setReservations([]); // Set to empty array if data is not an array
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError("Failed to load reservations.");
+        setLoading(false);
+      });
+  }, []);
 
   const handleConfirm = (reservationId) => {
     axios
@@ -166,19 +166,61 @@ const HotelReservationConfirmation = () => {
               <div className="col-md-4" key={reservation._id}>
                 <div className="card mb-3">
                   <div className="card-body">
+                    {/* Hotel Information at the Top */}
                     <p className="card-text">
-                      <strong>Hotel Name:</strong> {reservation.hotel.name}
+                      <strong>Hotel Name :</strong> {reservation.hotel.name}
                     </p>
                     <p className="card-text">
-                      <strong>Start Date:</strong>{" "}
+                      <strong>From :</strong>{" "}
                       {new Date(reservation.fromDate).toLocaleDateString()}
                     </p>
                     <p className="card-text">
-                      <strong>End Date:</strong>{" "}
+                      <strong>To:</strong>{" "}
                       {new Date(reservation.toDate).toLocaleDateString()}
                     </p>
-                    <div className="d-flex justify-content-between">
-                      {/* Show the buttons only for unconfirmed reservations */}
+                      <p className="card-text">
+                      <strong>Rooms :</strong>{" "}
+                      {reservation.noOfRooms}
+                    </p>
+                    {/* Line Between Hotel and User Details */}
+                    <hr style={{ borderTop: "2px solid #ddd" }} />
+
+                    {/* User Information at the Bottom */}
+                    <div className="user-info" style={{ position: "relative" }}>
+                      {/* User Image on Bottom Right */}
+                      {reservation.user.profile_picture && (
+                        <img
+                          src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
+                          alt={reservation.user.full_name}
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            borderRadius: "20%",
+                            objectFit: "cover",
+                            border: "3px solid rgb(7, 7, 7)",
+                            position: "absolute",
+                            right: "10px",
+                            bottom: "70px",
+                          }}
+                        />
+                      )}
+                      <p className="card-text">
+                        <strong>Booked BY:</strong> 
+                      </p>
+                      <p className="card-text">
+                        <strong>User Name :</strong>{" "}
+                        {reservation.user.full_name}
+                      </p>
+                      <p className="card-text">
+                        <strong>User Email :</strong> {reservation.user.email}
+                      </p>
+                      <p className="card-text">
+                        <strong>User Phone :</strong> {reservation.user.phone}
+                      </p>
+                    </div>
+
+                    {/* Reservation buttons */}
+                    <div className="d-flex justify-content-between" style={{margin:"20px"}}> 
                       {!reservation.isConfirmed ? (
                         <>
                           <button
@@ -195,7 +237,6 @@ const HotelReservationConfirmation = () => {
                           </button>
                         </>
                       ) : (
-                        // For confirmed reservations, show the cancel button
                         <button
                           onClick={() => handleCancel(reservation._id)}
                           className="btn btn-warning"
