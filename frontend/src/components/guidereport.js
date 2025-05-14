@@ -366,7 +366,7 @@ compareTourguideReservations = () => {
       <>
        
          <div className={styleHome.container}>
-          <img
+          <img 
             src={"https://path-to-your-image.jpg"}
             className={styleHome.img}
           />
@@ -402,9 +402,10 @@ compareTourguideReservations = () => {
                   "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
                 }
                 style={{
-                  objectFit: "contain",
+                  margin:"20px",
+                  width: "90%",
                   height: "15rem",
-                  width: "auto",
+                  borderRadius:"10%"
                 }}
                 alt={tourguide.fullName}
               />

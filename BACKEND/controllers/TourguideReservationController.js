@@ -92,8 +92,9 @@ exports.getTourguideReservations = async (req, res) => {
     const reservations = await TourguideReservation.find({
       tourguide: tourguideId,  // Filter by tourguide ID
     })
-      .populate("user", "user_name") // Populate user details
-      .sort({ startDate: 1 }); // Sort by start date
+            .populate("user", "full_name email profile_picture phone")
+            .populate("tourguide", "tourguide_name amount image",) 
+          .sort({ startDate: 1 }); // Sort by start date
 
     if (!reservations.length) {
       return res.status(404).json({ message: "No reservations found for this tourguide" });

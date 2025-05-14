@@ -37,24 +37,33 @@ export default class CusPack extends Component {
         <div
           className="position-relative text-white text-center py-5 mb-5"
           style={{
-            backgroundImage: `url(../img/my23.jpg)`,
+    backgroundImage: `url(https://1.bp.blogspot.com/-a3xjUjfN0Uo/Wbooun_zqoI/AAAAAAAAAFc/4rhDjGQhUUgV5tUxbrNF-SNAgJfgR7FOwCLcBGAs/s1600/nepal-tour.jpg)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             borderRadius: "12px",
+            boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.3)", // Adding shadow for better visibility
           }}
         >
           <div
             className="position-absolute w-100 h-100"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", top: 0, left: 0 }}
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              top: 0,
+              left: 0,
+              borderRadius: "12px",
+            }}
           ></div>
           <div className="position-relative z-1">
-            <h1 className="display-5 fw-bold">Explore Our Tour Packages</h1>
-            <p className="lead">Find the perfect getaway destination</p>
+            <h1 className="display-4 fw-bold">Explore Our Tour Packages</h1>
+            <p className="lead mb-4">Discover the best destinations and create memories that last</p>
+            <a href="#packages" className="btn btn-light btn-lg text-dark">
+              Explore Now
+            </a>
           </div>
         </div>
 
-        {/* Package Cards */}
-        <div className="row row-cols-1 row-cols-md-3 g-4">
+        {/* Package Cards Section */}
+        <div className="row row-cols-1 row-cols-md-3 g-4 mb-5" id="packages">
           {this.state.packages.map((pack, index) => (
             <div className="col" key={index}>
               <Link
@@ -62,18 +71,18 @@ export default class CusPack extends Component {
                 style={{ textDecoration: "none" }}
               >
                 <div
-                  className="card shadow-sm border-0 rounded-4 overflow-hidden"
+                  className="card shadow-lg border-0 rounded-4 overflow-hidden"
                   style={{
                     backgroundColor: "#fff",
                     cursor: "pointer",
                     transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    borderRadius: "20px",
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
                   }}
-                  // Hover effect: Scale and shadow
                   onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
                   onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
                 >
                   <div className="card-img-top">
-                    {/* Display image or fallback */}
                     <img
                       src={
                         pack.Images && pack.Images[1]
@@ -87,19 +96,19 @@ export default class CusPack extends Component {
                         height: "200px",
                         width: "90%",
                         borderRadius: "15px",
-                        margin: "25px",
+                        margin: "20px",
                       }}
                     />
                   </div>
                   <div className="card-body p-3">
-                    <h5 className="fw-bold text-primary" style={{ fontSize: "1.2rem" }}>
+                    <h5 className="fw-bold text-primary" style={{ fontSize: "1.3rem" }}>
                       {pack.packName}
                     </h5>
-                    <p className="text-muted" style={{ fontSize: "0.9rem" }}>
+                    <p className="text-muted" style={{ fontSize: "1rem" }}>
                       {pack.description || "A beautiful destination."}
                     </p>
-                         <p>NO Of Days: {pack.NumOfDays}</p>
-                      <p>Destination: {pack.Destination}</p>
+                    <p className="text-muted">No Of Days: {pack.NumOfDays}</p>
+                    <p className="text-muted">Destination: {pack.Destination}</p>
                     <div className="d-flex align-items-center mb-2">
                       <span className="me-2 text-warning">★★★★☆</span>
                       <span className="fw-bold text-dark">
@@ -107,12 +116,15 @@ export default class CusPack extends Component {
                       </span>
                     </div>
                   </div>
-
                 </div>
               </Link>
             </div>
           ))}
         </div>
+
+        {/* Footer with some padding at the bottom to ensure content doesn't look cut off */}
+        <footer style={{ padding: "20px 0", textAlign: "center", backgroundColor: "#f8f9fa" }}>
+        </footer>
       </div>
     );
   }

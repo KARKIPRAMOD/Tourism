@@ -140,14 +140,14 @@ const Home = () => {
     },
     {
       image:
-        "https://th.bing.com/th/id/R.4cf3acbb948c13cee6365bae5d9eaa62?rik=RS9UQyvW3hipeg&riu=http%3a%2f%2fwww.sidetracked.com%2fwp-content%2fuploads%2f2013%2f07%2fpf_nepalstory_037-1600x1000.jpg&ehk=eWtDJqUvxJTCGu5ZQb3jMFHQY%2b4miDi38QLp%2bI7HSf0%3d&risl=&pid=ImgRaw&r=0",
+        "https://th.bing.com/th/id/OIP.xE77SnlewTz4DGhtFRngvgHaEK?w=304&h=182&c=7&r=0&o=5&cb=iwc2&dpr=1.3&pid=1.7",
       alt: "Mountain Biking",
       description: "Mountain Biking",
       link: "mountainbiking",
     },
     {
       image:
-        "https://th.bing.com/th/id/R.ac2fb96091ed2e998a18bc5e73e73c9f?rik=HqmxT40J8JeFhw&riu=http%3a%2f%2ftourstreknepal.com%2fwp-content%2fuploads%2f2015%2f02%2fparaglidinginnepal.jpg&ehk=OwV68OkjQltkj4darK5mekLja5vmPwXLcDt1GSZhKXY%3d&risl=&pid=ImgRaw&r=0",
+        "https://th.bing.com/th/id/OIP.ScrX41wYWIac8BIkHbBM1wHaE9?cb=iwc2&rs=1&pid=ImgDetMain",
       alt: "Paragliding",
       description: "Paragliding",
       link: "paragliding",

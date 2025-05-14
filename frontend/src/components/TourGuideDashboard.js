@@ -107,14 +107,6 @@ function TourGuideDashboard() {
             </li>
             <li>
               <a
-                href="/tourguide/bookings"
-                className="d-flex align-items-center text-white px-3 py-2"
-              >
-                <i className="bi bi-calendar-check me-2"></i> Bookings
-              </a>
-            </li>
-            <li>
-              <a
                 href="/tourguide/profile"
                 className="d-flex align-items-center text-white px-3 py-2"
               >
@@ -154,6 +146,7 @@ function TourGuideDashboard() {
                         src={`http://localhost:8070/uploads/tourguide_pictures/${reservation.tourguide.image}`}
                         alt={reservation.tourguide.fullName}
                         className="card-img-top"
+                        style={{ height: "200px", objectFit: "cover" }} // Make the image smaller
                       />
                       <div className="card-body">
                         <h5 className="card-title">{reservation.tourguide.fullName}</h5>
@@ -163,10 +156,39 @@ function TourGuideDashboard() {
                         <p className="card-text">
                           End Date: {new Date(reservation.endDate).toLocaleDateString()}
                         </p>
-                        <p className="card-text">Amount: {reservation.tourguide.amount} / Day</p>
+                        {/* If amount is not available, provide fallback value */}
+                        <p className="card-text">
+                          Amount: {reservation.tourguide.amount ? reservation.tourguide.amount : "Not Available"} / Day
+                        </p>
                         <p className={`badge ${reservation.isConfirmed ? "bg-success" : "bg-warning"}`}>
                           {reservation.isConfirmed ? "Confirmed" : "Unconfirmed"}
                         </p>
+                        {/* Display user who booked the tour guide */}
+                        <div className="card-footer">
+                          <h6>Booked by:</h6>
+                          <div className="d-flex justify-content-between">
+                            <div>
+                              <p>
+                                <strong>Name:</strong> {reservation.user?.full_name || "Not Available"} <br />
+                                <strong>Email:</strong> {reservation.user?.email || "Not Available"} <br />
+                                <strong>Phone:</strong> {reservation.user?.phone || "Not Available"}
+                              </p>
+                            </div>
+                            {/* Display user image on the right side */}
+                            <div>
+                              <img
+                                src={`http://localhost:8070/uploads/profile_pictures/${reservation.user?.profile_picture || 'default.jpg'}`}
+                                alt={reservation.user?.full_name}
+                                style={{
+                                  width: "60px",
+                                  height: "60px",
+                                  borderRadius: "20%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

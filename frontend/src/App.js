@@ -73,6 +73,8 @@ import PackageDetails from "./components/PackageDetails";
 import TourUpdateForm from "./components/AdminTourUpdates.js"
 import TourGuideDashboard from "./components/TourGuideDashboard.js"
 import TourguideAdditionalInfo from"./components/additioaldetaails.js"
+import TourGuideProfile from "./components/TourguideProfile.js";
+import ThingsToDo from "./components/thingsto.js"
 
 const App = () => {
   const [userId, setUserId] = React.useState(() => {
@@ -108,7 +110,7 @@ const App = () => {
   return (
     <Router>
       <div className="App min-vh-100" style={{ backgroundColor: "#f7f7f7" }}>
-       {isNavbarVisible && userRole !== "admin" && (
+      {isNavbarVisible && userRole !== "admin" && (
   <nav className={`navbar-fixed-top ${styles.nav}`}>
     <div className={`container ${styles.parentnav}`}>
       <img src={logo} alt="Travelo logo" className={styles.logo}></img>
@@ -126,36 +128,40 @@ const App = () => {
           <li>
             <Link to="/view/cuspackage">Tour Packages</Link>
           </li>
+           <li>
+            <Link to="/thingstodo">Things To Do</Link>
+          </li>
           <li>
-            {/* Profile Link: Force reload when clicked */}
-            <a
-              href={`/profile/home/${userId}`} // Using a regular anchor tag
-              onClick={(e) => {
-                  if (!userId) {
+            <Link to="/tour-updates">Tour Updates</Link>
+          </li>         
+        </ul>
+      </div>
+
+      {/* Profile and Login/Logout */}
+      <div className="d-flex align-items-center">
+        {/* Profile Icon */}
+        {userId && (
+          <a
+            href={`/profile/home/${userId}`}
+            className="d-flex align-items-center me-3"
+            onClick={(e) => {
+              if (!userId) {
                 localStorage.setItem("hideNavbar", "false");
               } else {
-                // Set the flag to hide the navbar (if needed)
-                localStorage.setItem("hideNavbar", "true"); // Set the flag to hide the navbar
+                localStorage.setItem("hideNavbar", "true");
               }
 
               // Force navigation to the Profile page
               window.location.href = `/profile/home/${userId}`;
-
-              // Trigger a full page reload
               window.location.reload();
-              }}
-            >
-              Profile
-            </a>
-          </li>
-          <li>
-            <Link to="/tour-updates">Tour Updates</Link>
-          </li>
-        </ul>
-      </div>
+            }}
+          >
+            <i className="bi bi-person-circle" style={{ fontSize: "2.5rem", color: "#000" }}></i>
+          </a>
+        )}
 
-      {userId ? (
-        <div>
+        {/* Login/Logout Button */}
+        {userId ? (
           <Link
             to={"/home"}
             onClick={logout}
@@ -163,17 +169,16 @@ const App = () => {
           >
             Logout
           </Link>
-        </div>
-      ) : (
-        <>
+        ) : (
           <Link to={"/user/login"} className={styles.btn_login}>
             Login
           </Link>
-        </>
-      )}
+        )}
+      </div>
     </div>
   </nav>
 )}
+
 
 
         <div>
@@ -312,6 +317,10 @@ const App = () => {
 
             <Route path="/add/details" component={TourguideAdditionalInfo} />
 
+            
+            <Route path="/tourguide/profile" component={TourGuideProfile} />
+
+            <Route path="/thingstodo" component={ThingsToDo} /> 
 
             {/* Admin Route */}
             <Route
