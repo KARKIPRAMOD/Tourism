@@ -367,7 +367,7 @@ compareTourguideReservations = () => {
        
          <div className={styleHome.container}>
           <img 
-            src={"https://path-to-your-image.jpg"}
+            src={"https://www.travels2nepal.com/images/banner2.jpg"}
             className={styleHome.img}
           />
           <div className={styleHome.layer}>

@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 import styleHome from "../style_sheets/Home.module.css";
 
 //import images from img directory
-import coverImg from "../img/Beach.jpg";
 import paymentImg from "../img/ezpayment.png";
 import nearbyImg from "../img/Nearby.png";
 import covidImg from "../img/Safe.png";
@@ -19,6 +18,7 @@ import ThingsToDo from "./ThingsToDo";
 import FeedBackComp from "./feedbackComp";
 import Footer from "./Footer";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
+
 const gradientHeader = (color1, color2) => ({
   fontWeight: "700",
   fontSize: "40px",
@@ -157,7 +157,8 @@ const Home = () => {
   return (
     <>
       <div className={styleHome.container}>
-        <img src={coverImg} alt="Cover Beach" className={styleHome.img} />
+        <img src={"https://ankitsenvlogs.com/wp-content/uploads/2023/07/Nepal-Travel-Guide-1.jpg"
+} alt="Cover Beach" className={styleHome.img} />
         <div className={styleHome.layer}>
           <div className={styleHome.centered}>
             <div className={styleHome.headerTxt}>TRAVEL TO EXPLORE</div>
