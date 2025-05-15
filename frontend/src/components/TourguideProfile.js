@@ -123,9 +123,10 @@ function TourGuideProfile() {
                           style={{
                             width: "120px",
                             height: "120px",
-                            objectFit: "cover",
+                            objectFit: "contain",
                             marginRight: "20px",
                             border: "4px solid #ddd",
+                            
                           }}
                         />
                         <div>
@@ -177,9 +178,11 @@ function TourGuideProfile() {
                         <div className="col-md-6 mb-3">
                           <p><strong>Work Experience:</strong> {profileData.guide.workExperience} years</p>
                           <p><strong>Daily Rate:</strong> NRS {profileData.guide.amount}</p>
+                          <p style={{marginTop:"40px"}} ><strong>Description:</strong> </p>
+                          <p>{profileData.guide.description}</p>
+
                         </div>
                         <div className="col-md-6 mb-3">
-                          <p><strong>Description:</strong> {profileData.guide.description}</p>
                         </div>
                       </div>
                     </div>

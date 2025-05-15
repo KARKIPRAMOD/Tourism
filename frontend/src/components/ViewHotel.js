@@ -25,8 +25,16 @@ export default class ViewHotel extends Component {
       displayedHotels: [],
       currentPage: 1,
       hotelsPerPage: 10,
-      maxPrice: 100000, // Set maximum price to 1 Lakh NPR
-      selectedPrice: 100000, // Default value for filter is 1 Lakh NPR
+      maxPrice: 100000,
+      selectedPrice: 100000,
+      locations: [],
+      selectedLocation: "All",
+      selectedDays: "All",
+      selectedPersons: "All",
+      selectedSort: "New Packages",
+      selectedCategory: "All",
+      searchPackageName: "",
+      searchLocationText: "",
     };
   }
 
@@ -37,7 +45,9 @@ export default class ViewHotel extends Component {
   retriveHotels() {
     axios.get("http://localhost:8070/hotel/all").then((res) => {
       if (res.data.success) {
-        this.setState({ hotels: res.data.existingHotels }, () => {
+        const hotels = res.data.existingHotels;
+        const locations = ["All", ...new Set(hotels.map((h) => h.location))];
+        this.setState({ hotels, locations }, () => {
           this.updateDisplayedHotels();
         });
       }
@@ -45,34 +55,119 @@ export default class ViewHotel extends Component {
   }
 
   updateDisplayedHotels() {
-    const { hotels, currentPage, hotelsPerPage, selectedPrice } = this.state;
-    const filteredHotels = hotels.filter((hotel) => hotel.price <= selectedPrice); // Filter based on selected price
+    const {
+      hotels,
+      currentPage,
+      hotelsPerPage,
+      selectedPrice,
+      selectedLocation,
+      selectedCategory,
+      searchPackageName,
+      searchLocationText,
+    } = this.state;
+
+    let filteredHotels = hotels;
+
+    // Filter by Price
+    filteredHotels = filteredHotels.filter(
+      (hotel) => hotel.price <= selectedPrice
+    );
+
+    // Filter by Location (dropdown)
+    if (selectedLocation !== "All") {
+      filteredHotels = filteredHotels.filter(
+        (hotel) => hotel.location === selectedLocation
+      );
+    }
+
+    // Filter by Category (simple example: matches hotel.type)
+    if (selectedCategory !== "All") {
+      filteredHotels = filteredHotels.filter(
+        (hotel) =>
+          hotel.type.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+
+    // Filter by package name search (searchPackageName)
+    if (searchPackageName.trim() !== "") {
+      filteredHotels = filteredHotels.filter((hotel) =>
+        hotel.name.toLowerCase().includes(searchPackageName.toLowerCase())
+      );
+    }
+
+    // Filter by location search text (searchLocationText)
+    if (searchLocationText.trim() !== "") {
+      filteredHotels = filteredHotels.filter((hotel) =>
+        hotel.location.toLowerCase().includes(searchLocationText.toLowerCase())
+      );
+    }
+
+    // TODO: Add filtering for Days, Persons, Sort if needed here
+
     const indexOfLastHotel = currentPage * hotelsPerPage;
     const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
     const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
+
     this.setState((prevState) => ({
-      displayedHotels: [...prevState.displayedHotels, ...currentHotels],
+      displayedHotels:
+        currentPage === 1
+          ? currentHotels
+          : [...prevState.displayedHotels, ...currentHotels],
     }));
   }
 
   filterByPrice = (e) => {
-    const selectedPrice = e.target.value;
-    this.setState({ selectedPrice, currentPage: 1, displayedHotels: [] }, () => {
+    const selectedPrice = parseInt(e.target.value, 10);
+    this.setState({ selectedPrice, currentPage: 1 }, () => {
       this.updateDisplayedHotels();
     });
   };
 
-  handleTextSearch = (e) => {
-    const searchTerm = e.currentTarget.value;
-    axios.get("http://localhost:8070/hotel/all").then((res) => {
-      if (res.data.success) {
-        const filteredHotels = res.data.existingHotels.filter((hotel) =>
-          hotel.type.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        this.setState({ hotels: filteredHotels, currentPage: 1, displayedHotels: [] }, () => {
-          this.updateDisplayedHotels();
-        });
-      }
+  filterByLocation = (e) => {
+    const selectedLocation = e.target.value;
+    this.setState({ selectedLocation, currentPage: 1 }, () => {
+      this.updateDisplayedHotels();
+    });
+  };
+
+  filterByCategory = (category) => {
+    this.setState({ selectedCategory: category, currentPage: 1 }, () => {
+      this.updateDisplayedHotels();
+    });
+  };
+
+  handlePackageNameSearch = (e) => {
+    const val = e.target.value;
+    this.setState({ searchPackageName: val, currentPage: 1 }, () => {
+      this.updateDisplayedHotels();
+    });
+  };
+
+  handleLocationSearchText = (e) => {
+    const val = e.target.value;
+    this.setState({ searchLocationText: val, currentPage: 1 }, () => {
+      this.updateDisplayedHotels();
+    });
+  };
+
+  handleDaysChange = (e) => {
+    this.setState({ selectedDays: e.target.value, currentPage: 1 }, () => {
+      // Add logic if needed
+      this.updateDisplayedHotels();
+    });
+  };
+
+  handlePersonsChange = (e) => {
+    this.setState({ selectedPersons: e.target.value, currentPage: 1 }, () => {
+      // Add logic if needed
+      this.updateDisplayedHotels();
+    });
+  };
+
+  handleSortChange = (e) => {
+    this.setState({ selectedSort: e.target.value, currentPage: 1 }, () => {
+      // Add logic to sort the hotels accordingly
+      this.updateDisplayedHotels();
     });
   };
 
@@ -86,6 +181,8 @@ export default class ViewHotel extends Component {
   };
 
   render() {
+    const categories = ["All", "Holiday", "Mountains & Hills", "Vacation"];
+
     return (
       <div className={styles.body}>
         {/* Home Section */}
@@ -93,8 +190,7 @@ export default class ViewHotel extends Component {
           <div className={styles.home2_text}>
             <h1>Spend Your Holiday</h1>
             <p>
-              Enthusiastically extend extensive customer service before{" "}
-              <br /> best breed convergence completely.
+              Enthusiastically extend extensive customer service before <br /> best breed convergence completely.
             </p>
             <a href="#" className={styles.home2_btn}>
               Let's go now
@@ -105,21 +201,95 @@ export default class ViewHotel extends Component {
         {/* Offer Section */}
         <section className={styles.offer}>
           <div className={styles.container}>
-            <div className="row p-0" >
-              {/* Sidebar for Price Filter */}
-              <div className="col-md-3 p-0" style={{ height: "100vh", backgroundColor: "#f8f9fa" }}>
-                <div className={styles.sidebar} style={{ height: "100vh", backgroundColor: "#f1f1f1", padding: "20px", position: "sticky", top: "0" }}>
-                  <h3>Filter by Price</h3>
+            <div className="row p-0">
+              {/* Sidebar for Filters */}
+              <div
+                className="col-md-3 p-0"
+                style={{
+                  height: "100vh",
+                  backgroundColor: "#fff",
+                  padding: "20px",
+                  position: "sticky",
+                  top: "0",
+                  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                  fontSize: "14px",
+                  color: "#333",
+                  borderRight: "1px solid #eee",
+                  overflowY: "auto",
+                }}
+              >
+         
+
+                {/* Location Search */}
+                <div style={{ marginBottom: "30px" }}>
+                  <h4
+                    style={{
+                      fontWeight: "600",
+                      marginBottom: "10px",
+                      borderBottom: "2px solid orange",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    Location Search
+                  </h4>
+                  <input
+                    type="text"
+                    placeholder="Search By Location"
+                    value={this.state.searchLocationText}
+                    onChange={this.handleLocationSearchText}
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: "6px",
+                      border: "1px solid #ddd",
+                      fontSize: "14px",
+                    }}
+                  />
+                </div>
+
+            
+
+              
+
+                {/* Filter By Price */}
+                <div style={{ marginBottom: "10px" }}>
+                  <h4
+                    style={{
+                      fontWeight: "600",
+                      marginBottom: "10px",
+                      borderBottom: "2px solid orange",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    Filter By Price
+                  </h4>
                   <input
                     type="range"
                     min="0"
-                    max="100000"
+                    max={this.state.maxPrice}
                     step="1000"
                     value={this.state.selectedPrice}
                     onChange={this.filterByPrice}
-                    className="form-control"
+                    style={{
+                      width: "100%",
+                      height: "6px",
+                      borderRadius: "5px",
+                      background:
+                        "linear-gradient(to right, #f90 0%, #f90 " +
+                        ((this.state.selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
+                        "%, #ddd " +
+                        ((this.state.selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
+                        "%, #ddd 100%)",
+                      outline: "none",
+                      WebkitAppearance: "none",
+                      cursor: "pointer",
+                    }}
                   />
-                  <p>Max Price: NPR {this.state.selectedPrice}</p>
+                </div>
+
+                {/* Price Range Display */}
+                <div style={{ fontSize: "14px", color: "#555", fontWeight: "600" }}>
+                  Price : NRS 0 - NRS {this.state.selectedPrice.toLocaleString()}
                 </div>
               </div>
 
@@ -129,7 +299,12 @@ export default class ViewHotel extends Component {
                   className="form-control mb-4"
                   type="search"
                   placeholder="Search type of hotel"
-                  onChange={this.handleTextSearch}
+                  onChange={(e) =>
+                    this.setState(
+                      { searchPackageName: e.target.value, currentPage: 1 },
+                      () => this.updateDisplayedHotels()
+                    )
+                  }
                 />
                 <div className={styles.heading}>
                   <h1>
@@ -156,9 +331,13 @@ export default class ViewHotel extends Component {
                             {hotel.location}
                           </p>
                           <div className={styles.rating}>
-                            {[...Array(5)].map((_, i) => (
-                              i < hotel.rating ? <AiFillStar key={i} /> : <AiOutlineStar key={i} />
-                            ))}
+                            {[...Array(5)].map((_, i) =>
+                              i < hotel.rating ? (
+                                <AiFillStar key={i} />
+                              ) : (
+                                <AiOutlineStar key={i} />
+                              )
+                            )}
                           </div>
                           <p className={styles.availableRooms}>
                             <strong>Available Rooms:</strong> {hotel.no_of_rooms}
@@ -178,10 +357,7 @@ export default class ViewHotel extends Component {
 
                 {/* Show More Button */}
                 <div className="text-center mt-4">
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.handleShowMore}
-                  >
+                  <button className="btn btn-primary" onClick={this.handleShowMore}>
                     Show More
                   </button>
                 </div>
@@ -196,7 +372,6 @@ export default class ViewHotel extends Component {
             Our <span>Gallery</span>
           </h1>
           <div className={styles.main_gallery}>
-            {/* You can replace the static images with dynamic content if needed */}
             {[photo0, photo1, photo2, photo3, photo4, photo5, photo6, photo7].map(
               (photo, index) => (
                 <div key={index} className={styles.inner_gallery}>
