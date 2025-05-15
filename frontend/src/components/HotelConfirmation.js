@@ -161,95 +161,96 @@ const HotelReservationConfirmation = () => {
         ) : reservations.length === 0 ? (
           <p>No reservations found.</p>
         ) : (
-          <div className="row">
-            {reservations.map((reservation) => (
-              <div className="col-md-4" key={reservation._id}>
-                <div className="card mb-3">
-                  <div className="card-body">
-                    {/* Hotel Information at the Top */}
-                    <p className="card-text">
-                      <strong>Hotel Name :</strong> {reservation.hotel.name}
-                    </p>
-                    <p className="card-text">
-                      <strong>From :</strong>{" "}
-                      {new Date(reservation.fromDate).toLocaleDateString()}
-                    </p>
-                    <p className="card-text">
-                      <strong>To:</strong>{" "}
-                      {new Date(reservation.toDate).toLocaleDateString()}
-                    </p>
-                      <p className="card-text">
-                      <strong>Rooms :</strong>{" "}
-                      {reservation.noOfRooms}
-                    </p>
-                    {/* Line Between Hotel and User Details */}
-                    <hr style={{ borderTop: "2px solid #ddd" }} />
+     <div className="row">
+  {reservations.map((reservation) => (
+    <div className="col-md-4" key={reservation._id}>
+      <div className="card mb-3">
+        <div className="card-body">
+          {/* Hotel Information at the Top */}
+          <p className="card-text">
+            <strong>Hotel Name :</strong> {reservation.hotel?.name || 'N/A'}
+          </p>
+          <p className="card-text">
+            <strong>From :</strong>{" "}
+            {reservation.fromDate ? new Date(reservation.fromDate).toLocaleDateString() : 'N/A'}
+          </p>
+          <p className="card-text">
+            <strong>To:</strong>{" "}
+            {reservation.toDate ? new Date(reservation.toDate).toLocaleDateString() : 'N/A'}
+          </p>
+          <p className="card-text">
+            <strong>Rooms :</strong>{" "}
+            {reservation.noOfRooms || 'N/A'}
+          </p>
 
-                    {/* User Information at the Bottom */}
-                    <div className="user-info" style={{ position: "relative" }}>
-                      {/* User Image on Bottom Right */}
-                      {reservation.user.profile_picture && (
-                        <img
-                          src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
-                          alt={reservation.user.full_name}
-                          style={{
-                            width: "70px",
-                            height: "70px",
-                            borderRadius: "20%",
-                            objectFit: "cover",
-                            border: "3px solid rgb(7, 7, 7)",
-                            position: "absolute",
-                            right: "10px",
-                            bottom: "70px",
-                          }}
-                        />
-                      )}
-                      <p className="card-text">
-                        <strong>Booked BY:</strong> 
-                      </p>
-                      <p className="card-text">
-                        <strong>User Name :</strong>{" "}
-                        {reservation.user.full_name}
-                      </p>
-                      <p className="card-text">
-                        <strong>User Email :</strong> {reservation.user.email}
-                      </p>
-                      <p className="card-text">
-                        <strong>User Phone :</strong> {reservation.user.phone}
-                      </p>
-                    </div>
+          <hr style={{ borderTop: "2px solid #ddd" }} />
 
-                    {/* Reservation buttons */}
-                    <div className="d-flex justify-content-between" style={{margin:"20px"}}> 
-                      {!reservation.isConfirmed ? (
-                        <>
-                          <button
-                            onClick={() => handleConfirm(reservation._id)}
-                            className="btn btn-success"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => handleCancel(reservation._id)}
-                            className="btn btn-danger"
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => handleCancel(reservation._id)}
-                          className="btn btn-warning"
-                        >
-                          Cancel Reservation
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          {/* User Information at the Bottom */}
+          <div className="user-info" style={{ position: "relative" }}>
+            {/* User Image on Bottom Right */}
+            {reservation.user?.profile_picture && (
+              <img
+                src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
+                alt={reservation.user.full_name || 'User'}
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "20%",
+                  objectFit: "cover",
+                  border: "3px solid rgb(7, 7, 7)",
+                  position: "absolute",
+                  right: "10px",
+                  bottom: "70px",
+                }}
+              />
+            )}
+            <p className="card-text">
+              <strong>Booked BY:</strong>
+            </p>
+            <p className="card-text">
+              <strong>User Name :</strong>{" "}
+              {reservation.user?.full_name || 'N/A'}
+            </p>
+            <p className="card-text">
+              <strong>User Email :</strong> {reservation.user?.email || 'N/A'}
+            </p>
+            <p className="card-text">
+              <strong>User Phone :</strong> {reservation.user?.phone || 'N/A'}
+            </p>
           </div>
+
+          {/* Reservation buttons */}
+          <div className="d-flex justify-content-between" style={{ margin: "20px" }}>
+            {!reservation.isConfirmed ? (
+              <>
+                <button
+                  onClick={() => handleConfirm(reservation._id)}
+                  className="btn btn-success"
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={() => handleCancel(reservation._id)}
+                  className="btn btn-danger"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => handleCancel(reservation._id)}
+                className="btn btn-warning"
+              >
+                Cancel Reservation
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
         )}
       </div>
     </div>
