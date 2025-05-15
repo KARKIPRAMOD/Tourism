@@ -158,16 +158,13 @@ const PackageConfirmation = () => {
                     {/* Package Information at the Top */}
                     <h5 className="card-title">Package Reservation</h5>
                     <p className="card-text">
-                      <strong>Package Name:</strong> {reservation.package.name}
+                      <strong>Package Name:</strong> {reservation.package.packName}
                     </p>
                     <p className="card-text">
                       <strong>Start Date:</strong>{" "}
                       {new Date(reservation.startDate).toLocaleDateString()}
                     </p>
-                    <p className="card-text">
-                      <strong>End Date:</strong>{" "}
-                      {new Date(reservation.endDate).toLocaleDateString()}
-                    </p>
+             
 
                     {/* Line Between Package and User Details */}
                     <hr style={{ borderTop: "2px solid #ddd" }} />

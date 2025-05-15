@@ -180,7 +180,7 @@ export default class AllPacks extends Component {
                   >
                     <tr>
                       <th>S.N.</th>
-                      <th>Package Name</th>
+                      <th>Name</th>
                       <th>Destination</th>
                       <th>Days</th>
                       <th>Passengers</th>
