@@ -182,6 +182,14 @@ const HotelReservationConfirmation = () => {
             <strong>Rooms :</strong>{" "}
             {reservation.noOfRooms || 'N/A'}
           </p>
+          <p className="card-text">
+            <strong>Type :</strong>{" "}
+            {reservation.roomType || 'N/A'}
+          </p>
+          <p className="card-text">
+            <strong>Price  :</strong>{" "}
+            {reservation.priceAtBooking || 'N/A'}
+          </p>
 
           <hr style={{ borderTop: "2px solid #ddd" }} />
 

@@ -84,6 +84,7 @@ exports.getAllTourGuides = async (req, res) => {
   }
 };
 
+
 // Get a single tour guide by ID
 exports.getTourGuideById = async (req, res) => {
   try {

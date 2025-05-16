@@ -500,13 +500,8 @@ const Home = () => {
         }}
       >
         <h3 className="text-center mb-4 ">Nepal's #1 platform for tourism</h3>
-        <div
-          style={{
-            padding: "10px",
-          }}
-        >
+       
           <FeedBackComp />
-        </div>
       </div>
       {/* ChatBot Component - Bottom Right */}
       <ChatBot />

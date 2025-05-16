@@ -26,8 +26,13 @@ const ReservedHotel = ({ userId }) => {
         const reservations = res.data.reservations || [];
         setReservations(reservations);
 
-        // Fetch hotel details for each reservation
-        const hotelRequests = reservations.map((reservation) => {
+        // Filter out reservations with missing hotel data
+        const validReservations = reservations.filter(
+          (reservation) => reservation.hotel !== null && reservation.hotel !== undefined
+        );
+
+        // Fetch hotel details for each valid reservation
+        const hotelRequests = validReservations.map((reservation) => {
           const hotelId =
             typeof reservation.hotel === "object"
               ? reservation.hotel._id
@@ -69,8 +74,8 @@ const ReservedHotel = ({ userId }) => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-          <ProfileSidebar userData={userData} userId={userId} />
-        <main style={{ flexGrow: 1, padding: "20px",marginLeft:"320px" }}>
+      <ProfileSidebar userData={userData} userId={userId} />
+      <main style={{ flexGrow: 1, padding: "20px", marginLeft: "320px" }}>
         {error && <div className="alert alert-danger">{error}</div>}
         {loading ? (
           <p>Loading reserved hotels...</p>
@@ -79,18 +84,24 @@ const ReservedHotel = ({ userId }) => {
         ) : (
           <div>
             <h2
-            style={{
-              
-              color: "#007bff", // Blue color for the title
-              fontWeight: "600",
-              textAlign: "center", // Center the title
-              width: "fit-content", // Make the box width fit the content
-              margin: "0 auto", // Center the box horizontally
-              marginBottom: "30px", 
-            }}
-          >Your Reserved Hotels</h2>
+              style={{
+                color: "#007bff",
+                fontWeight: "600",
+                textAlign: "center",
+                width: "fit-content",
+                margin: "0 auto",
+                marginBottom: "30px",
+              }}
+            >
+              Your Reserved Hotels
+            </h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {reservations.map((reservation) => {
+                if (!reservation.hotel) {
+                  console.warn("Reservation missing hotel data:", reservation);
+                  return null;
+                }
+
                 const hotelId =
                   typeof reservation.hotel === "object"
                     ? reservation.hotel._id
@@ -102,7 +113,13 @@ const ReservedHotel = ({ userId }) => {
                 }
 
                 const hotel = hotels[hotelId];
-                const isConfirmed = reservation.isConfirmed; // ✅ Defined here
+
+                if (!hotel) {
+                  // Hotel data not loaded yet or missing
+                  return null;
+                }
+
+                const isConfirmed = reservation.isConfirmed;
 
                 return (
                   <HotelCard
@@ -116,6 +133,9 @@ const ReservedHotel = ({ userId }) => {
                     }}
                     buttonText={isConfirmed ? "Confirmed" : "Not Confirmed"}
                     buttonDisabled={isConfirmed}
+                    bookedRooms={reservation.noOfRooms}
+                    bookedRoomType={reservation.roomType}
+                    bookedPrice={reservation.priceAtBooking}
                   />
                 );
               })}

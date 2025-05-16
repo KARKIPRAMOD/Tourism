@@ -8,17 +8,25 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 // Add new hotel
 exports.addHotel = async (req, res) => {
-  const { name, type, location, price, no_of_rooms, description } = req.body;
+  const { name, type, location, no_of_rooms, description, roomTypes,map } = req.body;
   const photos = req.files ? req.files.map((file) => file.filename) : [];
+
+  let parsedRoomTypes = [];
+  try {
+    parsedRoomTypes = roomTypes ? JSON.parse(roomTypes) : [];
+  } catch (err) {
+    return res.status(400).json({ success: false, error: "Invalid roomTypes format" });
+  }
 
   const newHotel = new Hotel({
     name,
     type,
     location,
-    price,
     no_of_rooms,
     photos,
     description,
+    roomTypes: parsedRoomTypes,
+    map
   });
 
   try {
@@ -59,16 +67,24 @@ exports.getHotelCount = async (req, res) => {
 // Update hotel
 exports.updateHotel = async (req, res) => {
   const hotelId = req.params.id;
-  const { name, type, location, price, no_of_rooms, description } = req.body;
+  const { name, type, location, no_of_rooms, description, roomTypes } = req.body;
 
   const updateData = {
     name,
     type,
     location,
-    price,
-    no_of_rooms, // Ensure this is updated correctly
+    no_of_rooms,
     description,
+    map
   };
+
+  if (roomTypes) {
+    try {
+      updateData.roomTypes = JSON.parse(roomTypes);
+    } catch (err) {
+      return res.status(400).json({ success: false, error: "Invalid roomTypes format" });
+    }
+  }
 
   if (req.files && req.files.length > 0) {
     updateData.photos = req.files.map((file) => file.filename);
@@ -95,7 +111,6 @@ exports.updateHotel = async (req, res) => {
       error: err.message,
     });
   }
-
 };
 
 // Delete hotel

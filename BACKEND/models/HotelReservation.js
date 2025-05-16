@@ -29,6 +29,16 @@ const reservationSchema = new Schema({
     type: Number,
     required: true,
   },
+  roomType: {
+    type: String,
+    required: true,
+    enum: ["Normal", "AC", "Deluxe", "VIP Suite"], // match hotel's roomTypes
+  },
+  priceAtBooking: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -36,7 +46,7 @@ const reservationSchema = new Schema({
 
   isConfirmed: {
     type: Boolean,
-    default: false, // Initially, the reservation is not confirmed
+    default: false,
   },
 });
 

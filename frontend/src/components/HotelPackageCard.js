@@ -32,6 +32,11 @@ const HotelCard = ({ hotel, reservation }) => {
         </p>
         <p>{hotel.description}</p>
         <p>Date: {start} - {end}</p>
+          <div style={{ marginTop: "10px", fontSize: "14px", fontWeight: "600" }}>
+          <div>Rooms Booked: {reservation.noOfRooms}</div>
+          <div>Room Type: {reservation.roomType}</div>
+          <div>Price at Booking: Rs. {reservation.priceAtBooking} / night</div>
+        </div>
 
         {/* Confirmation badge */}
         <div style={{ textAlign: "center", marginTop: "10px" }}>

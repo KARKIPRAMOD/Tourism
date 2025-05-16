@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 function HotelReservation() {
@@ -12,6 +12,7 @@ function HotelReservation() {
   const [message, setMessage] = useState();
   const [hotelDesc, setHotelDesc] = useState();
   const [mainImage, setMainImage] = useState(null);
+  const [selectedRoomType, setSelectedRoomType] = useState("");
   const { hotelId } = useParams();
   const userId = localStorage.getItem("userId");
 
@@ -20,15 +21,38 @@ function HotelReservation() {
       .get(`http://localhost:8070/hotel/get/${hotelId}`)
       .then((res) => {
         setHotelDesc(res.data.hotel);
+
+        // Set first image or placeholder
         const firstImage = res.data.hotel.photos?.[0]
           ? `http://localhost:8070/uploads/hotel_photos/${res.data.hotel.photos[0]}`
           : "https://via.placeholder.com/400x250?text=No+Image";
         setMainImage(firstImage);
+
+        // Set default selected room type to first available if exists
+        if (res.data.hotel.roomTypes && res.data.hotel.roomTypes.length > 0) {
+          setSelectedRoomType(res.data.hotel.roomTypes[0].roomType);
+        }
       })
       .catch((err) => console.log(err));
   }, [hotelId]);
 
+  // Get price of currently selected room type
+  const getPriceForSelectedRoomType = () => {
+    if (!hotelDesc?.roomTypes) return 0;
+    const room = hotelDesc.roomTypes.find(
+      (r) => r.roomType === selectedRoomType
+    );
+    return room ? room.price : 0;
+  };
+
   const handleFormSubmit = () => {
+    if (!selectedRoomType) {
+      alert("Please select a room type");
+      return;
+    }
+
+    const priceAtBooking = getPriceForSelectedRoomType();
+
     axios
       .post("http://localhost:8070/HotelReservation/reserve", {
         user: userId,
@@ -37,10 +61,13 @@ function HotelReservation() {
         endDate,
         noOfPersons,
         noOfRooms,
+        roomType: selectedRoomType,
+        priceAtBooking,
       })
       .then((res) => {
-        setMessage(res.data);
+        setMessage(res.data.message || "Reservation successful");
 
+        // Update hotel room count
         axios
           .put(`http://localhost:8070/hotel/update/${hotelId}`, {
             no_of_rooms: hotelDesc.no_of_rooms - noOfRooms,
@@ -51,17 +78,21 @@ function HotelReservation() {
           })
           .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setMessage("Failed to make reservation");
+      });
   };
 
   const imageUrls =
     hotelDesc?.photos?.length > 0
-      ? hotelDesc.photos.map((photo) => `http://localhost:8070/uploads/hotel_photos/${photo}`)
+      ? hotelDesc.photos.map(
+          (photo) => `http://localhost:8070/uploads/hotel_photos/${photo}`
+        )
       : ["https://via.placeholder.com/400x250?text=No+Image"];
 
   return (
     <div style={styles.container}>
-
       <div style={styles.mainContent}>
         {/* Left side: Images */}
         <div style={styles.imageSection}>
@@ -74,11 +105,39 @@ function HotelReservation() {
                 key={index}
                 src={url}
                 alt={`Hotel ${index + 1}`}
-                style={{ ...styles.thumbnail, border: mainImage === url ? "2px solid #2563eb" : "none" }}
+                style={{
+                  ...styles.thumbnail,
+                  border: mainImage === url ? "2px solid #2563eb" : "none",
+                }}
                 onClick={() => setMainImage(url)}
               />
             ))}
           </div>
+
+          {/* Map Embed */}
+          {hotelDesc?.map && (
+            <div
+              style={{
+                marginTop: "20px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                   border: "solid black 2px"
+              }}
+            >
+              <iframe
+                title="Hotel Location Map"
+                src={hotelDesc.map}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                                     
+
+              />
+            </div>
+          )}
         </div>
 
         {/* Right side: Info and form */}
@@ -87,39 +146,73 @@ function HotelReservation() {
             <h2 style={styles.hotelName}>{hotelDesc?.name || "Hotel Name"}</h2>
 
             <p style={styles.subInfo}>
-              <span style={{ fontSize: "17px", fontWeight: "600" }}>🏷️ Type:</span> {hotelDesc?.type}<br />
-              <span style={{ fontSize: "17px", fontWeight: "600" }}>📍 Location:</span> {hotelDesc?.location?.trim()}
+              <span style={{ fontSize: "17px", fontWeight: "600" }}>🏷️ Type:</span>{" "}
+              {hotelDesc?.type}
+              <br />
+              <span style={{ fontSize: "17px", fontWeight: "600" }}>📍 Location:</span>{" "}
+              {hotelDesc?.location?.trim()}
             </p>
 
+            {/* Display all room types and prices */}
             <div style={{ marginTop: "10px", marginBottom: "15px" }}>
-              <p style={{ fontSize: "18px", marginBottom: "10px" }}>
-                <strong style={{ color: "#2563eb", fontSize: "20px" }}>💰 Price:</strong>{" "}
-                <span style={{ fontWeight: "600" }}>Rs. {hotelDesc?.price} / night</span>
-              </p>
-              <p style={{ fontSize: "18px" }}>
-                <strong style={{ color: "#16a34a", fontSize: "20px" }}>🛏️ Available Rooms:</strong>{" "}
-                <span style={{ fontWeight: "600" }}>{hotelDesc?.no_of_rooms}</span>
-              </p>
+              <strong style={{ fontSize: "18px", color: "#2563eb" }}>
+                Available Room Types:
+              </strong>
+              <ul style={{ paddingLeft: "20px", marginTop: "8px" }}>
+                {hotelDesc?.roomTypes && hotelDesc.roomTypes.length > 0 ? (
+                  hotelDesc.roomTypes.map((room, idx) => (
+                    <li
+                      key={idx}
+                      style={{
+                        fontSize: "16px",
+                        marginBottom: "8px",
+                        display: "block", // explicitly force block display
+                      }}
+                    >
+                      {room.roomType} - Rs. <strong>{room.price}</strong> / night
+                    </li>
+                  ))
+                ) : (
+                  <li>No room types available</li>
+                )}
+              </ul>
             </div>
 
-            <p style={styles.description}>{hotelDesc?.description || "No description available."}</p>
+            <p style={{ fontSize: "18px" }}>
+              <strong style={{ color: "#16a34a", fontSize: "20px" }}>🛏️ Available Rooms:</strong>{" "}
+              <span style={{ fontWeight: "600" }}>{hotelDesc?.no_of_rooms}</span>
+            </p>
+
+            <p style={styles.description}>
+              {hotelDesc?.description || "No description available."}
+            </p>
+
             <div style={styles.extraInfo}>
               <h3 style={styles.extraHeading}>📋 Hotel Policies & Amenities</h3>
               <ul style={styles.amenitiesList}>
-                <li style={styles.amenityItem}><span style={styles.amenityCard}>🕐 Check-in: 12:00 PM</span></li>
-                <li style={styles.amenityItem}><span style={styles.amenityCard}>🕛 Check-out: 11:00 AM</span></li>
-                                <li style={styles.amenityItem}><span style={styles.amenityCard}>🧼 Daily housekeeping</span></li>
-
-                  <li style={styles.amenityItem}><span style={styles.amenityCard}>🚗 Parking available</span></li>
-                <li style={styles.amenityItem}><span style={styles.amenityCard}>🍽️ Complimentary breakfast</span></li>
-                <li style={styles.amenityItem}><span style={styles.amenityCard}>📶 Free Wi-Fi</span></li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>🕐 Check-in: 12:00 PM</span>
+                </li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>🕛 Check-out: 11:00 AM</span>
+                </li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>🧼 Daily housekeeping</span>
+                </li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>🚗 Parking available</span>
+                </li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>🍽️ Complimentary breakfast</span>
+                </li>
+                <li style={styles.amenityItem}>
+                  <span style={styles.amenityCard}>📶 Free Wi-Fi</span>
+                </li>
               </ul>
-
-
-
             </div>
           </div>
 
+          {/* Booking Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -129,19 +222,57 @@ function HotelReservation() {
           >
             {message && <div style={styles.message}>{message}</div>}
 
-            <label style={styles.label}>📅From</label>
-            <input type="date" onChange={(e) => setStartDate(e.target.value)} required style={styles.input} />
+            <label style={styles.label}>📅 From</label>
+            <input
+              type="date"
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+              style={styles.input}
+            />
 
             <label style={styles.label}>📅 To</label>
-            <input type="date" onChange={(e) => setEndDate(e.target.value)} required style={styles.input} />
+            <input
+              type="date"
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+              style={styles.input}
+            />
 
             <label style={styles.label}>👥 Persons</label>
-            <input type="number" min="1" onChange={(e) => setNumberOfPersons(e.target.value)} required style={styles.input} />
+            <input
+              type="number"
+              min="1"
+              onChange={(e) => setNumberOfPersons(e.target.value)}
+              required
+              style={styles.input}
+            />
 
             <label style={styles.label}>🚪 Rooms</label>
-            <input type="number" min="1" onChange={(e) => setNumberOfRooms(e.target.value)} required style={styles.input} />
+            <input
+              type="number"
+              min="1"
+              onChange={(e) => setNumberOfRooms(e.target.value)}
+              required
+              style={styles.input}
+            />
 
-            <button type="submit" style={styles.button} className="book-btn">Book Now</button>
+            <label style={styles.label}>🛏️ Room Type</label>
+            <select
+              value={selectedRoomType}
+              onChange={(e) => setSelectedRoomType(e.target.value)}
+              required
+              style={{ ...styles.input, width: "150px" }}
+            >
+              {hotelDesc?.roomTypes?.map((room, idx) => (
+                <option key={idx} value={room.roomType}>
+                  {room.roomType} - Rs. {room.price}
+                </option>
+              ))}
+            </select>
+
+            <button type="submit" style={styles.button} className="book-btn">
+              Book Now
+            </button>
           </form>
         </div>
       </div>
@@ -166,12 +297,6 @@ const styles = {
     margin: "3rem 5rem",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   },
-  header: {
-    fontSize: "36px",
-    textAlign: "center",
-    color: "#3b82f6",
-    marginBottom: "30px",
-  },
   mainContent: {
     display: "flex",
     gap: "40px",
@@ -185,7 +310,7 @@ const styles = {
   },
   mainImage: {
     width: "100%",
-     maxWidth: "800px",
+    maxWidth: "800px",
     height: "600px",
     borderRadius: "12px",
     objectFit: "cover",
@@ -248,53 +373,53 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
   },
- amenitiesList: {
+  amenitiesList: {
     listStyle: "none",
     paddingLeft: "0",
     margin: "0",
     color: "#4b5563",
     fontSize: "15px",
     display: "flex",
-    flexWrap: "wrap", // allows wrapping to the next row
-    gap: "25px", // consistent gap between items (both horizontally and vertically)
+    flexWrap: "wrap",
+    gap: "25px",
   },
   amenityCard: {
-    backgroundColor: "#fff", // card background
-    borderRadius: "8px", // rounded corners
-    padding: "12px", // inner padding
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // card shadow effect
-    fontWeight: "bold", // bold text
-    flex: "0 0 calc(50% - 15px)", // each card takes 50% of the row width minus the gap
-    color: "#333", // text color
-    textOverflow: "ellipsis", // handles overflowing text
-    whiteSpace: "nowrap", // prevents text from wrapping into a new line
-    overflow: "hidden", // ensures no text overflows outside the card
-    maxWidth: "calc(50% - 15px)", // ensures card width remains fixed
-    boxSizing: "border-box", // includes padding and border in the element's total width and height
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    padding: "12px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    fontWeight: "bold",
+    flex: "0 0 calc(50% - 15px)",
+    color: "#333",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    maxWidth: "calc(50% - 15px)",
+    boxSizing: "border-box",
   },
-   form: {
+  form: {
     backgroundColor: "#f9fafb",
     padding: "25px",
     borderRadius: "12px",
     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
     display: "flex",
-    flexWrap: "wrap", // still allows wrapping if screen is small
-    gap: "20px", // space between fields
-    justifyContent: "flex-start", // aligns items to the left
+    flexWrap: "wrap",
+    gap: "20px",
+    justifyContent: "flex-start",
   },
   label: {
     fontWeight: "bold",
     color: "#374151",
-    width: "150px", // fix label width to make it align well
-    display: "inline-block", // ensures the label stays in the same row
+    width: "150px",
+    display: "inline-block",
   },
   input: {
     padding: "5px",
     fontSize: "14px",
     borderRadius: "6px",
     border: "1px solid #d1d5db",
-    width: "100px", // fixed input width to align with labels
-    display: "inline-block", // ensures the input stays in the same row
+    width: "100px",
+    display: "inline-block",
   },
   button: {
     backgroundColor: "red",

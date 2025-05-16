@@ -1,14 +1,23 @@
-.boxWrapper {
-  cursor: pointer;
-  padding: 3rem 2rem 3rem 2rem;
-  border-radius: 0px 20px 0px 20px;
-  height: 15rem;
-  overflow: auto;
-  border: 1px solid #e5e5e5;
-  box-shadow: 9px 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 18px;
+
+.react-multi-carousel-track {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 20px; /* space between cards */
+  padding: 0 10px; /* some padding left and right */
+  overflow-x: auto; /* enable horizontal scroll if needed */
 }
+
+.boxWrapper {
+  min-width: 320px;      /* make cards wider */
+  max-width: 350px;      /* constrain max width */
+  height: auto;          /* allow height to adjust */
+  padding: 1.5rem 2rem;  /* some padding */
+  white-space: normal;   /* allow text to wrap inside */
+  overflow: visible;     /* remove internal scrollbar */
+  box-sizing: border-box; /* include padding in width */
+  margin: 0 !important;  /* reset margins if any */
+}
+
 
 .boxWrapper:hover {
   background-color: #f0eeee;

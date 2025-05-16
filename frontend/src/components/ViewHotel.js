@@ -54,6 +54,15 @@ export default class ViewHotel extends Component {
     });
   }
 
+  getLowestRoomPrice(hotel) {
+    if (!hotel.roomTypes || hotel.roomTypes.length === 0) return "N/A";
+    const prices = hotel.roomTypes
+      .map((room) => parseFloat(room.price))
+      .filter((p) => !isNaN(p));
+    if (prices.length === 0) return "N/A";
+    return Math.min(...prices);
+  }
+
   updateDisplayedHotels() {
     const {
       hotels,
@@ -68,9 +77,12 @@ export default class ViewHotel extends Component {
 
     let filteredHotels = hotels;
 
-    // Filter by Price
-    filteredHotels = filteredHotels.filter(
-      (hotel) => hotel.price <= selectedPrice
+    // Filter by Price: hotels with any room type price <= selectedPrice
+    filteredHotels = filteredHotels.filter((hotel) =>
+      hotel.roomTypes &&
+      hotel.roomTypes.some(
+        (room) => !isNaN(room.price) && parseFloat(room.price) <= selectedPrice
+      )
     );
 
     // Filter by Location (dropdown)
@@ -80,22 +92,21 @@ export default class ViewHotel extends Component {
       );
     }
 
-    // Filter by Category (simple example: matches hotel.type)
+    // Filter by Category (hotel.type)
     if (selectedCategory !== "All") {
       filteredHotels = filteredHotels.filter(
-        (hotel) =>
-          hotel.type.toLowerCase() === selectedCategory.toLowerCase()
+        (hotel) => hotel.type.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
-    // Filter by package name search (searchPackageName)
+    // Filter by package name search
     if (searchPackageName.trim() !== "") {
       filteredHotels = filteredHotels.filter((hotel) =>
         hotel.name.toLowerCase().includes(searchPackageName.toLowerCase())
       );
     }
 
-    // Filter by location search text (searchLocationText)
+    // Filter by location search text
     if (searchLocationText.trim() !== "") {
       filteredHotels = filteredHotels.filter((hotel) =>
         hotel.location.toLowerCase().includes(searchLocationText.toLowerCase())
@@ -218,8 +229,6 @@ export default class ViewHotel extends Component {
                   overflowY: "auto",
                 }}
               >
-         
-
                 {/* Location Search */}
                 <div style={{ marginBottom: "30px" }}>
                   <h4
@@ -246,10 +255,6 @@ export default class ViewHotel extends Component {
                     }}
                   />
                 </div>
-
-            
-
-              
 
                 {/* Filter By Price */}
                 <div style={{ marginBottom: "10px" }}>
@@ -341,6 +346,9 @@ export default class ViewHotel extends Component {
                           </div>
                           <p className={styles.availableRooms}>
                             <strong>Available Rooms:</strong> {hotel.no_of_rooms}
+                          </p>
+                          <p className={styles.price}>
+                            <strong>Starting From:</strong> NRS {this.getLowestRoomPrice(hotel).toLocaleString()}
                           </p>
 
                           <Link
