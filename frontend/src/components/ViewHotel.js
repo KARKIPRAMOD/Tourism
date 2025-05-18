@@ -158,9 +158,7 @@ export default class ViewHotel extends Component {
             <p>
               Enthusiastically extend extensive customer service before <br /> best breed convergence completely.
             </p>
-            <a href="#" className={styles.home2_btn}>
-              Let's go now
-            </a>
+
           </div>
         </section>
 

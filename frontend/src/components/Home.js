@@ -77,11 +77,7 @@ function ServiceGrid() {
       title: "Tour Guides",
       desc: "Licensed guides to enrich your travel experience.",
     },
-    {
-      icon: <FaCar />,
-      title: "Vehicle Rental",
-      desc: "Cars, bikes & more, ready when you are.",
-    },
+
   ];
 
   return (
