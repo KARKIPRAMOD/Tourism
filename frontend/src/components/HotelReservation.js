@@ -159,9 +159,7 @@ function HotelReservation() {
 
         </div>
 
-        {/* Right side: Info, map, reservation */}
         <div style={styles.rightContent}>
-          {/* Hotel Info Card */}
           <div style={styles.hotelCard} className="hotel-card">
             <h2 style={styles.hotelName}>{hotelDesc?.name || "Hotel Name"}</h2>
 

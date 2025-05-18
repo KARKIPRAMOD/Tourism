@@ -22,16 +22,12 @@ export default class ViewHotel extends Component {
     super(props);
     this.state = {
       hotels: [],
-      displayedHotels: [],
       currentPage: 1,
       hotelsPerPage: 10,
       maxPrice: 100000,
       selectedPrice: 100000,
       locations: [],
       selectedLocation: "All",
-      selectedDays: "All",
-      selectedPersons: "All",
-      selectedSort: "New Packages",
       selectedCategory: "All",
       searchPackageName: "",
       searchLocationText: "",
@@ -39,17 +35,15 @@ export default class ViewHotel extends Component {
   }
 
   componentDidMount() {
-    this.retriveHotels();
+    this.retrieveHotels();
   }
 
-  retriveHotels() {
+  retrieveHotels() {
     axios.get("http://localhost:8070/hotel/all").then((res) => {
       if (res.data.success) {
         const hotels = res.data.existingHotels;
         const locations = ["All", ...new Set(hotels.map((h) => h.location))];
-        this.setState({ hotels, locations }, () => {
-          this.updateDisplayedHotels();
-        });
+        this.setState({ hotels, locations });
       }
     });
   }
@@ -63,11 +57,13 @@ export default class ViewHotel extends Component {
     return Math.min(...prices);
   }
 
-  updateDisplayedHotels() {
+  paginate = (pageNumber) => {
+    this.setState({ currentPage: pageNumber });
+  };
+
+  getFilteredHotels() {
     const {
       hotels,
-      currentPage,
-      hotelsPerPage,
       selectedPrice,
       selectedLocation,
       selectedCategory,
@@ -75,130 +71,89 @@ export default class ViewHotel extends Component {
       searchLocationText,
     } = this.state;
 
-    let filteredHotels = hotels;
+    let filtered = hotels;
 
-    // Filter by Price: hotels with any room type price <= selectedPrice
-    filteredHotels = filteredHotels.filter((hotel) =>
-      hotel.roomTypes &&
-      hotel.roomTypes.some(
-        (room) => !isNaN(room.price) && parseFloat(room.price) <= selectedPrice
-      )
+    filtered = filtered.filter(
+      (hotel) =>
+        hotel.roomTypes &&
+        hotel.roomTypes.some(
+          (room) =>
+            !isNaN(room.price) && parseFloat(room.price) <= selectedPrice
+        )
     );
 
-    // Filter by Location (dropdown)
     if (selectedLocation !== "All") {
-      filteredHotels = filteredHotels.filter(
-        (hotel) => hotel.location === selectedLocation
-      );
+      filtered = filtered.filter((hotel) => hotel.location === selectedLocation);
     }
 
-    // Filter by Category (hotel.type)
     if (selectedCategory !== "All") {
-      filteredHotels = filteredHotels.filter(
-        (hotel) => hotel.type.toLowerCase() === selectedCategory.toLowerCase()
+      filtered = filtered.filter(
+        (hotel) =>
+          hotel.type.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
-    // Filter by package name search
     if (searchPackageName.trim() !== "") {
-      filteredHotels = filteredHotels.filter((hotel) =>
+      filtered = filtered.filter((hotel) =>
         hotel.name.toLowerCase().includes(searchPackageName.toLowerCase())
       );
     }
 
-    // Filter by location search text
     if (searchLocationText.trim() !== "") {
-      filteredHotels = filteredHotels.filter((hotel) =>
+      filtered = filtered.filter((hotel) =>
         hotel.location.toLowerCase().includes(searchLocationText.toLowerCase())
       );
     }
 
-    // TODO: Add filtering for Days, Persons, Sort if needed here
+    return filtered;
+  }
+
+  filterByPrice = (e) => {
+    const selectedPrice = parseInt(e.target.value, 10);
+    this.setState({ selectedPrice, currentPage: 1 });
+  };
+
+  handleLocationSearchText = (e) => {
+    this.setState({ searchLocationText: e.target.value, currentPage: 1 });
+  };
+
+  handlePackageNameSearch = (e) => {
+    this.setState({ searchPackageName: e.target.value, currentPage: 1 });
+  };
+
+  render() {
+    const {
+      currentPage,
+      hotelsPerPage,
+      selectedPrice,
+      searchLocationText,
+      searchPackageName,
+    } = this.state;
+
+    const filteredHotels = this.getFilteredHotels();
 
     const indexOfLastHotel = currentPage * hotelsPerPage;
     const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
     const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
 
-    this.setState((prevState) => ({
-      displayedHotels:
-        currentPage === 1
-          ? currentHotels
-          : [...prevState.displayedHotels, ...currentHotels],
-    }));
-  }
-
-  filterByPrice = (e) => {
-    const selectedPrice = parseInt(e.target.value, 10);
-    this.setState({ selectedPrice, currentPage: 1 }, () => {
-      this.updateDisplayedHotels();
-    });
-  };
-
-  filterByLocation = (e) => {
-    const selectedLocation = e.target.value;
-    this.setState({ selectedLocation, currentPage: 1 }, () => {
-      this.updateDisplayedHotels();
-    });
-  };
-
-  filterByCategory = (category) => {
-    this.setState({ selectedCategory: category, currentPage: 1 }, () => {
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handlePackageNameSearch = (e) => {
-    const val = e.target.value;
-    this.setState({ searchPackageName: val, currentPage: 1 }, () => {
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handleLocationSearchText = (e) => {
-    const val = e.target.value;
-    this.setState({ searchLocationText: val, currentPage: 1 }, () => {
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handleDaysChange = (e) => {
-    this.setState({ selectedDays: e.target.value, currentPage: 1 }, () => {
-      // Add logic if needed
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handlePersonsChange = (e) => {
-    this.setState({ selectedPersons: e.target.value, currentPage: 1 }, () => {
-      // Add logic if needed
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handleSortChange = (e) => {
-    this.setState({ selectedSort: e.target.value, currentPage: 1 }, () => {
-      // Add logic to sort the hotels accordingly
-      this.updateDisplayedHotels();
-    });
-  };
-
-  handleShowMore = () => {
-    this.setState(
-      (prevState) => ({ currentPage: prevState.currentPage + 1 }),
-      () => {
-        this.updateDisplayedHotels();
-      }
-    );
-  };
-
-  render() {
-    const categories = ["All", "Holiday", "Mountains & Hills", "Vacation"];
+    const totalPages = Math.ceil(filteredHotels.length / hotelsPerPage);
 
     return (
-      <div className={styles.body}>
+      <div
+        className={styles.body}
+        style={{
+          margin: 0,
+          padding: 0,
+          width: "100%",
+          textAlign: "left",
+        }}
+      >
         {/* Home Section */}
-        <section className={styles.home2}>
-          <div className={styles.home2_text}>
+        <section
+          className={styles.home2}
+          style={{ textAlign: "left", paddingLeft: "20px", paddingRight: "20px" }}
+        >
+          <div className={styles.home2_text} style={{ textAlign: "left" }}>
             <h1>Spend Your Holiday</h1>
             <p>
               Enthusiastically extend extensive customer service before <br /> best breed convergence completely.
@@ -210,16 +165,19 @@ export default class ViewHotel extends Component {
         </section>
 
         {/* Offer Section */}
-        <section className={styles.offer}>
-          <div className={styles.container}>
-            <div className="row p-0">
+        <section className={styles.offer} style={{ paddingLeft: "20px", paddingRight: "20px" }}>
+          <div
+            className={styles.container}
+            style={{ margin: 0, maxWidth: "100%", padding: 0 }}
+          >
+            <div className="row p-0" style={{ marginLeft: 0, marginRight: 0 }}>
               {/* Sidebar for Filters */}
               <div
-                className="col-md-3 p-0"
+                className="col-md-2 p-0"
                 style={{
                   height: "100vh",
                   backgroundColor: "#fff",
-                  padding: "20px",
+                  padding: "15px",
                   position: "sticky",
                   top: "0",
                   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
@@ -227,6 +185,8 @@ export default class ViewHotel extends Component {
                   color: "#333",
                   borderRight: "1px solid #eee",
                   overflowY: "auto",
+                  marginLeft: 0,
+                  textAlign: "left",
                 }}
               >
                 {/* Location Search */}
@@ -244,7 +204,7 @@ export default class ViewHotel extends Component {
                   <input
                     type="text"
                     placeholder="Search By Location"
-                    value={this.state.searchLocationText}
+                    value={searchLocationText}
                     onChange={this.handleLocationSearchText}
                     style={{
                       width: "100%",
@@ -273,7 +233,7 @@ export default class ViewHotel extends Component {
                     min="0"
                     max={this.state.maxPrice}
                     step="1000"
-                    value={this.state.selectedPrice}
+                    value={selectedPrice}
                     onChange={this.filterByPrice}
                     style={{
                       width: "100%",
@@ -281,9 +241,9 @@ export default class ViewHotel extends Component {
                       borderRadius: "5px",
                       background:
                         "linear-gradient(to right, #f90 0%, #f90 " +
-                        ((this.state.selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
+                        ((selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
                         "%, #ddd " +
-                        ((this.state.selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
+                        ((selectedPrice / this.state.maxPrice) * 100).toFixed(2) +
                         "%, #ddd 100%)",
                       outline: "none",
                       WebkitAppearance: "none",
@@ -294,24 +254,23 @@ export default class ViewHotel extends Component {
 
                 {/* Price Range Display */}
                 <div style={{ fontSize: "14px", color: "#555", fontWeight: "600" }}>
-                  Price : NRS 0 - NRS {this.state.selectedPrice.toLocaleString()}
+                  Price : NRS 0 - NRS {selectedPrice.toLocaleString()}
                 </div>
               </div>
 
               {/* Hotels Section */}
-              <div className="col-md-9">
+              <div
+                className="col-md-10"
+                style={{ paddingLeft: "15px", paddingRight: "15px", textAlign: "left" }}
+              >
                 <input
                   className="form-control mb-4"
                   type="search"
                   placeholder="Search type of hotel"
-                  onChange={(e) =>
-                    this.setState(
-                      { searchPackageName: e.target.value, currentPage: 1 },
-                      () => this.updateDisplayedHotels()
-                    )
-                  }
+                  value={searchPackageName}
+                  onChange={this.handlePackageNameSearch}
                 />
-                <div className={styles.heading}>
+                <div className={styles.heading} style={{ textAlign: "left" }}>
                   <h1>
                     Our <span>Rooms</span>
                   </h1>
@@ -319,63 +278,116 @@ export default class ViewHotel extends Component {
 
                 {/* Hotel Cards */}
                 <div className="row">
-                  {this.state.displayedHotels.map((hotel) => (
-                    <div key={hotel._id} className="col-md-4 mb-4">
-                      <div className={styles.hotelCard}>
-                        <div className={styles.imageWrapper}>
-                          <img
-                            src={`http://localhost:8070/uploads/hotel_photos/${hotel.photos[0]}`}
-                            alt="Hotel"
-                            className={styles.hotelImage}
-                          />
-                        </div>
-                        <div className={styles.hotelContent}>
-                          <h3>Name: {hotel.name}</h3>
-                          <p className={styles.location}>
-                            <i className="fas fa-map-marker-alt"></i> Located At:{" "}
-                            {hotel.location}
-                          </p>
-                          <div className={styles.rating}>
-                            {[...Array(5)].map((_, i) =>
-                              i < hotel.rating ? (
-                                <AiFillStar key={i} />
-                              ) : (
-                                <AiOutlineStar key={i} />
-                              )
-                            )}
+                  {currentHotels.length > 0 ? (
+                    currentHotels.map((hotel) => (
+                      <div key={hotel._id} className="col-md-4 mb-4">
+                        <div className={styles.hotelCard}>
+                          <div className={styles.imageWrapper}>
+                            <img
+                              src={`http://localhost:8070/uploads/hotel_photos/${hotel.photos[0]}`}
+                              alt="Hotel"
+                              className={styles.hotelImage}
+                            />
                           </div>
-                          <p className={styles.availableRooms}>
-                            <strong>Available Rooms:</strong> {hotel.no_of_rooms}
-                          </p>
-                          <p className={styles.price}>
-                            <strong>Starting From:</strong> NRS {this.getLowestRoomPrice(hotel).toLocaleString()}
-                          </p>
+                          <div className={styles.hotelContent}>
+                            <h3>Name: {hotel.name}</h3>
+                            <p className={styles.location}>
+                              <i className="fas fa-map-marker-alt"></i> Located At:{" "}
+                              {hotel.location}
+                            </p>
+                            <div className={styles.rating}>
+                              {[...Array(5)].map((_, i) =>
+                                i < hotel.rating ? (
+                                  <AiFillStar key={i} />
+                                ) : (
+                                  <AiOutlineStar key={i} />
+                                )
+                              )}
+                            </div>
+                            <p className={styles.availableRooms}>
+                              <strong>Available Rooms:</strong> {hotel.no_of_rooms}
+                            </p>
+                            <p className={styles.price}>
+                              <strong>Starting From:</strong> NRS{" "}
+                              {this.getLowestRoomPrice(hotel).toLocaleString()}
+                            </p>
 
-                          <Link
-                            to={`/insert/hotel/${hotel._id}`}
-                            className={`${styles.bookBtn} ${styles.btnHighlight}`}
-                          >
-                            Reserve Now <FaArrowAltCircleRight />
-                          </Link>
+                            <Link
+                              to={`/insert/hotel/${hotel._id}`}
+                              className={`${styles.bookBtn} ${styles.btnHighlight}`}
+                            >
+                              Reserve Now <FaArrowAltCircleRight />
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>No hotels found matching your criteria.</p>
+                  )}
                 </div>
 
-                {/* Show More Button */}
-                <div className="text-center mt-4">
-                  <button className="btn btn-primary" onClick={this.handleShowMore}>
-                    Show More
-                  </button>
-                </div>
+                {/* Pagination */}
+                <nav>
+                  <ul className="pagination justify-content-center">
+                    <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                      <button
+                        className="page-link"
+                        onClick={() => this.paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        aria-label="Previous"
+                      >
+                        <span aria-hidden="true">&laquo;</span>
+                      </button>
+                    </li>
+
+                    {/* Show only page 1 if totalPages = 1 */}
+                    {totalPages > 1 &&
+                      Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (number) => (
+                          <li
+                            key={number}
+                            className={`page-item ${
+                              currentPage === number ? "active" : ""
+                            }`}
+                          >
+                            <button
+                              onClick={() => this.paginate(number)}
+                              className="page-link"
+                              aria-current={currentPage === number ? "page" : undefined}
+                            >
+                              {number}
+                            </button>
+                          </li>
+                        )
+                      )}
+
+                    <li
+                      className={`page-item ${
+                        currentPage === totalPages || totalPages === 0 ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => this.paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages || totalPages === 0}
+                        aria-label="Next"
+                      >
+                        <span aria-hidden="true">&raquo;</span>
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>
         </section>
 
         {/* Gallery Section */}
-        <div className={styles.gallery}>
+        <div
+          className={styles.gallery}
+          style={{ textAlign: "left", paddingLeft: "20px", paddingRight: "20px" }}
+        >
           <h1>
             Our <span>Gallery</span>
           </h1>

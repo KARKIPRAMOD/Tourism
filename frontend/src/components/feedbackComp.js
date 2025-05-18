@@ -19,7 +19,7 @@ function FeedBackComp() {
     try {
       const res = await axios.get(URL);
       const result = res.data;
-      setFeedbacks(result);
+      setFeedbacks(result.slice(0, 5));  // Limit to first 5 feedbacks
       console.log(res.data);
     } catch (error) {
       console.log(error);
