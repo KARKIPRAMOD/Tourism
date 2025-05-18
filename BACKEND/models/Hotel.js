@@ -42,6 +42,7 @@ const hotelSchema = new Schema({
       }
     }
   ],
+  
   map: {
   type: String,  // Store the full Bing Maps URL here
   required: true,

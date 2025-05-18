@@ -2,7 +2,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 11000; /* Increased z-index from 1000 */
 }
 
 .chat-button {
@@ -29,8 +29,8 @@
   position: absolute;
   bottom: 70px;
   right: 0;
-  width: 350px;
-  height: 450px;
+  width: 400px;   /* Slightly bigger from 350px */
+  height: 500px;  /* Slightly bigger from 450px */
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -202,7 +202,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 11000; /* Increased z-index */
 }
 
 .chatButton {
@@ -224,8 +224,8 @@
   position: absolute;
   bottom: 80px;
   right: 0;
-  width: 300px;
-  height: 400px;
+  width: 400px;  /* Slightly bigger from 300px */
+  height: 500px; /* Slightly bigger from 400px */
   background: white;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);

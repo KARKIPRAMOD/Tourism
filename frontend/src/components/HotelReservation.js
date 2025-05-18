@@ -22,13 +22,11 @@ function HotelReservation() {
       .then((res) => {
         setHotelDesc(res.data.hotel);
 
-        // Set first image or placeholder
         const firstImage = res.data.hotel.photos?.[0]
           ? `http://localhost:8070/uploads/hotel_photos/${res.data.hotel.photos[0]}`
-          : "https://via.placeholder.com/400x250?text=No+Image";
+          : "https://via.placeholder.com/800x600?text=No+Image";
         setMainImage(firstImage);
 
-        // Set default selected room type to first available if exists
         if (res.data.hotel.roomTypes && res.data.hotel.roomTypes.length > 0) {
           setSelectedRoomType(res.data.hotel.roomTypes[0].roomType);
         }
@@ -36,7 +34,6 @@ function HotelReservation() {
       .catch((err) => console.log(err));
   }, [hotelId]);
 
-  // Get price of currently selected room type
   const getPriceForSelectedRoomType = () => {
     if (!hotelDesc?.roomTypes) return 0;
     const room = hotelDesc.roomTypes.find(
@@ -67,7 +64,6 @@ function HotelReservation() {
       .then((res) => {
         setMessage(res.data.message || "Reservation successful");
 
-        // Update hotel room count
         axios
           .put(`http://localhost:8070/hotel/update/${hotelId}`, {
             no_of_rooms: hotelDesc.no_of_rooms - noOfRooms,
@@ -89,13 +85,13 @@ function HotelReservation() {
       ? hotelDesc.photos.map(
           (photo) => `http://localhost:8070/uploads/hotel_photos/${photo}`
         )
-      : ["https://via.placeholder.com/400x250?text=No+Image"];
+      : ["https://via.placeholder.com/800x600?text=No+Image"];
 
   return (
     <div style={styles.container}>
       <div style={styles.mainContent}>
-        {/* Left side: Images */}
-        <div style={styles.imageSection}>
+        {/* Left side: Images and static description */}
+        <div style={styles.leftContent}>
           <div style={styles.mainImageWrapper}>
             <img src={mainImage} alt="Main Hotel" style={styles.mainImage} />
           </div>
@@ -107,41 +103,65 @@ function HotelReservation() {
                 alt={`Hotel ${index + 1}`}
                 style={{
                   ...styles.thumbnail,
-                  border: mainImage === url ? "2px solid #2563eb" : "none",
+                  border: mainImage === url ? "3px solid #2563eb" : "2px solid #ddd",
                 }}
                 onClick={() => setMainImage(url)}
               />
             ))}
           </div>
 
-          {/* Map Embed */}
-          {hotelDesc?.map && (
-            <div
-              style={{
-                marginTop: "20px",
-                borderRadius: "12px",
-                overflow: "hidden",
-                   border: "solid black 2px"
-              }}
-            >
-              <iframe
-                title="Hotel Location Map"
-                src={hotelDesc.map}
-                width="100%"
-                height="400"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                                     
+          <div style={styles.staticDescription}>
+  <h3 style={styles.descriptionHeading}>About This Hotel</h3>
+  <p style={styles.descriptionText}>
+    Nestled in the heart of Nepal, this exquisite hotel blends modern luxury with traditional Nepali hospitality. Guests enjoy stunning mountain views, serene surroundings, and exceptional service to ensure an unforgettable stay.
+  </p>
 
-              />
-            </div>
-          )}
+  <h4 style={styles.subHeading}>Location</h4>
+  <p style={styles.descriptionText}>
+    Located in the bustling city center, the hotel offers easy access to cultural landmarks, shopping districts, and vibrant local markets. The nearby airport and major transportation hubs make travel convenient.
+  </p>
+
+  <h4 style={styles.subHeading}>Facilities</h4>
+  <p style={styles.descriptionText}>
+    The hotel features a spa, fitness center, multiple dining options including traditional Nepalese cuisine, a swimming pool, free high-speed Wi-Fi, and complimentary breakfast to start your day right.
+  </p>
+
+  <h4 style={styles.subHeading}>Dining</h4>
+  <p style={styles.descriptionText}>
+    Savor authentic Nepali flavors as well as international dishes at our in-house restaurants. Enjoy rooftop dining with panoramic views or relax with a cup of coffee in the cozy lounge.
+  </p>
+
+  <h4 style={styles.subHeading}>Events & Meetings</h4>
+  <p style={styles.descriptionText}>
+    Equipped with modern conference rooms and event spaces, our hotel caters to business travelers and social gatherings. Our dedicated event team ensures seamless planning and execution.
+  </p>
+
+  <h4 style={styles.subHeading}>Nearby Attractions</h4>
+  <p style={styles.descriptionText}>
+    Explore iconic sites like Pashupatinath Temple, Boudhanath Stupa, and the ancient Durbar Squares. Adventure seekers can enjoy hiking, trekking, and river rafting within easy reach.
+  </p>
+
+  <h4 style={styles.subHeading}>Outdoor Activities</h4>
+  <p style={styles.descriptionText}>
+    Take advantage of guided trekking tours, mountain biking, and nature walks. Discover the breathtaking landscapes of the Himalayas with expert local guides.
+  </p>
+
+  <h4 style={styles.subHeading}>Guest Experience</h4>
+  <p style={styles.descriptionText}>
+    With personalized service, clean and spacious rooms, and a welcoming atmosphere, guests consistently rate the hotel highly for comfort and value. Perfect for families, couples, and solo travelers.
+  </p>
+
+  <h4 style={styles.subHeading}>Sustainability</h4>
+  <p style={styles.descriptionText}>
+    Our hotel is committed to sustainable practices including waste reduction, energy efficiency, and support of local communities. We strive to preserve the natural beauty and culture of Nepal.
+  </p>
+</div>
+
         </div>
 
-        {/* Right side: Info and form */}
-        <div style={styles.rightSection}>
+        {/* Right side: Info, map, reservation */}
+        <div style={styles.rightContent}>
+          {/* Hotel Info Card */}
           <div style={styles.hotelCard} className="hotel-card">
             <h2 style={styles.hotelName}>{hotelDesc?.name || "Hotel Name"}</h2>
 
@@ -153,7 +173,6 @@ function HotelReservation() {
               {hotelDesc?.location?.trim()}
             </p>
 
-            {/* Display all room types and prices */}
             <div style={{ marginTop: "10px", marginBottom: "15px" }}>
               <strong style={{ fontSize: "18px", color: "#2563eb" }}>
                 Available Room Types:
@@ -166,7 +185,7 @@ function HotelReservation() {
                       style={{
                         fontSize: "16px",
                         marginBottom: "8px",
-                        display: "block", // explicitly force block display
+                        display: "block",
                       }}
                     >
                       {room.roomType} - Rs. <strong>{room.price}</strong> / night
@@ -179,12 +198,10 @@ function HotelReservation() {
             </div>
 
             <p style={{ fontSize: "18px" }}>
-              <strong style={{ color: "#16a34a", fontSize: "20px" }}>🛏️ Available Rooms:</strong>{" "}
+              <strong style={{ color: "#16a34a", fontSize: "20px" }}>
+                🛏️ Available Rooms:
+              </strong>{" "}
               <span style={{ fontWeight: "600" }}>{hotelDesc?.no_of_rooms}</span>
-            </p>
-
-            <p style={styles.description}>
-              {hotelDesc?.description || "No description available."}
             </p>
 
             <div style={styles.extraInfo}>
@@ -211,6 +228,22 @@ function HotelReservation() {
               </ul>
             </div>
           </div>
+
+          {/* Map below hotel info */}
+          {hotelDesc?.map && (
+            <div style={styles.mapWrapper}>
+              <iframe
+                title="Hotel Location Map"
+                src={hotelDesc.map}
+                width="100%"
+                height="400"
+                style={{ border: 0, borderRadius: "12px" }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
 
           {/* Booking Form */}
           <form
@@ -261,7 +294,7 @@ function HotelReservation() {
               value={selectedRoomType}
               onChange={(e) => setSelectedRoomType(e.target.value)}
               required
-              style={{ ...styles.input, width: "150px" }}
+              style={{ ...styles.input, width: "130px" }}
             >
               {hotelDesc?.roomTypes?.map((room, idx) => (
                 <option key={idx} value={room.roomType}>
@@ -301,17 +334,25 @@ const styles = {
     display: "flex",
     gap: "40px",
     alignItems: "flex-start",
+    flexWrap: "wrap",
   },
-  imageSection: {
-    flex: 1,
+  leftContent: {
+    flex: "1 1 55%",
+    minWidth: "300px",
+  },
+  rightContent: {
+    flex: "1 1 40%",
+    minWidth: "300px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "30px",
   },
   mainImageWrapper: {
     marginBottom: "20px",
   },
   mainImage: {
     width: "100%",
-    maxWidth: "800px",
-    height: "600px",
+    height: "450px",
     borderRadius: "12px",
     objectFit: "cover",
     boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
@@ -327,12 +368,43 @@ const styles = {
     borderRadius: "8px",
     objectFit: "cover",
     cursor: "pointer",
+    border: "2px solid transparent",
+    transition: "border-color 0.3s ease",
   },
-  rightSection: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    gap: "30px",
+  staticDescription: {
+    marginTop: "20px",
+    padding: "20px",
+    backgroundColor: "#f9fafb",
+    borderRadius: "12px",
+    boxShadow: "inset 0 0 10px rgba(0,0,0,0.05)",
+  },
+  descriptionHeading: {
+    fontSize: "26px",
+    fontWeight: "700",
+    marginBottom: "16px",
+    textDecoration: "underline",
+    color: "#1e3a8a",
+  },
+  subHeading: {
+    fontSize: "20px",
+    fontWeight: "600",
+    marginTop: "20px",
+    marginBottom: "8px",
+    textDecoration: "underline",
+    color: "#2563eb",
+  },
+  descriptionText: {
+    fontSize: "16px",
+    lineHeight: 1.6,
+    color: "#374151",
+    marginBottom: "12px",
+  },
+  mapWrapper: {
+    width: "100%",
+    height: "400px",
+    borderRadius: "12px",
+    overflow: "hidden",
+    border: "2px solid #000",
   },
   hotelCard: {
     backgroundColor: "#fff",
@@ -358,13 +430,6 @@ const styles = {
     marginBottom: "18px",
     fontWeight: "500",
   },
-  description: {
-    marginTop: "25px",
-    color: "#374151",
-    fontSize: "16px",
-    lineHeight: 1.8,
-    fontWeight: "400",
-  },
   extraInfo: {
     marginTop: "20px",
   },
@@ -383,18 +448,20 @@ const styles = {
     flexWrap: "wrap",
     gap: "25px",
   },
+  amenityItem: {
+    flex: "0 0 calc(50% - 15px)",
+  },
   amenityCard: {
     backgroundColor: "#fff",
     borderRadius: "8px",
     padding: "12px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     fontWeight: "bold",
-    flex: "0 0 calc(50% - 15px)",
     color: "#333",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    maxWidth: "calc(50% - 15px)",
+    maxWidth: "100%",
     boxSizing: "border-box",
   },
   form: {
@@ -410,15 +477,15 @@ const styles = {
   label: {
     fontWeight: "bold",
     color: "#374151",
-    width: "150px",
+    width: "140px",
     display: "inline-block",
   },
   input: {
-    padding: "5px",
+    padding: "2px",
     fontSize: "14px",
     borderRadius: "6px",
     border: "1px solid #d1d5db",
-    width: "100px",
+    width: "80px",
     display: "inline-block",
   },
   button: {

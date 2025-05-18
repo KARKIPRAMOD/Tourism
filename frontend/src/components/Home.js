@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect } from "react";
+import { FaPlane, FaHotel, FaMapMarkedAlt, FaCar } from "react-icons/fa";
 
 //import css file from style sheets directory
 import styleHome from "../style_sheets/Home.module.css";
@@ -18,6 +19,99 @@ import ThingsToDo from "./ThingsToDo";
 import FeedBackComp from "./feedbackComp";
 import Footer from "./Footer";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
+const serviceGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "20px",
+  marginTop: "20px",
+};
+
+const serviceCardBase = {
+  border: "1px solid #ddd",
+  borderRadius: "10px",
+  padding: "20px",
+  textAlign: "center",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+};
+
+const serviceCardHover = {
+  boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
+  transform: "scale(1.05)",
+};
+
+const serviceTitle = {
+  margin: "10px 0",
+  fontSize: "20px",
+  fontWeight: "600",
+};
+
+const iconBaseStyle = {
+  marginBottom: "10px",
+  color: "#4468E2",
+  fontSize: "40px",
+  transition: "transform 0.3s ease",
+};
+
+const iconHoverStyle = {
+  transform: "translateY(-8px)",
+};
+
+function ServiceGrid() {
+  const [hoverIndex, setHoverIndex] = useState(null);
+
+  const services = [
+    {
+      icon: <FaPlane />,
+      title: "Flight Booking",
+      desc: "Find the best flights at the best prices.",
+    },
+    {
+      icon: <FaHotel />,
+      title: "Hotel Reservations",
+      desc: "Top-rated hotels with verified reviews.",
+    },
+    {
+      icon: <FaMapMarkedAlt />,
+      title: "Tour Guides",
+      desc: "Licensed guides to enrich your travel experience.",
+    },
+    {
+      icon: <FaCar />,
+      title: "Vehicle Rental",
+      desc: "Cars, bikes & more, ready when you are.",
+    },
+  ];
+
+  return (
+    <div style={serviceGrid}>
+      {services.map((service, index) => (
+        <div
+          key={index}
+          style={{
+            ...serviceCardBase,
+            ...(hoverIndex === index ? serviceCardHover : {}),
+          }}
+          onMouseEnter={() => setHoverIndex(index)}
+          onMouseLeave={() => setHoverIndex(null)}
+        >
+          <div
+            style={{
+              ...iconBaseStyle,
+              ...(hoverIndex === index ? iconHoverStyle : {}),
+            }}
+          >
+            {service.icon}
+          </div>
+          <h3 style={serviceTitle}>{service.title}</h3>
+          <p style={{ fontSize: "16px", color: "#666" }}>{service.desc}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 const gradientHeader = (color1, color2) => ({
   fontWeight: "700",
@@ -59,11 +153,7 @@ const paragraphText = {
   lineHeight: "1.6",
 };
 
-const serviceGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-  gap: "30px",
-};
+
 
 const serviceCard = {
   backgroundColor: "#f9f9f9",
@@ -72,12 +162,6 @@ const serviceCard = {
   textAlign: "center",
   boxShadow: "0 8px 16px rgba(0,0,0,0.06)",
   transition: "transform 0.3s",
-};
-
-const serviceTitle = {
-  fontSize: "22px",
-  marginBottom: "10px",
-  color: "#333",
 };
 
 const Home = () => {
@@ -307,52 +391,25 @@ const Home = () => {
         </div>
       </section>
       {/* Our Services Section */}
-      <section
-        style={{
-          padding: "80px 60px",
-          backgroundColor: "#fff",
-          marginTop: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <h2 style={gradientHeader("#0f2027", "#2c5364")}>Our Services</h2>
-            <p style={subTextStyle}>
-              Everything you need for a perfect journey 🚀
-            </p>
-          </div>
+    {/* Our Services Section */}
+<section
+  style={{
+    padding: "80px 60px",
+    backgroundColor: "#fff",
+    marginTop: "10px",
+    marginBottom: "10px",
+  }}
+>
+  <div className="container">
+    <div style={{ textAlign: "center", marginBottom: "60px" }}>
+      <h2 style={gradientHeader("#0f2027", "#2c5364")}>Our Services</h2>
+      <p style={subTextStyle}>Everything you need for a perfect journey 🚀</p>
+    </div>
 
-          <div style={serviceGrid}>
-            {[
-              {
-                title: "Flight Booking",
-                desc: "Find the best flights at the best prices.",
-              },
-              {
-                title: "Hotel Reservations",
-                desc: "Top-rated hotels with verified reviews.",
-              },
-              {
-                title: "Tour Guides",
-                desc: "Licensed guides to enrich your travel experience.",
-              },
-              {
-                title: "Vehicle Rental",
-                desc: "Cars, bikes & more, ready when you are.",
-              },
-            ].map((service, index) => (
-              <div key={index} style={serviceCard}>
-                <div style={{ marginBottom: "10px" }}>{service.icon}</div>
-                <h3 style={serviceTitle}>{service.title}</h3>
-                <p style={{ fontSize: "16px", color: "#666" }}>
-                  {service.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <ServiceGrid />
+  </div>
+</section>
+
       <section style={{ padding: "40px 40px", backgroundColor: "#f0f4f8" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
