@@ -4,7 +4,7 @@
   flex-wrap: nowrap !important;
   gap: 20px; /* space between cards */
   padding: 0 10px; /* some padding left and right */
-  overflow-x: auto; /* enable horizontal scroll if needed */
+  overflow-x: none; /* enable horizontal scroll if needed */
 }
 
 .boxWrapper {
@@ -16,6 +16,7 @@
   overflow: visible;     /* remove internal scrollbar */
   box-sizing: border-box; /* include padding in width */
   margin: 0 !important;  /* reset margins if any */
+  background-color: rgb(255, 255, 255);
 }
 
 

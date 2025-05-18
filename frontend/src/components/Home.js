@@ -240,157 +240,322 @@ const Home = () => {
 
   return (
     <>
-      <div className={styleHome.container}>
-        <img src={"https://ankitsenvlogs.com/wp-content/uploads/2023/07/Nepal-Travel-Guide-1.jpg"
-} alt="Cover Beach" className={styleHome.img} />
-        <div className={styleHome.layer}>
-          <div className={styleHome.centered}>
-            <div className={styleHome.headerTxt}>TRAVEL TO EXPLORE</div>
-            <div className={styleHome.sloganTxt}>
-              Stop worrying about the potholes in the road and enjoy the journey{" "}
-              <br />~ Babs Hoffman ~
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className={styleHome.container} style={{ position: "relative", overflow: "hidden" }}>
+  <img
+    src="https://ankitsenvlogs.com/wp-content/uploads/2023/07/Nepal-Travel-Guide-1.jpg"
+    alt="Cover Beach"
+    className={styleHome.img}
+    style={{
+      width: "100%",
+      height: "auto",
+      transition: "transform 15s ease-in-out",
+      animation: "zoomInOut 15s infinite alternate",
+      objectFit: "cover",
+    }}
+  />
+
+  <div
+    className={styleHome.layer}
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+  
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "#fff",
+      textAlign: "center",
+      padding: "0 20px",
+      flexDirection: "column",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    }}
+  >
+    <div
+      className={styleHome.centered}
+      style={{
+        animation: "fadeInUp 2s ease forwards",
+        opacity: 0,
+      }}
+    >
       <div
-        className={`row row-cols-md-4 g-5`}
-        style={{ margin: "40px 70px 0px 70px" }}
-      >
-        <div className={`col`}>
-          <div className={`card h-100 ${styleHome.cardContainer}`}>
-            <div className={styleHome.imgBg}>
-              <img
-                src={priceImg}
-                className={`card-img-top ${styleHome.cardImg}`}
-                alt="..."
-              />
-            </div>
-            <div
-              className={`card-body`}
-              style={{ marginLeft: "10px", marginRight: "15px" }}
-            >
-              <h5 className={`card-title ${styleHome.cardHeader}`}>
-                Get Best Prices
-              </h5>
-              <p className={`card-text ${styleHome.cardDes}`}>
-                Pay through our application and save thousands and get amazing
-                rewards
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className={`col`}>
-          <div className={`card h-100 ${styleHome.cardContainer}`}>
-            <div className={styleHome.imgBg}>
-              <img
-                src={covidImg}
-                className={`card-img-top ${styleHome.cardImg}`}
-                style={{ width: "45px" }}
-                alt="..."
-              />
-            </div>
-            <div
-              className={`card-body`}
-              style={{ marginLeft: "10px", marginRight: "20px" }}
-            >
-              <h5 className={`card-title ${styleHome.cardHeader}`}>Safty</h5>
-              <p className={`card-text ${styleHome.cardDes}`}>
-                We provide safe spaces by ensuring our partnered hotels follow
-                top hygiene and safety practices.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className={`col`}>
-          <div className={`card h-100 ${styleHome.cardContainer}`}>
-            <div className={styleHome.imgBg}>
-              <img
-                src={paymentImg}
-                className={`card-img-top ${styleHome.cardImg}`}
-                style={{ width: "45px", marginTop: "5px" }}
-                alt="..."
-              />
-            </div>
-            <div
-              className={`card-body`}
-              style={{ marginLeft: "10px", marginRight: "20px" }}
-            >
-              <h5 className={`card-title ${styleHome.cardHeader}`}>
-                Flexible Payment
-              </h5>
-              <p className={`card-text ${styleHome.cardDes}`}>
-                Enjoy the flexible payment through our app and get rewards on
-                every payment
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className={`col`}>
-          <div className={`card h-100 ${styleHome.cardContainer}`}>
-            <div className={styleHome.imgBg}>
-              <img
-                src={nearbyImg}
-                className={`card-img-top ${styleHome.cardImg}`}
-                style={{ width: "45px" }}
-                alt="..."
-              />
-            </div>
-            <div
-              className={`card-body`}
-              style={{ marginLeft: "10px", marginRight: "20px" }}
-            >
-              <h5 className={`card-title ${styleHome.cardHeader}`}>
-                Find The Best Near You
-              </h5>
-              <p className={`card-text ${styleHome.cardDes}`}>
-                Find the best hotels and places to visit near you in a single
-                click
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <section
-        className={styleHome.reviewSection}
+        className={styleHome.headerTxt}
         style={{
-          padding: "80px 60px",
-          backgroundColor: "#f0f4f8",
+          fontSize: "3.5rem",
+          fontWeight: "900",
+          letterSpacing: "0.15em",
+          textShadow: "2px 2px 8px rgba(0,0,0,0.6)",
+          marginBottom: "1rem",
+          textTransform: "uppercase",
+          animationDelay: "0.5s",
+          animationFillMode: "forwards",
         }}
       >
-        {/* About Us Section */}
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <h2 style={gradientHeader("#ff6a00", "#ee0979")}>About Us</h2>
-            <p style={subTextStyle}>
-              Learn how we make your travel easier, safer, and more fun ✨
-            </p>
-          </div>
+        TRAVEL TO EXPLORE
+      </div>
 
-          <div style={twoColumnGrid}>
-            <img
-              src="https://img.freepik.com/free-vector/travel-around-world-concept-illustration_114360-8515.jpg"
-              alt="About Us Visual"
-              style={imageStyle}
-            />
+      <div
+        className={styleHome.sloganTxt}
+        style={{
+          fontSize: "1.5rem",
+          fontWeight: "500",
+          lineHeight: "1.4",
+          maxWidth: "600px",
+          margin: "0 auto",
+          fontStyle: "italic",
+          animationDelay: "1s",
+          animationFillMode: "forwards",
+        }}
+      >
+        Stop worrying about the potholes in the road and enjoy the journey <br />~ Babs Hoffman ~
+      </div>
+    </div>
+  </div>
 
-            <div>
-              <h3 style={subHeader}>
-                Welcome to <span style={{ color: "#ff6a00" }}>YatraPath</span>
-              </h3>
-              <p style={paragraphText}>
-                At YatraPath, we believe that travel should be seamless and
-                joyful...
-              </p>
-              <p style={{ ...paragraphText, marginTop: "15px" }}>
-                With real-time information, smart bookings, and personalized
-                recommendations...
-              </p>
-            </div>
-          </div>
+  <style>{`
+    @keyframes zoomInOut {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .${styleHome.centered} {
+      animation: fadeInUp 2s ease forwards;
+    }
+  `}</style>
+</div>
+
+    <div
+  className={`row row-cols-md-4 g-5`}
+  style={{ margin: "40px 70px 0px 70px" }}
+>
+  {[ 
+    {
+      img: priceImg,
+      title: "Get Best Prices",
+      desc: "Pay through our application and save thousands and get amazing rewards",
+      imgStyle: {},
+    },
+    {
+      img: covidImg,
+      title: "Safety",
+      desc: "We provide safe spaces by ensuring our partnered hotels follow top hygiene and safety practices.",
+      imgStyle: { width: "45px" },
+    },
+    {
+      img: paymentImg,
+      title: "Flexible Payment",
+      desc: "Enjoy the flexible payment through our app and get rewards on every payment",
+      imgStyle: { width: "45px", marginTop: "5px" },
+    },
+    {
+      img: nearbyImg,
+      title: "Find The Best Near You",
+      desc: "Find the best hotels and places to visit near you in a single click",
+      imgStyle: { width: "45px" },
+    },
+  ].map(({ img, title, desc, imgStyle }, idx) => (
+    <div key={idx} className={`col`}>
+      <div
+        className={`card h-100 ${styleHome.cardContainer}`}
+        style={{
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          cursor: "pointer",
+          boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-10px)";
+          e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.2)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 6px 15px rgba(0,0,0,0.1)";
+        }}
+      >
+        <div className={styleHome.imgBg} style={{ padding: "15px", textAlign: "center" }}>
+          <img
+            src={img}
+            className={`card-img-top ${styleHome.cardImg}`}
+            alt={title}
+            style={{ ...imgStyle, maxHeight: "80px", objectFit: "contain" }}
+          />
         </div>
-      </section>
-      {/* Our Services Section */}
+        <div
+          className={`card-body`}
+          style={{ marginLeft: "10px", marginRight: "15px" }}
+        >
+          <h5
+            className={`card-title ${styleHome.cardHeader}`}
+            style={{ fontWeight: "700", color: "#ff6a00", letterSpacing: "0.05em" }}
+          >
+            {title}
+          </h5>
+          <p
+            className={`card-text ${styleHome.cardDes}`}
+            style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.4" }}
+          >
+            {desc}
+          </p>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<section
+  className={styleHome.reviewSection}
+  style={{
+    padding: "80px 60px",
+    backgroundColor: "#f0f4f8",
+  }}
+>
+  {/* About Us Section */}
+  <div className="container">
+    <div style={{ textAlign: "center", marginBottom: "60px" }}>
+      <h2 style={gradientHeader("#ff6a00", "#ee0979")}>About Us</h2>
+      <p style={subTextStyle}>
+        Learn how we make your travel easier, safer, and more fun ✨
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "40px",
+        alignItems: "center",
+        textAlign: "left",
+      }}
+    >
+      {/* Animated SVG Container */}
+      <div style={{ width: "100%", maxWidth: "400px", margin: "auto" }}>
+        <svg
+          viewBox="0 0 300 300"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ width: "100%", height: "auto" }}
+        >
+          {/* Rotating globe */}
+          <circle
+            cx="150"
+            cy="150"
+            r="100"
+            fill="url(#gradient)"
+            stroke="#ff6a00"
+            strokeWidth="3"
+          >
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="rotate"
+              from="0 150 150"
+              to="360 150 150"
+              dur="20s"
+              repeatCount="indefinite"
+            />
+          </circle>
+
+          {/* Globe gradient */}
+          <defs>
+            <radialGradient id="gradient" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor="#ff6a00" />
+              <stop offset="100%" stopColor="#ee0979" />
+            </radialGradient>
+          </defs>
+
+          {/* Clouds */}
+          <ellipse
+            cx="80"
+            cy="90"
+            rx="30"
+            ry="12"
+            fill="white"
+            opacity="0.8"
+            style={{ filter: "drop-shadow(0 0 3px rgba(0,0,0,0.1))" }}
+          >
+            <animateMotion dur="15s" repeatCount="indefinite" path="M0 0 L100 0" />
+          </ellipse>
+          <ellipse
+            cx="130"
+            cy="60"
+            rx="20"
+            ry="8"
+            fill="white"
+            opacity="0.7"
+            style={{ filter: "drop-shadow(0 0 3px rgba(0,0,0,0.1))" }}
+          >
+            <animateMotion dur="10s" repeatCount="indefinite" path="M0 0 L120 0" />
+          </ellipse>
+
+          {/* Flying plane */}
+          <polygon
+            points="10,140 40,130 40,150"
+            fill="#ff6a00"
+            stroke="#ee0979"
+            strokeWidth="1"
+          >
+            <animateMotion
+              dur="8s"
+              repeatCount="indefinite"
+              rotate="auto"
+              path="M-20 0 C50 -30, 100 30, 180 0"
+            />
+          </polygon>
+
+          {/* Plane trail */}
+          <path
+            d="M-20 140 C50 110, 100 170, 180 140"
+            stroke="#ee0979"
+            strokeWidth="2"
+            fill="none"
+            strokeDasharray="10 10"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              from="0"
+              to="20"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+      </div>
+
+      {/* Text Content */}
+      <div>
+        <h3 style={{ ...subHeader, fontWeight: "700" }}>
+          Welcome to <span style={{ color: "#ff6a00" }}>YatraPath</span>
+        </h3>
+        <p style={paragraphText}>
+          At YatraPath, we believe that travel should be seamless and joyful,
+          connecting you to the world with simplicity and trust.
+        </p>
+        <p style={{ ...paragraphText, marginTop: "15px" }}>
+          With real-time information, smart bookings, and personalized
+          recommendations, your adventure begins right here — tailored just
+          for you.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
     {/* Our Services Section */}
 <section
   style={{
@@ -402,9 +567,12 @@ const Home = () => {
 >
   <div className="container">
     <div style={{ textAlign: "center", marginBottom: "60px" }}>
-      <h2 style={gradientHeader("#0f2027", "#2c5364")}>Our Services</h2>
-      <p style={subTextStyle}>Everything you need for a perfect journey 🚀</p>
+      <h2 style={gradientHeader("#ff6a00", "#ee0979")}>Our Services</h2>
+      <p style={subTextStyle}>
+        Everything you need for a perfect journey 🚀
+      </p>
     </div>
+
 
     <ServiceGrid />
   </div>
