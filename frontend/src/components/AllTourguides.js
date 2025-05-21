@@ -33,37 +33,30 @@ export default class AllTourGuide extends Component {
     });
   }
 
-retrieveTourGuides() {
-  axios
-    .get("http://localhost:8070/tourguide/all")
-    .then((res) => {
-      if (res.data.success) {
-        this.setState({ tourguides: res.data.guides }); // Changed 'tourguides' to 'guides'
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching tour guides:", error);
-    });
-}
-
-
+  retrieveTourGuides() {
+    axios
+      .get("http://localhost:8070/tourguide/all")
+      .then((res) => {
+        if (res.data.success) {
+          this.setState({ tourguides: res.data.guides }); // Changed 'tourguides' to 'guides'
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching tour guides:", error);
+      });
+  }
 
   handleTextSearch = (e) => {
     const searchTerm = e.currentTarget.value;
     this.setState({ searchQuery: searchTerm });
   };
 
-  onDelete(id) {
-    axios
-      .delete(`http://localhost:8070/tourguide/delete/${id}`)
-      .then((res) => {
-        alert("Deleted Successfully");
-        this.retrieveTourGuides();
-      })
-      .catch((err) => {
-        console.error("Error deleting tour guide:", err);
-      });
-  }
+  // Soft delete: remove tour guide from UI only (frontend)
+  softRemoveTourGuide = (id) => {
+    this.setState((prevState) => ({
+      tourguides: prevState.tourguides.filter((tg) => tg._id !== id),
+    }));
+  };
 
   render() {
     if (!this.state.isAuthorized) {
@@ -214,10 +207,10 @@ retrieveTourGuides() {
                           <td>{tourguide.amount}</td>
                           <td>
                             <button
-                              className="btn btn-outline-danger btn-sm"
-                              onClick={() => this.onDelete(tourguide._id)}
+                              className="btn btn-outline-warning btn-sm"
+                              onClick={() => this.softRemoveTourGuide(tourguide._id)}
                             >
-                              <i className="bi bi-trash"></i> Delete
+                              <i className="bi bi-x-circle"></i> Remove
                             </button>
                           </td>
                         </tr>

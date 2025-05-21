@@ -69,7 +69,7 @@ const ReservedTourGuides = ({ userId }) => {
     }
 
     axios
-      .post(`http://localhost:8070/feedback/add`, {
+      .post(`http://localhost:8070/tourguideFeedback/add`, {
         userId,
         tourguideId: tourGuideId,
         rating: feedback.rating,

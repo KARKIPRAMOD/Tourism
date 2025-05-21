@@ -44,7 +44,7 @@ const styles = {
   img: {
     width: "100%",
     height: "100%",
-objectFit: "contain",
+    objectFit: "contain",
     transition: "transform 0.4s ease",
   },
   imgHover: {
@@ -232,6 +232,7 @@ export default class GuideReport extends Component {
       modalDateTo: null,
       reserveBtnHover: false,
       modalCloseHover: false,
+      feedbacks: {}, // <--- Added feedbacks state here
     };
   }
 
@@ -245,7 +246,11 @@ export default class GuideReport extends Component {
       .get("http://localhost:8070/tourguide/")
       .then((res) => {
         if (res.data.success) {
-          this.setState({ tourguides: res.data.guides });
+          const guides = res.data.guides;
+          this.setState({ tourguides: guides }, () => {
+            // Fetch feedbacks only after guides are loaded
+            this.fetchFeedbacksForGuides(guides);
+          });
         }
       })
       .catch((err) => {
@@ -262,6 +267,23 @@ export default class GuideReport extends Component {
       })
       .catch((error) => console.error("Error fetching reservations:", error));
   }
+
+  fetchFeedbacksForGuides = (guides) => {
+    const requests = guides.map((guide) =>
+      axios
+        .get(`http://localhost:8070/tourguideFeedback/tourguide/${guide._id}`)
+        .then((res) => ({ id: guide._id, feedbacks: res.data }))
+        .catch(() => ({ id: guide._id, feedbacks: [] }))
+    );
+
+    Promise.all(requests).then((results) => {
+      const feedbacks = {};
+      results.forEach(({ id, feedbacks: fb }) => {
+        feedbacks[id] = fb;
+      });
+      this.setState({ feedbacks });
+    });
+  };
 
   compareTourguideReservations = () => {
     const { tourguides, reservations } = this.state;
@@ -361,6 +383,7 @@ export default class GuideReport extends Component {
       modalDateTo,
       reserveBtnHover,
       modalCloseHover,
+      feedbacks,
     } = this.state;
 
     return (
@@ -384,102 +407,165 @@ export default class GuideReport extends Component {
 
         <div style={styles.prettyGuideReportContainer}>
           <div style={styles.prettyGuideCardGrid}>
-            {tourguides.map((tourguide, index) => (
-              <div
-                key={index}
-                style={{
-                  ...styles.card,
-                  ...(hoveredIndex === index ? styles.cardHover : {}),
-                }}
-                onMouseEnter={() => this.handleMouseEnter(index)}
-                onMouseLeave={this.handleMouseLeave}
-              >
-                <div style={styles.imageWrapper}>
-                  <img
-                  
-                    src={
-                      tourguide.image
-                        ? `http://localhost:8070/uploads/tourguide_pictures/${tourguide.image}`
-                        : "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
-                    }
-                    alt={tourguide.fullName}
-                    style={{
-                      ...styles.img,
-                      ...(hoveredIndex === index ? styles.imgHover : {})
+            {tourguides.map((tourguide, index) => {
+              const guideFeedbacks = feedbacks[tourguide._id] || [];
+              return (
+                <div
+                  key={index}
+                  style={{
+                    ...styles.card,
+                    ...(hoveredIndex === index ? styles.cardHover : {}),
+                  }}
+                  onMouseEnter={() => this.handleMouseEnter(index)}
+                  onMouseLeave={this.handleMouseLeave}
+                >
+                  <div style={styles.imageWrapper}>
+                    <img
+                      src={
+                        tourguide.image
+                          ? `http://localhost:8070/uploads/tourguide_pictures/${tourguide.image}`
+                          : "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
+                      }
+                      alt={tourguide.fullName}
+                      style={{
+                        ...styles.img,
+                        ...(hoveredIndex === index ? styles.imgHover : {}),
                       }}
-                  />
-                </div>
-
-                <div style={styles.cardContent}>
-                  <h3 style={styles.guideName}>{tourguide.fullName}</h3>
-
-                  <div style={styles.ratingRow}>
-                    <span style={{ color: "#fbbf24", fontSize: "1.25rem" }}>⭐</span>
-                    <span style={styles.ratingText}>4.78 / 5</span>
+                    />
                   </div>
 
-                  <span style={styles.locationBadge}>
-                    <i className="fas fa-location-dot location-icon"></i>{" "}
-                    {tourguide.address || "Japan"}
-                  </span>
+                  <div style={styles.cardContent}>
+                    <h3 style={styles.guideName}>{tourguide.fullName}</h3>
 
-                  <div style={styles.infoSection}>
-                    <p className="info-item">
-                      <i className="fas fa-venus-mars"></i> {tourguide.gender}{" "}
-                      <i style={{ marginLeft: "50px" }} className="fas fa-phone"></i>{" "}
-                      {tourguide.contactNumber}
-                    </p>
-                    <p className="info-item">
-                      <i className="fas fa-envelope"></i> {tourguide.eMail}
-                    </p>
-                    <p className="info-item big-text">
-                      <i className="fas fa-briefcase"></i>
-                      <strong>
-                        {" "}
-                        {tourguide.workExperience}{" "}
+
+                    <span style={styles.locationBadge}>
+                      <i className="fas fa-location-dot location-icon"></i>{" "}
+                      {tourguide.address || "Japan"}
+                    </span>
+
+                    <div style={styles.infoSection}>
+                      <p className="info-item">
+                        <i className="fas fa-venus-mars"></i> {tourguide.gender}{" "}
                         <i
                           style={{ marginLeft: "50px" }}
-                          className="fas fa-money-bill-wave"
+                          className="fas fa-phone"
                         ></i>{" "}
-                        Rs. {tourguide.amount}
+                        {tourguide.contactNumber}
+                      </p>
+                      <p className="info-item">
+                        <i className="fas fa-envelope"></i> {tourguide.eMail}
+                      </p>
+                      <p className="info-item big-text">
+                        <i className="fas fa-briefcase"></i>
+                        <strong>
+                          {" "}
+                          {tourguide.workExperience}{" "}
+                          <i
+                            style={{ marginLeft: "50px" }}
+                            className="fas fa-money-bill-wave"
+                          ></i>{" "}
+                          Rs. {tourguide.amount}
+                        </strong>
+                      </p>
+                    </div>
+
+ 
+
+
+                    <p style={styles.description}>{tourguide.description}</p>
+
+                    <p style={styles.bookedDates}>
+                      <strong>Booked:</strong>
+                    </p>
+                    <p>
+                      From:{" "}
+                      <strong>
+                        {reservationDates[tourguide._id]?.dateFrom
+                          ? reservationDates[tourguide._id].dateFrom.toLocaleDateString()
+                          : "N/A"}
+                      </strong>{" "}
+                      To:{" "}
+                      <strong>
+                        {reservationDates[tourguide._id]?.dateTo
+                          ? reservationDates[tourguide._id].dateTo.toLocaleDateString()
+                          : "N/A"}
                       </strong>
                     </p>
+
+                    <button
+                      onClick={() => this.openModal(tourguide)}
+                      style={{
+                        ...styles.reserveButton,
+                        ...(reserveBtnHover ? styles.reserveButtonHover : {}),
+                      }}
+                      onMouseEnter={() => this.setState({ reserveBtnHover: true })}
+                      onMouseLeave={() => this.setState({ reserveBtnHover: false })}
+                    >
+                      Reserve
+                    </button>
+                                       {/* Feedback Section */}
+                   <div
+  style={{
+    marginTop: "15px",
+    borderTop: "1px solid #eee",
+    paddingTop: "10px",
+    textAlign: "left",
+  }}
+>
+  <h4
+    style={{
+      fontWeight: "600",
+      color: "#2563eb",
+      marginBottom: "8px",
+    }}
+  >
+    Feedback
+  </h4>
+  {Array.isArray(guideFeedbacks) && guideFeedbacks.length > 0 ? (
+    guideFeedbacks.map((fb) => (
+      <div
+        key={fb._id}
+        style={{
+          backgroundColor: "#f3f4f6",
+          padding: "10px",
+          borderRadius: "8px",
+          marginBottom: "10px",
+          fontSize: "0.9rem",
+          color: "#333",
+        }}
+      >
+        <div>
+          <strong>Rating:</strong>{" "}
+          <span style={{ color: "#fbbf24" }}>
+            {"⭐".repeat(fb.rating)} ({fb.rating}/5)
+          </span>
+        </div>
+        <div style={{ marginTop: "4px" }}>{fb.message}</div>
+        <div
+          style={{
+            marginTop: "6px",
+            fontSize: "0.8rem",
+            color: "#666",
+          }}
+        >
+          By User: {
+            fb.userId && typeof fb.userId === "object"
+              ? fb.userId.fullName || fb.userId.email || fb.userId._id || "Unknown User"
+              : fb.userId || "Unknown User"
+          }
+          <br />
+          On: {new Date(fb.createdAt).toLocaleDateString()}
+        </div>
+      </div>
+    ))
+  ) : (
+    <p style={{ fontStyle: "italic", color: "#888" }}>No feedback yet.</p>
+  )}
+</div>
                   </div>
-
-                  <p style={styles.description}>{tourguide.description}</p>
-
-                  <p style={styles.bookedDates}>
-                    <strong>Booked:</strong>
-                  </p>
-                  <p>
-                    From:{" "}
-                    <strong>
-                      {reservationDates[tourguide._id]?.dateFrom
-                        ? reservationDates[tourguide._id].dateFrom.toLocaleDateString()
-                        : "N/A"}
-                    </strong>{" "}
-                    To:{" "}
-                    <strong>
-                      {reservationDates[tourguide._id]?.dateTo
-                        ? reservationDates[tourguide._id].dateTo.toLocaleDateString()
-                        : "N/A"}
-                    </strong>
-                  </p>
-
-                  <button
-                    onClick={() => this.openModal(tourguide)}
-                    style={{
-                      ...styles.reserveButton,
-                      ...(reserveBtnHover ? styles.reserveButtonHover : {}),
-                    }}
-                    onMouseEnter={() => this.setState({ reserveBtnHover: true })}
-                    onMouseLeave={() => this.setState({ reserveBtnHover: false })}
-                  >
-                    Reserve
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

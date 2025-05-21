@@ -7,15 +7,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../style_sheets/Profile.module.css";
 
 function EditCusPack(props) {
-  const [name, setName] = useState("");
-  const [email, setMail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [arriDate, setDate] = useState("");
-  const [pickPlace, setPickPlace] = useState("");
-  const [destination, setDesti] = useState("");
-  const [NofDays, setDays] = useState("");
-  const [NoPass, setPasseng] = useState("");
-  const [notes, setNotes] = useState("");
+  // Adjust state variables to match your model fields
+  const [packName, setPackName] = useState("");
+  const [packID, setPackID] = useState(""); // If you want to show/edit this
+  const [Destination, setDestination] = useState("");
+  const [NumOfDays, setNumOfDays] = useState("");
+  const [NumOfPassen, setNumOfPassen] = useState("");
+  const [Hotel, setHotel] = useState("");
+  const [Transport, setTransport] = useState("");
+  const [TourGuide, setTourGuide] = useState("");
+  const [TotPrice, setTotPrice] = useState("");
+  const [description, setDescription] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [user, setUser] = useState({});
@@ -26,14 +29,10 @@ function EditCusPack(props) {
 
   useEffect(() => {
     getPackage();
-    // Try to get the user ID from props first, then localStorage
+
     const propsUserId = props.userId;
     const storedUserId = localStorage.getItem("userId");
     const userIdToUse = propsUserId || storedUserId;
-
-    console.log("EditCusPack - props userId:", propsUserId);
-    console.log("EditCusPack - localStorage userId:", storedUserId);
-    console.log("EditCusPack - using userId:", userIdToUse);
 
     if (userIdToUse) {
       setUserId(userIdToUse);
@@ -41,32 +40,34 @@ function EditCusPack(props) {
     }
   }, [props.userId]);
 
-  function retrieveUser(id) {
+  const retrieveUser = (id) => {
     axios
       .get(`http://localhost:8070/user/${id}`)
       .then((res) => {
-        if (res.data && res.data.user) {
-          setUser(res.data.user);
-        }
+        if (res.data && res.data.user) setUser(res.data.user);
       })
-      .catch((err) => console.log("Error retrieving user:", err));
-  }
+      .catch((err) => console.error("Error retrieving user:", err));
+  };
 
-  function getPackage() {
+  const getPackage = () => {
     setInitialLoading(true);
     axios
-      .get(`http://localhost:8070/cusPack/get/${id}`)
+      .get(`http://localhost:8070/package/get/${id}`)
       .then((res) => {
         if (res.data) {
-          setName(res.data.name || "");
-          setMail(res.data.email || "");
-          setPhone(res.data.phone || "");
-          setDate(res.data.arriDate || "");
-          setPickPlace(res.data.pickPlace || "");
-          setDesti(res.data.destination || "");
-          setDays(res.data.NofDays || "");
-          setPasseng(res.data.NoPass || "");
-          setNotes(res.data.notes || "");
+          const pkg = res.data;
+
+          setPackName(pkg.packName || "");
+          setPackID(pkg.packID || "");
+          setDestination(pkg.Destination || "");
+          setNumOfDays(pkg.NumOfDays || "");
+          setNumOfPassen(pkg.NumOfPassen || "");
+          setHotel(pkg.Hotel || "");
+          setTransport(pkg.Transport || "");
+          setTourGuide(pkg.TourGuide || "");
+          setTotPrice(pkg.TotPrice || "");
+          setDescription(pkg.description || "");
+
           setInitialLoading(false);
         }
       })
@@ -75,31 +76,48 @@ function EditCusPack(props) {
         alert("Failed to load package details. Please try again.");
         setInitialLoading(false);
       });
-  }
+  };
 
-  function updateData(e) {
+  const updateData = (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Basic validation example (add more as needed)
+    if (
+      !packName ||
+      !Destination ||
+      !NumOfDays ||
+      !NumOfPassen ||
+      !Hotel ||
+      !Transport ||
+      !TourGuide ||
+      !TotPrice ||
+      !description
+    ) {
+      alert("Please fill in all required fields.");
+      setLoading(false);
+      return;
+    }
+
     const updatedPackage = {
-      name,
-      email,
-      phone,
-      arriDate,
-      pickPlace,
-      destination,
-      NofDays,
-      NoPass,
-      notes,
+      packName,
+      packID, // if editable, else remove
+      Destination,
+      NumOfDays: Number(NumOfDays),
+      NumOfPassen: Number(NumOfPassen),
+      Hotel,
+      Transport,
+      TourGuide,
+      TotPrice,
+      description,
     };
 
     axios
-      .patch(`http://localhost:8070/cusPack/update/${id}`, updatedPackage)
+      .patch(`http://localhost:8070/package/update/${id}`, updatedPackage)
       .then((response) => {
         setLoading(false);
         if (response.status === 200) {
           alert("Package updated successfully!");
-          // Redirect with user ID if available
           if (userId) {
             history.push(`/find/package/${userId}`);
           } else {
@@ -112,75 +130,9 @@ function EditCusPack(props) {
       .catch((err) => {
         setLoading(false);
         console.error("Update error:", err);
-        const errorMessage =
-          err.response?.data?.message ||
-          "Error updating package. Please try again.";
-        alert(errorMessage);
+        alert(err.response?.data?.error || "Error updating package.");
       });
-  }
-
-  function renderSidebar() {
-    return (
-      <div className={styles.navbar_holder}>
-        <nav
-          id="sidebarMenu"
-          className={`collapse d-lg-block collapse bg-white ${styles.sidebar}`}
-        >
-          <hr
-            className={styles.divider}
-            style={{ marginTop: "-40px", marginBottom: "25px" }}
-          />
-          <div className={styles.usercard}>
-            <img src={pp} alt="Logo" className={styles.pp} />
-            <div>
-              <p className={styles.hello}>Hello,</p>
-              <h2 className={styles.username}>{user.user_name}</h2>
-            </div>
-          </div>
-          <hr className={styles.divider} />
-          <div className="position-sticky">
-            <div className="list-group list-group-flush mx-3 mt-4">
-              <Link
-                to={`/profile/home/${userId}`}
-                className={`${styles.sidelinks}`}
-              >
-                My Details
-              </Link>
-            </div>
-            <div className="list-group list-group-flush mx-3 mt-4">
-              <Link
-                to={`/view/payment+details/${userId}`}
-                className={styles.sidelinks}
-              >
-                Payment Details
-              </Link>
-            </div>
-            <div className="list-group list-group-flush mx-3 mt-4">
-              <Link
-                to={`/view/payment+history/${userId}`}
-                className={styles.sidelinks}
-              >
-                Payment History
-              </Link>
-            </div>
-            <div className="list-group list-group-flush mx-3 mt-4">
-              <Link to="/print/payment+history" className={styles.sidelinks}>
-                Monthly Report
-              </Link>
-            </div>
-            <div className="list-group list-group-flush mx-3 mt-4">
-              <Link
-                to={`/find/package/${userId}`}
-                className={`${styles.sidelinks} active`}
-              >
-                My Tour Packages
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </div>
-    );
-  }
+  };
 
   if (initialLoading) {
     return (
@@ -203,18 +155,51 @@ function EditCusPack(props) {
       className={styles.maincontainer}
       style={{ backgroundColor: "#f7f7f7", minHeight: "100vh" }}
     >
-      {userId && renderSidebar()}
+      {userId && (
+        <nav
+          id="sidebarMenu"
+          className={`collapse d-lg-block collapse bg-white ${styles.sidebar}`}
+        >
+          <hr
+            className={styles.divider}
+            style={{ marginTop: "-40px", marginBottom: "25px" }}
+          />
+          <div className={styles.usercard}>
+            <img src={pp} alt="Logo" className={styles.pp} />
+            <div>
+              <p className={styles.hello}>Hello,</p>
+              <h2 className={styles.username}>{user.user_name}</h2>
+            </div>
+          </div>
+          <hr className={styles.divider} />
+          <div className="position-sticky">
+            <div className="list-group list-group-flush mx-3 mt-4">
+              <Link to={`/profile/home/${userId}`} className={`${styles.sidelinks}`}>
+                My Details
+              </Link>
+              <Link to={`/view/payment+details/${userId}`} className={styles.sidelinks}>
+                Payment Details
+              </Link>
+              <Link to={`/view/payment+history/${userId}`} className={styles.sidelinks}>
+                Payment History
+              </Link>
+              <Link to="/print/payment+history" className={styles.sidelinks}>
+                Monthly Report
+              </Link>
+              <Link to={`/find/package/${userId}`} className={`${styles.sidelinks} active`}>
+                My Tour Packages
+              </Link>
+            </div>
+          </div>
+        </nav>
+      )}
 
       <div className={userId ? styles.content : "container"}>
         <div className="bg-white rounded shadow p-4">
           <div className="row mb-4">
             <div className="col-md-8">
-              <h2 className="display-6 fw-bold text-primary">
-                Edit Tour Package
-              </h2>
-              <p className="text-muted">
-                Update your custom tour package details
-              </p>
+              <h2 className="display-6 fw-bold text-primary">Edit Tour Package</h2>
+              <p className="text-muted">Update your custom tour package details</p>
             </div>
             <div className="col-md-4 text-center">
               <img
@@ -223,7 +208,6 @@ function EditCusPack(props) {
                 style={{ maxHeight: "150px" }}
                 alt="Tour guide"
                 onError={(e) => {
-                  console.error("Image failed to load:", e);
                   e.target.style.display = "none";
                 }}
               />
@@ -235,192 +219,184 @@ function EditCusPack(props) {
           <form onSubmit={updateData}>
             <div className="row g-3">
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="uname"
-                    placeholder="Enter your name here"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="uname">
-                    Your Name <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="packName" className="form-label">
+                  Package Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="packName"
+                  className="form-control"
+                  placeholder="Enter package name"
+                  value={packName}
+                  onChange={(e) => setPackName(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder="Eg- jhone99@gmail.com"
-                    value={email}
-                    onChange={(e) => setMail(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="email">
-                    Email Address <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="packID" className="form-label">
+                  Package ID
+                </label>
+                <input
+                  type="text"
+                  id="packID"
+                  className="form-control"
+                  placeholder="Enter package ID"
+                  value={packID}
+                  onChange={(e) => setPackID(e.target.value)}
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="tel"
-                    className="form-control"
-                    id="Mobi"
-                    placeholder="Enter your mobile number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="Mobi">
-                    Mobile Number <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="destination" className="form-label">
+                  Destination <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="destination"
+                  className="form-control"
+                  placeholder="Enter destination"
+                  value={Destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="Date"
-                    placeholder="Enter arrival date"
-                    value={arriDate}
-                    onChange={(e) => setDate(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="Date">
-                    Arrival Date <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="numOfDays" className="form-label">
+                  Number of Days <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="numOfDays"
+                  className="form-control"
+                  min={1}
+                  placeholder="Enter number of days"
+                  value={NumOfDays}
+                  onChange={(e) => setNumOfDays(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="pickPlace"
-                    placeholder="Enter pick up place here"
-                    value={pickPlace}
-                    onChange={(e) => setPickPlace(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="pickPlace">
-                    Pickup Location <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="numOfPassen" className="form-label">
+                  Number of Passengers <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="numOfPassen"
+                  className="form-control"
+                  min={1}
+                  placeholder="Enter number of passengers"
+                  value={NumOfPassen}
+                  onChange={(e) => setNumOfPassen(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="place"
-                    placeholder="Enter destination here"
-                    value={destination}
-                    onChange={(e) => setDesti(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="place">
-                    Destination <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="hotel" className="form-label">
+                  Hotel <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="hotel"
+                  className="form-control"
+                  placeholder="Enter hotel name"
+                  value={Hotel}
+                  onChange={(e) => setHotel(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="days"
-                    min="1"
-                    max="7"
-                    placeholder="Number of days"
-                    value={NofDays}
-                    onChange={(e) => setDays(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="days">
-                    Number of Days (1-7) <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="transport" className="form-label">
+                  Transport <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="transport"
+                  className="form-control"
+                  placeholder="Enter transport details"
+                  value={Transport}
+                  onChange={(e) => setTransport(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating mb-3">
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="passengers"
-                    min="1"
-                    max="15"
-                    placeholder="Number of passengers"
-                    value={NoPass}
-                    onChange={(e) => setPasseng(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="passengers">
-                    Number of Passengers (1-15){" "}
-                    <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="tourGuide" className="form-label">
+                  Tour Guide <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="tourGuide"
+                  className="form-control"
+                  placeholder="Enter tour guide name"
+                  value={TourGuide}
+                  onChange={(e) => setTourGuide(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label htmlFor="totPrice" className="form-label">
+                  Total Price <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="totPrice"
+                  className="form-control"
+                  placeholder="Enter total price"
+                  value={TotPrice}
+                  onChange={(e) => setTotPrice(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-12">
-                <div className="form-floating mb-3">
-                  <textarea
-                    className="form-control"
-                    id="note"
-                    placeholder="Enter any notes here"
-                    style={{ height: "120px" }}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    required
-                  ></textarea>
-                  <label htmlFor="note">
-                    Additional Notes <span className="text-danger">*</span>
-                  </label>
-                </div>
+                <label htmlFor="description" className="form-label">
+                  Description <span className="text-danger">*</span>
+                </label>
+                <textarea
+                  id="description"
+                  className="form-control"
+                  placeholder="Enter description"
+                  style={{ height: "120px" }}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="col-12 mt-3 text-center">
-                <div className="d-flex justify-content-center gap-3">
-                  <button
-                    className="btn btn-primary btn-lg"
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Updating...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fa fa-save me-2"></i> Update Package
-                      </>
-                    )}
-                  </button>
-                  <Link
-                    to={userId ? `/find/package/${userId}` : "/find/package"}
-                    className="btn btn-outline-secondary btn-lg"
-                  >
-                    <i className="fa fa-arrow-left me-2"></i> Cancel
-                  </Link>
-                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa fa-save me-2"></i> Update Package
+                    </>
+                  )}
+                </button>
+                &nbsp;&nbsp;
+                <Link
+                  to={userId ? `/find/package/${userId}` : "/find/package"}
+                  className="btn btn-outline-secondary btn-lg"
+                >
+                  <i className="fa fa-arrow-left me-2"></i> Cancel
+                </Link>
               </div>
             </div>
           </form>

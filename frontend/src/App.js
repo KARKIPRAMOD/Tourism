@@ -268,6 +268,7 @@ const App = () => {
             <Route path="/add/hotel" component={AddHotel} />
             <Route path="/all/hotel" component={AllHotel} />
             <Route path="/update/hotel/:id" component={EditHotel} />
+            
             <Route path="/view/hotel" component={ViewHotel} />
             <Route path="/report" component={Report} />
             <Route path="/book/hotel" component={BookingHotel} />

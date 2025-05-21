@@ -46,6 +46,8 @@ const reserveGuideRouter = require("./routes/TourguideReservation.js");
 const reserveHotelRouter = require("./routes/HotelReservation.js");
 const reservePackageRouter = require("./routes/PackageReservation.js");
 
+const tourguideFeedback = require("./routes/tourguideFeedback.js");
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
@@ -92,6 +94,7 @@ app.use("/HotelReservation", reserveHotelRouter);
 app.use("/reservePackageRouter", reservePackageRouter);
 
 app.use('/tourupdates', tourUpdatesRouter);  
+app.use("/tourguideFeedback",tourguideFeedback )
 
 console.log("Test");
 

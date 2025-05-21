@@ -2,82 +2,62 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useHistory, useParams } from "react-router-dom";
 import styles from "../style_sheets/Add.module.css";
-import upImg from "../img/upImg.svg";
 
-import addImg from "../img/update2.svg";
-import { BiMenu, BiLogOut } from "react-icons/bi";
-import { BsFillGridFill } from "react-icons/bs";
-import { FaHotel } from "react-icons/fa";
-
-import { RiAdminFill } from "react-icons/ri";
-
-import { MdFamilyRestroom } from "react-icons/md";
-
-import { GiCarKey, GiDetour } from "react-icons/gi";
-import { FaBuilding } from "react-icons/fa";
-import { GrUpdate } from "react-icons/gr";
-import { ImPrinter } from "react-icons/im";
-import { FaExternalLinkAlt } from "react-icons/fa";
-import photo from "../img/proflie.png";
-
-export default function EditResturant() {
-  const [name, setname] = useState("");
-  const [type, settype] = useState("");
-  const [location, setlocation] = useState("");
-  const [price, setprice] = useState("");
-  const [no_of_rooms, setno_of_rooms] = useState("");
+export default function EditHotel() {
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [location, setLocation] = useState("");
+  const [noOfRooms, setNoOfRooms] = useState("");
+  const [map, setMap] = useState("");
 
   const { id } = useParams();
   const history = useHistory();
 
   useEffect(() => {
-    getHotels();
-  }, []);
-
-  //let navigate= useNavigate();
-
-  function getHotels() {
-    let hotel = true;
+    let isMounted = true;
 
     fetch(`http://localhost:8070/hotel/get/${id}`)
       .then((res) => res.json())
-
       .then((result) => {
-        console.log(result);
-        if (hotel) {
-          setname(result.hotel.name);
-          settype(result.hotel.type);
-          setlocation(result.hotel.location);
-          setprice(result.hotel.price);
-          setno_of_rooms(result.hotel.no_of_rooms);
+        if (isMounted && result.hotel) {
+          setName(result.hotel.name || "");
+          setType(result.hotel.type || "");
+          setLocation(result.hotel.location || "");
+          setNoOfRooms(result.hotel.no_of_rooms || "");
+          setMap(result.hotel.map || "");
+          // Note: not setting photos or roomTypes since not editable here
         }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
       });
 
-    return () => (hotel = false);
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   function updateData(e) {
     e.preventDefault();
 
     // Basic validation
-    if (!name || !type || !location || !price || !no_of_rooms) {
-      alert("Please fill in all required fields");
+    if (!name || !type || !location || !noOfRooms || !map) {
+      alert("Please fill in all required fields.");
       return;
     }
 
-    // Price validation
-    if (isNaN(price) || price <= 0) {
-      alert("Please enter a valid price");
+    // Validate noOfRooms as positive integer
+    const roomsNumber = Number(noOfRooms);
+    if (!Number.isInteger(roomsNumber) || roomsNumber <= 0) {
+      alert("Please enter a valid number of rooms (positive integer).");
       return;
     }
 
-    // Rooms validation
-    if (
-      isNaN(no_of_rooms) ||
-      no_of_rooms <= 0 ||
-      !Number.isInteger(parseFloat(no_of_rooms))
-    ) {
-      alert("Please enter a valid number of rooms");
+    // Validate map as a URL (basic check)
+    try {
+      new URL(map);
+    } catch {
+      alert("Please enter a valid URL for the Map field.");
       return;
     }
 
@@ -85,8 +65,8 @@ export default function EditResturant() {
       name,
       type,
       location,
-      price,
-      no_of_rooms,
+      no_of_rooms: roomsNumber,
+      map,
     };
 
     axios
@@ -94,7 +74,7 @@ export default function EditResturant() {
       .then((response) => {
         if (response.status === 200) {
           alert("Hotel Updated Successfully!");
-          history.push("/all/hotel"); // Using history.push instead of window.location.href
+          history.push("/all/hotel");
         } else {
           alert("Update failed. Please try again later.");
         }
@@ -110,107 +90,95 @@ export default function EditResturant() {
   return (
     <div className={styles.body}>
       <div className={styles.mainContent}>
-        {/* main box */}
         <main className={styles.Main1}>
-          
-
-          {/* form */}
-
           <section className={styles.recent}>
             <div className={styles.activityCard}>
               <h3>Update Hotel Details</h3>
-
               <div className={styles.container}>
                 <form className={styles.form1} onSubmit={updateData}>
+                  {/* Hotel Name */}
                   <div className={`form-group text-left ${styles.input}`}>
                     <label htmlFor="name" className="form-label">
                       Hotel Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className="form-control"
                       id="name"
-                      placeholder="Enter Name"
+                      className="form-control"
+                      placeholder="Enter Hotel Name"
                       value={name}
-                      onChange={(e) => {
-                        setname(e.target.value);
-                      }}
+                      onChange={(e) => setName(e.target.value)}
                       required
                     />
                   </div>
 
+                  {/* Hotel Type */}
                   <div className={`form-group text-left ${styles.input}`}>
                     <label htmlFor="type" className="form-label">
                       Hotel Type <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className="form-control"
                       id="type"
-                      placeholder="Enter Type"
+                      className="form-control"
+                      placeholder="Enter Hotel Type"
                       value={type}
-                      onChange={(e) => {
-                        settype(e.target.value);
-                      }}
+                      onChange={(e) => setType(e.target.value)}
                       required
                     />
                   </div>
 
+                  {/* Location */}
                   <div className={`form-group text-left ${styles.input}`}>
                     <label htmlFor="location" className="form-label">
                       Location <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className="form-control"
                       id="location"
+                      className="form-control"
                       placeholder="Enter Location"
                       value={location}
-                      onChange={(e) => {
-                        setlocation(e.target.value);
-                      }}
+                      onChange={(e) => setLocation(e.target.value)}
                       required
                     />
                   </div>
 
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="price" className="form-label">
-                      Price <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="price"
-                      placeholder="Enter Price"
-                      value={price}
-                      onChange={(e) => {
-                        setprice(e.target.value);
-                      }}
-                      min="0"
-                      step="0.01"
-                      required
-                    />
-                  </div>
-
+                  {/* Number of Rooms */}
                   <div className={`form-group text-left ${styles.input}`}>
                     <label htmlFor="no_of_rooms" className="form-label">
                       Number of Rooms <span className="text-danger">*</span>
                     </label>
                     <input
                       type="number"
-                      className="form-control"
                       id="no_of_rooms"
-                      placeholder="Enter No Of Room"
-                      value={no_of_rooms}
-                      onChange={(e) => {
-                        setno_of_rooms(e.target.value);
-                      }}
+                      className="form-control"
+                      placeholder="Enter Number of Rooms"
+                      value={noOfRooms}
+                      onChange={(e) => setNoOfRooms(e.target.value)}
                       min="1"
                       step="1"
                       required
                     />
                   </div>
 
+                  {/* Map URL */}
+                  <div className={`form-group text-left ${styles.input}`}>
+                    <label htmlFor="map" className="form-label">
+                      Map URL (Bing Maps) <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="url"
+                      id="map"
+                      className="form-control"
+                      placeholder="Enter Bing Maps URL"
+                      value={map}
+                      onChange={(e) => setMap(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  {/* Buttons */}
                   <div className={`form-group text-left ${styles.input1}`}>
                     <button type="submit" className={styles.subBtn}>
                       Update Hotel Details
@@ -223,9 +191,6 @@ export default function EditResturant() {
                 </form>
               </div>
             </div>
-
-
-        
           </section>
         </main>
       </div>

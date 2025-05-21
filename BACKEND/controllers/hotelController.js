@@ -67,28 +67,17 @@ exports.getHotelCount = async (req, res) => {
 // Update hotel
 exports.updateHotel = async (req, res) => {
   const hotelId = req.params.id;
-  const { name, type, location, no_of_rooms, description, roomTypes } = req.body;
+  const { name, type, location, no_of_rooms, description, map } = req.body;
 
+  // Prepare updateData without photos and roomTypes
   const updateData = {
     name,
     type,
     location,
     no_of_rooms,
     description,
-    map
+    map,
   };
-
-  if (roomTypes) {
-    try {
-      updateData.roomTypes = JSON.parse(roomTypes);
-    } catch (err) {
-      return res.status(400).json({ success: false, error: "Invalid roomTypes format" });
-    }
-  }
-
-  if (req.files && req.files.length > 0) {
-    updateData.photos = req.files.map((file) => file.filename);
-  }
 
   try {
     const updatedHotel = await Hotel.findByIdAndUpdate(hotelId, updateData, {
@@ -96,23 +85,14 @@ exports.updateHotel = async (req, res) => {
     });
 
     if (!updatedHotel) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Hotel not found" });
+      return res.status(404).json({ success: false, message: "Hotel not found" });
     }
 
-    res
-      .status(200)
-      .json({ success: true, message: "Hotel updated", hotel: updatedHotel });
+    res.status(200).json({ success: true, message: "Hotel updated", hotel: updatedHotel });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Error updating hotel",
-      error: err.message,
-    });
+    res.status(500).json({ success: false, message: "Error updating hotel", error: err.message });
   }
 };
-
 // Delete hotel
 exports.deleteHotel = async (req, res) => {
   const hotelId = req.params.id;

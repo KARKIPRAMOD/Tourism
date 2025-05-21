@@ -21,6 +21,12 @@ export default class AllPacks extends Component {
     };
   }
 
+  softRemovePackage = (id) => {
+  this.setState((prevState) => ({
+    packages: prevState.packages.filter((pkg) => pkg._id !== id),
+  }));
+};
+
   // Run when the component is mounted
   componentDidMount() {
     const userRole = localStorage.getItem("userRole");
@@ -187,7 +193,7 @@ export default class AllPacks extends Component {
                       <th>Hotel</th>
                       <th>Transport</th>
                       <th>Tour Guide</th>
-                      <th>Total Price (Rs)</th>
+                      <th>Total Price</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -205,14 +211,22 @@ export default class AllPacks extends Component {
                           <td>{pkg.TourGuide}</td>
                           <td>{pkg.TotPrice}</td>
 
-                          <td>
-                            <button
-                              className="btn btn-outline-danger btn-sm"
-                              onClick={() => this.onDelete(pkg._id)}
-                            >
-                              <i className="bi bi-trash"></i> Delete
-                            </button>
-                          </td>
+                        <td>
+  <Link
+    to={`/update/package/${pkg._id}`}
+    className="btn btn-outline-primary btn-sm me-2"
+  >
+    <i className="bi bi-pencil"></i> Edit
+  </Link>
+  <button
+    className="btn btn-outline-warning btn-sm"
+    onClick={() => this.softRemovePackage(pkg._id)}
+  >
+    <i className="bi bi-x-circle"></i> Remove
+  </button>
+</td>
+
+
                         </tr>
                       ))
                     ) : (

@@ -16,86 +16,50 @@ export default function EditPack() {
   const [totPrice, setPrice] = useState("");
 
   const { id } = useParams();
+  console.log(id);
   const history = useHistory();
 
   useEffect(() => {
-    getPackages();
-  }, []);
-
-  function getPackages() {
-    let Package = true;
+    let isMounted = true;
 
     fetch(`http://localhost:8070/package/get/${id}`)
       .then((res) => res.json())
-
       .then((result) => {
-        if (Package) {
-          setName(result.name);
-          setPackID(result.packId);
-          setDesti(result.destination);
-          setDys(result.numofdays);
-          setNopass(result.nopass);
-          setHotel(result.hotel);
-          setTrans(result.transport);
-          setGuide(result.tourGuide);
-          setPrice(result.totPrice);
+        if (isMounted && result) {
+          setName(result.packName || "");
+          setPackID(result.packID || "");
+          setDesti(result.Destination || "");
+          setDys(result.NumOfDays || "");
+          setNopass(result.NumOfPassen || "");
+          setHotel(result.Hotel || "");
+          setTrans(result.Transport || "");
+          setGuide(result.TourGuide || "");
+          setPrice(result.TotPrice || "");
         }
-        console.log(result);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch package:", err);
+        alert("Failed to load package details. Please try again.");
       });
 
-    return () => (Package = false);
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   function updateData(e) {
     e.preventDefault();
 
-    // Basic validation
-    if (
-      !name ||
-      !packId ||
-      !destination ||
-      !nopass ||
-      !numofdays ||
-      !totPrice
-    ) {
-      alert("Please fill in all required fields");
-      return;
-    }
-
-    // Package ID validation
-    if (packId.length < 3) {
-      alert("Package ID must be at least 3 characters");
-      return;
-    }
-
-    // Price validation
-    if (isNaN(totPrice) || parseFloat(totPrice) <= 0) {
-      alert("Please enter a valid price");
-      return;
-    }
-
-    // Number of days validation
-    if (isNaN(numofdays) || numofdays < 1 || numofdays > 7) {
-      alert("Number of days must be between 1 and 7");
-      return;
-    }
-
-    // Number of passengers validation
-    if (isNaN(nopass) || nopass < 1 || nopass > 15) {
-      alert("Number of passengers must be between 1 and 15");
-      return;
-    }
-
     const updatePackage = {
-      name,
-      packId,
-      destination,
-      nopass,
-      numofdays,
-      hotel,
-      transport,
-      tourGuide,
-      totPrice,
+      packName: name,
+      packID: packId,
+      Destination: destination,
+      NumOfDays: Number(numofdays),
+      NumOfPassen: Number(nopass),
+      Hotel: hotel,
+      Transport: transport,
+      TourGuide: tourGuide,
+      TotPrice: totPrice,
     };
 
     axios
@@ -103,7 +67,7 @@ export default function EditPack() {
       .then((response) => {
         if (response.status === 200) {
           alert("Package successfully updated");
-          history.push("/manage/AllPacks"); // Using history.push instead of window.location.href
+          history.push("/manage/AllPacks");
         } else {
           alert("Update failed. Please try again.");
         }
@@ -119,48 +83,13 @@ export default function EditPack() {
 
   return (
     <div className="container">
-      <br></br>
-      <div style={{ position: "absolute", right: 20, top: 10 }}>
-        {" "}
-        <div className="header3">
-          <img
-            className="logo"
-            src={galle}
-            style={{ position: "absolute", right: 1280, top: 15 }}
-            height={50}
-            width={200}
-            alt="Card image cap"
-          ></img>
-          <a
-            className={myStyle.btnHome2}
-            href="/man"
-            style={{ position: "absolute", right: 120, top: 20 }}
-          >
-            Home
-          </a>
-          <div>
-            {" "}
-            <h1>
-              <strong>
-                <center>Update package details</center>
-              </strong>
-            </h1>
-            <br></br>
-          </div>
-        </div>{" "}
-      </div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-
       <form
         className={myStyle.hh + " form-group"}
-        style={{ right: 1200 }}
+        style={{ maxWidth: "900px", marginLeft: "400px" }}
         onSubmit={updateData}
       >
-        <div className="form-row" style={{ width: "900px" }}>
-          <div className="form-group col-md-6">
+        <div className="form-row">
+          <div className="form-group col-md-6 mb-3">
             <label htmlFor="name">
               Package Name <span className="text-danger">*</span>
             </label>
@@ -170,14 +99,12 @@ export default function EditPack() {
               id="name"
               placeholder="Package Name"
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              required
+              onChange={(e) => setName(e.target.value)}
+              // removed required
             />
           </div>
-          <br></br>
-          <div className="form-group col-md-6">
+
+          <div className="form-group col-md-6 mb-3">
             <label htmlFor="packId">
               Package ID <span className="text-danger">*</span>
             </label>
@@ -187,35 +114,29 @@ export default function EditPack() {
               id="packId"
               placeholder="Package ID"
               value={packId}
-              onChange={(e) => {
-                setPackID(e.target.value);
-              }}
-              required
-              minLength="3"
+              onChange={(e) => setPackID(e.target.value)}
+              // removed required and minLength
             />
           </div>
-          <br></br>
+        </div>
 
-          <div className="form-row">
-            <div className="form-group col-md-6">
-              <label htmlFor="desti">
-                Destination <span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="desti"
-                placeholder="Enter Destination"
-                value={destination}
-                onChange={(e) => {
-                  setDesti(e.target.value);
-                }}
-                required
-              />
-            </div>
-            <br></br>
+        <div className="form-row">
+          <div className="form-group col-md-6 mb-3">
+            <label htmlFor="desti">
+              Destination <span className="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="desti"
+              placeholder="Enter Destination"
+              value={destination}
+              onChange={(e) => setDesti(e.target.value)}
+              // removed required
+            />
           </div>
-          <div className="form-group col-md-6">
+
+          <div className="form-group col-md-6 mb-3">
             <label htmlFor="nOfP">
               Number of passengers <span className="text-danger">*</span>
             </label>
@@ -227,15 +148,14 @@ export default function EditPack() {
               min="1"
               max="15"
               value={nopass}
-              onChange={(e) => {
-                setNopass(e.target.value);
-              }}
-              required
+              onChange={(e) => setNopass(e.target.value)}
+              // removed required
             />
           </div>
-        </div>{" "}
-        <div className="form-row" style={{ width: "900px" }}>
-          <div className="form-group col-md-6">
+        </div>
+
+        <div className="form-row">
+          <div className="form-group col-md-6 mb-3">
             <label htmlFor="days">
               Number of days <span className="text-danger">*</span>
             </label>
@@ -243,30 +163,24 @@ export default function EditPack() {
               type="number"
               className="form-control"
               id="days"
-              placeholder="Enter days between 1 and 7"
+              placeholder="Enter days between 1 and 12"
               min="1"
-              max="7"
+              max="12"
               value={numofdays}
-              onChange={(e) => {
-                setDys(e.target.value);
-              }}
-              required
+              onChange={(e) => setDys(e.target.value)}
+              // removed required
             />
           </div>
         </div>
-        <br></br>
-      </form>
-      <form className="form-group" style={{ width: "20px" }}>
-        <div style={{ position: "absolute", top: 195, right: 250 }}>
-          <div className="form-group col-md-6" style={{ width: "500px" }}>
+
+        <div className="form-row" style={{ marginTop: 10 }}>
+          <div className="form-group col-md-6 mb-3">
             <label htmlFor="hotel">Hotel/Other</label>
             <select
               className="form-control"
               id="hotel"
               value={hotel}
-              onChange={(e) => {
-                setHotel(e.target.value);
-              }}
+              onChange={(e) => setHotel(e.target.value)}
             >
               <option value="None">None</option>
               <option value="Camping">Camping</option>
@@ -277,91 +191,72 @@ export default function EditPack() {
               </option>
             </select>
           </div>
-          <br></br>
 
-          <div className="form-row">
-            <div className="form-group col-md-6" style={{ width: "500px" }}>
-              <label htmlFor="trans">Transport</label>
-              <select
-                className="form-control"
-                id="trans"
-                value={transport}
-                onChange={(e) => {
-                  setTrans(e.target.value);
-                }}
-              >
-                <option value="None">None</option>
-                <option value="Dilanka Cabs/Transports">
-                  Dilanka Cabs/Transports
-                </option>
-                <option value="NCG Transport(pvt)">NCG Transport(pvt)</option>
-                <option value="Selinaiyo Lanka Vehicle Center">
-                  Selinaiyo Lanka Vehicle Center
-                </option>
-                <option value="SK and sons(pvt)">SK and sons(pvt)</option>
-              </select>
-            </div>
-            <br></br>
-            <div className="form-group col-md-6" style={{ width: "500px" }}>
-              <label htmlFor="guide">Tour guide</label>
-              <select
-                className="form-control"
-                id="guide"
-                value={tourGuide}
-                onChange={(e) => {
-                  setGuide(e.target.value);
-                }}
-              >
-                <option value="with">with</option>
-                <option value="without">without</option>
-              </select>
-            </div>
+          <div className="form-group col-md-6 mb-3">
+            <label htmlFor="trans">Transport</label>
+            <select
+              className="form-control"
+              id="trans"
+              value={transport}
+              onChange={(e) => setTrans(e.target.value)}
+            >
+              <option value="None">None</option>
+              <option value="Dilanka Cabs/Transports">
+                Dilanka Cabs/Transports
+              </option>
+              <option value="NCG Transport(pvt)">NCG Transport(pvt)</option>
+              <option value="Selinaiyo Lanka Vehicle Center">
+                Selinaiyo Lanka Vehicle Center
+              </option>
+              <option value="SK and sons(pvt)">SK and sons(pvt)</option>
+            </select>
           </div>
-          <br></br>
+        </div>
 
-          <div className="form-row">
-            <div className="form-group col-md-6" style={{ width: "500px" }}>
-              <label htmlFor="totPrice">
-                Total price(Rs) <span className="text-danger">*</span>
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="totPrice"
-                placeholder="Enter total price here"
-                value={totPrice}
-                onChange={(e) => {
-                  setPrice(e.target.value);
-                }}
-                required
-                min="0"
-                step="0.01"
-              />
-            </div>
+        <div className="form-row" style={{ marginTop: 10 }}>
+          <div className="form-group col-md-6 mb-3">
+            <label htmlFor="guide">Tour guide</label>
+            <select
+              className="form-control"
+              id="guide"
+              value={tourGuide}
+              onChange={(e) => setGuide(e.target.value)}
+            >
+              <option value="with">with</option>
+              <option value="without">without</option>
+            </select>
           </div>
 
-          <div className="form-row mt-4">
-            <div className="form-group col-md-12" style={{ width: "500px" }}>
-              <Link to="/manage/AllPacks" className={myStyle.btnBack}>
-                Back
-              </Link>
-              &nbsp;&nbsp;
-              <button
-                type="submit"
-                className={myStyle.btnUpdate2}
-                onClick={updateData}
-              >
-                Update Package
-              </button>
-            </div>
+          <div className="form-group col-md-6 mb-3">
+            <label htmlFor="totPrice">
+              Total price(Rs) <span className="text-danger">*</span>
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="totPrice"
+              placeholder="Enter total price here"
+              value={totPrice}
+              onChange={(e) => setPrice(e.target.value)}
+              min="0"
+              step="0.01"
+              // removed required
+            />
+          </div>
+        </div>
+
+        <div className="form-row mt-4">
+          <div className="form-group col-md-12">
+            <Link to="/manage/AllPacks" className={myStyle.btnBack}>
+              Back
+            </Link>
+            &nbsp;&nbsp;
+            <button type="submit" className={myStyle.btnUpdate2}>
+              Update Package
+            </button>
           </div>
         </div>
       </form>
-
-      <br></br>
-      <br></br>
-
-      <div className="card-footer text-muted"></div>
     </div>
   );
 }

@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../style_sheets/All.module.css";
 
- const handleLogout = () => {
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    window.location = "/home";
-  };
+const handleLogout = () => {
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("token");
+  window.location = "/home";
+};
 
 export default class AllHotel extends Component {
   constructor(props) {
@@ -33,16 +33,12 @@ export default class AllHotel extends Component {
     });
   }
 
-  onDelete(id) {
-    fetch(`http://localhost:8070/hotel/delete/${id}`, {
-      method: `DELETE`,
-    }).then((result) => {
-      result.json().then((resp) => {
-        alert("Deleted Successfully");
-        this.retriveHotels();
-      });
-    });
-  }
+  // Soft delete: remove hotel from state only (frontend)
+  softDeleteHotel = (id) => {
+    this.setState((prevState) => ({
+      hotels: prevState.hotels.filter((hotel) => hotel._id !== id),
+    }));
+  };
 
   render() {
     const { hotels, searchQuery } = this.state;
@@ -53,7 +49,7 @@ export default class AllHotel extends Component {
     return (
       <div className={styles.body}>
         <div className="row">
-          {/* Sidebar */}
+          {/* Sidebar - unchanged */}
           <div className="col-md-3 col-lg-2">
             <div
               className="sidebar"
@@ -114,12 +110,12 @@ export default class AllHotel extends Component {
               </ul>
               <div className="mt-auto">
                 <div
-                onClick={handleLogout}
-                className="d-flex align-items-center text-white px-3 py-2"
-                style={{ cursor: "pointer" }}
-              >
-                <i className="bi bi-box-arrow-right me-2"></i> Logout
-              </div>
+                  onClick={handleLogout}
+                  className="d-flex align-items-center text-white px-3 py-2"
+                  style={{ cursor: "pointer" }}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i> Logout
+                </div>
               </div>
             </div>
           </div>
@@ -139,7 +135,7 @@ export default class AllHotel extends Component {
                   className="form-control me-2"
                   style={{ maxWidth: "300px" }}
                   placeholder="Search a hotel"
-                  value={this.state.searchQuery}
+                  value={searchQuery}
                   onChange={(e) =>
                     this.setState({ searchQuery: e.target.value })
                   }
@@ -184,39 +180,47 @@ export default class AllHotel extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredHotels.map((hotel, index) => (
-                      <tr
-                        key={hotel._id}
-                        style={{
-                          backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
-                        }}
-                      >
-                        <td>{index + 1}</td>
-                        <td>
-                          <strong>{hotel.name}</strong>
-                        </td>
-                        <td>{hotel.type}</td>
-                        <td>{hotel.location}</td>
-                        <td>${hotel.price}</td>
-                        <td>{hotel.no_of_rooms} rooms</td>
-                        <td>
-                          <Link
-                            to={`/update/hotel/${hotel._id}`}
-                            className="btn btn-outline-primary btn-sm"
-                          >
-                            <i className="bi bi-pencil-square"></i>
-                          </Link>
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => this.onDelete(hotel._id)}
-                            className="btn btn-outline-danger btn-sm"
-                          >
-                            <i className="bi bi-trash"></i>
-                          </button>
+                    {filteredHotels.length > 0 ? (
+                      filteredHotels.map((hotel, index) => (
+                        <tr
+                          key={hotel._id}
+                          style={{
+                            backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
+                          }}
+                        >
+                          <td>{index + 1}</td>
+                          <td>
+                            <strong>{hotel.name}</strong>
+                          </td>
+                          <td>{hotel.type}</td>
+                          <td>{hotel.location}</td>
+                          <td>${hotel.price}</td>
+                          <td>{hotel.no_of_rooms} rooms</td>
+                          <td>
+                            <Link
+                              to={`/update/hotel/${hotel._id}`}
+                              className="btn btn-outline-primary btn-sm"
+                            >
+                              <i className="bi bi-pencil-square"></i>
+                            </Link>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => this.softDeleteHotel(hotel._id)}
+                              className="btn btn-outline-warning btn-sm"
+                            >
+                              <i className="bi bi-x-circle"></i> Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="text-center">
+                          No hotels found.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

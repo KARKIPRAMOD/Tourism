@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const FeedbackSchema = new mongoose.Schema(
+const TourguideFeedbackSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,4 +36,4 @@ const FeedbackSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Feedback", FeedbackSchema);
+module.exports = mongoose.model("TourguideFeedbackSchema", TourguideFeedbackSchema);
