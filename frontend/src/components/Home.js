@@ -157,7 +157,7 @@ const serviceCard = {
   padding: "30px",
   textAlign: "center",
   boxShadow: "0 8px 16px rgba(0,0,0,0.06)",
-  transition: "transform 0.3s",
+  transition: "transform 0.1s",
 };
 
 const Home = () => {
@@ -244,8 +244,8 @@ const Home = () => {
     style={{
       width: "100%",
       height: "auto",
-      transition: "transform 15s ease-in-out",
-      animation: "zoomInOut 15s infinite alternate",
+      transition: "transform 10s ease-in-out",
+      animation: "zoomInOut 10s infinite alternate",
       objectFit: "cover",
     }}
   />

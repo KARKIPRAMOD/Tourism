@@ -15,7 +15,6 @@ export default function EditHotel() {
 
   useEffect(() => {
     let isMounted = true;
-
     fetch(`http://localhost:8070/hotel/get/${id}`)
       .then((res) => res.json())
       .then((result) => {
@@ -25,13 +24,9 @@ export default function EditHotel() {
           setLocation(result.hotel.location || "");
           setNoOfRooms(result.hotel.no_of_rooms || "");
           setMap(result.hotel.map || "");
-          // Note: not setting photos or roomTypes since not editable here
         }
       })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
-
+      .catch((err) => console.error("Fetch error:", err));
     return () => {
       isMounted = false;
     };
@@ -40,20 +35,17 @@ export default function EditHotel() {
   function updateData(e) {
     e.preventDefault();
 
-    // Basic validation
     if (!name || !type || !location || !noOfRooms || !map) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    // Validate noOfRooms as positive integer
     const roomsNumber = Number(noOfRooms);
     if (!Number.isInteger(roomsNumber) || roomsNumber <= 0) {
       alert("Please enter a valid number of rooms (positive integer).");
       return;
     }
 
-    // Validate map as a URL (basic check)
     try {
       new URL(map);
     } catch {
@@ -81,118 +73,116 @@ export default function EditHotel() {
       })
       .catch((err) => {
         console.error("Update error:", err);
-        const errorMessage =
-          err.response?.data?.message || "Database Error. Please try again.";
-        alert(errorMessage);
+        alert(err.response?.data?.message || "Database Error. Please try again.");
       });
   }
 
   return (
-    <div className={styles.body}>
-      <div className={styles.mainContent}>
-        <main className={styles.Main1}>
-          <section className={styles.recent}>
-            <div className={styles.activityCard}>
-              <h3>Update Hotel Details</h3>
-              <div className={styles.container}>
-                <form className={styles.form1} onSubmit={updateData}>
-                  {/* Hotel Name */}
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="name" className="form-label">
-                      Hotel Name <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="form-control"
-                      placeholder="Enter Hotel Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Hotel Type */}
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="type" className="form-label">
-                      Hotel Type <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="type"
-                      className="form-control"
-                      placeholder="Enter Hotel Type"
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Location */}
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="location" className="form-label">
-                      Location <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="location"
-                      className="form-control"
-                      placeholder="Enter Location"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Number of Rooms */}
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="no_of_rooms" className="form-label">
-                      Number of Rooms <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="no_of_rooms"
-                      className="form-control"
-                      placeholder="Enter Number of Rooms"
-                      value={noOfRooms}
-                      onChange={(e) => setNoOfRooms(e.target.value)}
-                      min="1"
-                      step="1"
-                      required
-                    />
-                  </div>
-
-                  {/* Map URL */}
-                  <div className={`form-group text-left ${styles.input}`}>
-                    <label htmlFor="map" className="form-label">
-                      Map URL (Bing Maps) <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="url"
-                      id="map"
-                      className="form-control"
-                      placeholder="Enter Bing Maps URL"
-                      value={map}
-                      onChange={(e) => setMap(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Buttons */}
-                  <div className={`form-group text-left ${styles.input1}`}>
-                    <button type="submit" className={styles.subBtn}>
-                      Update Hotel Details
-                    </button>
-                    &nbsp;&nbsp;
-                    <Link to="/all/hotel" className="btn btn-secondary">
-                      Cancel
-                    </Link>
-                  </div>
-                </form>
-              </div>
+    <div className={`container ${styles.body} py-5`}>
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-lg-6">
+          <div className={`card shadow-sm ${styles.activityCard}`}>
+            <div className="card-header bg-primary text-white text-center">
+              <h3 className="mb-0">Update Hotel Details</h3>
             </div>
-          </section>
-        </main>
+            <div className="card-body">
+              <form onSubmit={updateData} noValidate>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label fw-semibold">
+                    Hotel Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="form-control"
+                    placeholder="Enter Hotel Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="type" className="form-label fw-semibold">
+                    Hotel Type <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="type"
+                    className="form-control"
+                    placeholder="Enter Hotel Type"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="location" className="form-label fw-semibold">
+                    Location <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="location"
+                    className="form-control"
+                    placeholder="Enter Location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="no_of_rooms" className="form-label fw-semibold">
+                    Number of Rooms <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="no_of_rooms"
+                    className="form-control"
+                    placeholder="Enter Number of Rooms"
+                    value={noOfRooms}
+                    onChange={(e) => setNoOfRooms(e.target.value)}
+                    min="1"
+                    step="1"
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="map" className="form-label fw-semibold">
+                    Map URL (Bing Maps) <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="url"
+                    id="map"
+                    className="form-control"
+                    placeholder="Enter Bing Maps URL"
+                    value={map}
+                    onChange={(e) => setMap(e.target.value)}
+                    required
+                  />
+                  {map && (
+                    <small className="text-muted">
+                      <a href={map} target="_blank" rel="noopener noreferrer">
+                        View Location on Map
+                      </a>
+                    </small>
+                  )}
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <button type="submit" className="btn btn-primary px-4">
+                    Update
+                  </button>
+                  <Link to="/all/hotel" className="btn btn-secondary px-4">
+                    Cancel
+                  </Link>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
