@@ -2,17 +2,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const multer = require("multer"); // 👈 ADDED
-const path = require("path"); // 👈 ADDED
+const multer = require("multer"); 
+const path = require("path"); 
 const app = express();
+
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8070;
 
-// Multer config 👇
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // 👈 Make sure 'uploads' folder exists
+    cb(null, "uploads/"); //  Make sure 'uploads' folder exists
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -20,10 +20,9 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage }); // 👈 ADDED
+const upload = multer({ storage }); 
 
-// 👇 To serve uploaded files statically (optional but useful)
-app.use("/uploads", express.static("uploads")); // 👈 ADDED
+app.use("/uploads", express.static("uploads")); 
 
 // Import routers
 const PackageRouter = require("./routes/packages.js");
@@ -33,15 +32,17 @@ const paymentHistoryRouter = require("./routes/payment-history-route");
 const hotelRouter = require("./routes/hotels.js");
 const roomRouter = require("./routes/rooms.js");
 
-const userRouter = require("./routes/user-route"); // 👈 Use lowercase for consistency
+const userRouter = require("./routes/user-route");
 const tourguideRouter = require("./routes/tourguides.js");
 const whatsappRouter = require("./routes/whatsapp");
 const adminRouter = require("./routes/admin-route");
 const feedBackRouter = require("./routes/feedBack");
-const tourUpdatesRouter = require('./routes/ToursUpdate');  // Import the new routes
+const tourUpdatesRouter = require('./routes/ToursUpdate'); 
+const khaltiVerifyRouter = require("./routes/khalti-verify.js");
 
 
-//reservation
+
+//reservations
 const reserveGuideRouter = require("./routes/TourguideReservation.js");
 const reserveHotelRouter = require("./routes/HotelReservation.js");
 const reservePackageRouter = require("./routes/PackageReservation.js");
@@ -84,7 +85,7 @@ app.use("/payment", paymentRouter);
 app.use("/payments/history", paymentHistoryRouter);
 app.use("/hotel", hotelRouter);
 app.use("/room", roomRouter);
-app.use("/user", userRouter); // 👈 Connected route
+app.use("/user", userRouter); 
 app.use("/tourguide", tourguideRouter);
 app.use("/whatsapp", whatsappRouter);
 app.use("/feedBack", feedBackRouter);
@@ -95,6 +96,8 @@ app.use("/reservePackageRouter", reservePackageRouter);
 
 app.use('/tourupdates', tourUpdatesRouter);  
 app.use("/tourguideFeedback",tourguideFeedback )
+
+app.use("/verify", khaltiVerifyRouter);
 
 console.log("Test");
 

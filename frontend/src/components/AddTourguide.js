@@ -20,6 +20,16 @@ function AddTourguide() {
   const [image, setImage] = useState(null);  // Image field
   const [isLoading, setIsLoading] = useState(false);  // Loading state
   const [error, setError] = useState(null);  // Error state
+  const handlePasswordChange = (e) => {
+  const value = e.target.value;
+  setPassword(value);
+  const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?!.*\s).{8,}$/;
+  if (!regex.test(value)) {
+    setError("Password must be 8+ chars, 1 uppercase, 1 number, 1 special char, no spaces.");
+  } else {
+    setError("");
+  }
+};
 
   // Function to handle form submission
   function sendData(e) {
@@ -48,6 +58,8 @@ function AddTourguide() {
       alert("All fields are required.");
       return;
     }
+
+
 
     const formData = new FormData();
     formData.append("user_name", userName);  // Add the username
@@ -140,19 +152,21 @@ function AddTourguide() {
           </div>
 
           <div className="form-group col-md-6">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              required
-              placeholder="Enter Password"
-              value={password} // Controlled input
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+  <label htmlFor="password" className="form-label">
+    Password
+  </label>
+  <input
+    type="password"
+    className="form-control"
+    id="password"
+    required
+    placeholder="Enter Password"
+    onChange={handlePasswordChange}
+  />
+  {error && <small className="text-danger">{error}</small>}
+</div>
+
+
 
           {/* Tourguide Fields */}
           <div className="form-group col-md-6">

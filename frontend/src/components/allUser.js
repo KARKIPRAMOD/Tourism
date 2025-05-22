@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../style_sheets/All.module.css";
 
- const handleLogout = () => {
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    window.location = "/home";
-  };
+const handleLogout = () => {
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("token");
+  window.location = "/home";
+};
 
 export default class AllUser extends Component {
   constructor(props) {
@@ -24,25 +23,26 @@ export default class AllUser extends Component {
   }
 
   retrieveUsers() {
-    axios.get("http://localhost:8070/user/all").then((res) => {
-      if (res.data.success) {
-        this.setState({ users: res.data.users });
-      }
-    });
+    fetch("http://localhost:8070/user/all")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          this.setState({ users: data.users });
+        }
+      })
+      .catch((err) => console.error("Error fetching users:", err));
   }
 
-  deleteUser(id) {
-    axios.delete(`http://localhost:8070/user/delete/${id}`).then((res) => {
-      if (res.data.success) {
-        alert("User deleted successfully");
-        this.retrieveUsers();
-      } else {
-        alert("Failed to delete user");
-      }
-    });
-  }
+  // Soft delete locally without calling API
+  softDeleteUser = (id) => {
+    this.setState((prevState) => ({
+      users: prevState.users.filter((user) => user._id !== id),
+    }));
+  };
 
   render() {
+    const { users } = this.state;
+
     return (
       <div className={styles.body}>
         {/* Sidebar */}
@@ -98,14 +98,12 @@ export default class AllUser extends Component {
               <Link
                 to="/all/user"
                 className="d-flex align-items-center text-white px-3 py-2"
-                >
+              >
                 <i className="bi bi-person-fill me-2"></i> Users
-               </Link>
+              </Link>
             </li>
           </ul>
-
-          {/* Logout Button */}
-           <div className="mt-auto">
+          <div className="mt-auto">
             <div
               onClick={handleLogout}
               className="d-flex align-items-center text-white px-3 py-2"
@@ -134,27 +132,35 @@ export default class AllUser extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.users.map((user, index) => (
-                      <tr key={user._id}>
-                        <td>{index + 1}</td>
-                        <td>{user.user_name}</td>
-                        <td>{user.full_name}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <span className="badge bg-primary rounded-pill">
-                            {user.role}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => this.deleteUser(user._id)}
-                            className="btn btn-sm btn-outline-danger"
-                          >
-                            <i className="bi bi-trash-fill"></i> Delete
-                          </button>
+                    {users.length > 0 ? (
+                      users.map((user, index) => (
+                        <tr key={user._id}>
+                          <td>{index + 1}</td>
+                          <td>{user.user_name}</td>
+                          <td>{user.full_name}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <span className="badge bg-primary rounded-pill">
+                              {user.role}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => this.softDeleteUser(user._id)}
+                              className="btn btn-sm btn-outline-danger"
+                            >
+                              <i className="bi bi-trash-fill"></i> Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No users found.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

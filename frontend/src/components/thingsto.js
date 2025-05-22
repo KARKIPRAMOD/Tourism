@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Footer from "./Footer";
+
 
 const ThingsToDo = () => {
   const thingToDO = [
@@ -91,6 +93,7 @@ const ThingsToDo = () => {
           </div>
         ))}
       </div>
+      <Footer/>
     </div>
   );
 };

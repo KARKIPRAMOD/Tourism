@@ -7,6 +7,10 @@ const PackageConfirmation = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   useEffect(() => {
     axios
       .get("http://localhost:8070/reservePackageRouter/") // Ensure this endpoint fetches all reservations
@@ -27,19 +31,18 @@ const PackageConfirmation = () => {
   const handleConfirm = (reservationId) => {
     axios
       .put(`http://localhost:8070/reservePackageRouter/confirm/${reservationId}`)
-      .then((response) => {
+      .then(() => {
         alert("Reservation confirmed!");
-        setReservations(
-          reservations.map((reservation) =>
+        setReservations((prev) =>
+          prev.map((reservation) =>
             reservation._id === reservationId
               ? { ...reservation, isConfirmed: true }
               : reservation
           )
         );
       })
-      .catch((err) => {
+      .catch(() => {
         alert("Error confirming reservation.");
-        console.error(err);
       });
   };
 
@@ -49,15 +52,14 @@ const PackageConfirmation = () => {
         `http://localhost:8070/reservePackageRouter/confirm/${reservationId}`,
         { isConfirmed: false }
       )
-      .then((response) => {
+      .then(() => {
         alert("Reservation cancelled!");
-        setReservations(
-          reservations.filter((reservation) => reservation._id !== reservationId)
+        setReservations((prev) =>
+          prev.filter((reservation) => reservation._id !== reservationId)
         );
       })
-      .catch((err) => {
+      .catch(() => {
         alert("Error cancelling reservation.");
-        console.error(err);
       });
   };
 
@@ -66,6 +68,17 @@ const PackageConfirmation = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
     window.location = "/home";
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(reservations.length / itemsPerPage);
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentReservations = reservations.slice(indexOfFirst, indexOfLast);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   };
 
   return (
@@ -150,88 +163,126 @@ const PackageConfirmation = () => {
         ) : reservations.length === 0 ? (
           <p>No reservations found.</p>
         ) : (
-          <div className="row">
-            {reservations.map((reservation) => (
-              <div className="col-md-4" key={reservation._id}>
-                <div className="card mb-3">
-                  <div className="card-body">
-                    {/* Package Information at the Top */}
-                    <h5 className="card-title">Package Reservation</h5>
-                    <p className="card-text">
-                      <strong>Package Name:</strong> {reservation.package.packName}
-                    </p>
-                    <p className="card-text">
-                      <strong>Start Date:</strong>{" "}
-                      {new Date(reservation.startDate).toLocaleDateString()}
-                    </p>
-             
-
-                    {/* Line Between Package and User Details */}
-                    <hr style={{ borderTop: "2px solid #ddd" }} />
-
-                    {/* User Information at the Bottom */}
-                    <div className="user-info" style={{ position: "relative" }}>
-                      {/* User Image on Bottom Right */}
-                      {reservation.user.profile_picture && (
-                        <img
-                          src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
-                          alt={reservation.user.full_name}
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            borderRadius: "20%",
-                            objectFit: "cover",
-                            border: "3px solid rgb(4, 4, 4)",
-                            position: "absolute", 
-                            right: "10px",
-                            bottom: "10px",
-                          }}
-                        />
-                      )}
+          <>
+            <div className="row">
+              {currentReservations.map((reservation) => (
+                <div className="col-md-4" key={reservation._id}>
+                  <div className="card mb-3">
+                    <div className="card-body">
+                      <h5 className="card-title">Package Reservation</h5>
                       <p className="card-text">
-                        <strong>User Full Name:</strong>{" "}
-                        {reservation.user.full_name}
+                        <strong>Package Name:</strong> {reservation.package.packName}
                       </p>
                       <p className="card-text">
-                        <strong>User Email:</strong> {reservation.user.email}
+                        <strong>Start Date:</strong>{" "}
+                        {new Date(reservation.startDate).toLocaleDateString()}
                       </p>
-                      <p className="card-text">
-                        <strong>User Phone:</strong> {reservation.user.phone}
-                      </p>
-                    </div>
 
-                    {/* Reservation buttons */}
-                    <div className="d-flex justify-content-between" style={{margin:"20px"}}
->
-                      {!reservation.isConfirmed ? (
-                        <>
-                          <button
-                            onClick={() => handleConfirm(reservation._id)}
-                            className="btn btn-success"
-                          >
-                            Confirm
-                          </button>
+                      <hr style={{ borderTop: "2px solid #ddd" }} />
+
+                      <div className="user-info" style={{ position: "relative" }}>
+                        {reservation.user.profile_picture && (
+                          <img
+                            src={`http://localhost:8070/uploads/profile_pictures/${reservation.user.profile_picture}`}
+                            alt={reservation.user.full_name}
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              borderRadius: "20%",
+                              objectFit: "cover",
+                              border: "3px solid rgb(4, 4, 4)",
+                              position: "absolute",
+                              right: "10px",
+                              bottom: "10px",
+                            }}
+                          />
+                        )}
+                        <p className="card-text">
+                          <strong>User Full Name:</strong> {reservation.user.full_name}
+                        </p>
+                        <p className="card-text">
+                          <strong>User Email:</strong> {reservation.user.email}
+                        </p>
+                        <p className="card-text">
+                          <strong>User Phone:</strong> {reservation.user.phone}
+                        </p>
+                      </div>
+
+                      <div
+                        className="d-flex justify-content-between"
+                        style={{ margin: "20px" }}
+                      >
+                        {!reservation.isConfirmed ? (
+                          <>
+                            <button
+                              onClick={() => handleConfirm(reservation._id)}
+                              className="btn btn-success"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => handleCancel(reservation._id)}
+                              className="btn btn-danger"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
                           <button
                             onClick={() => handleCancel(reservation._id)}
-                            className="btn btn-danger"
+                            className="btn btn-warning"
                           >
-                            Cancel
+                            Cancel Reservation
                           </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => handleCancel(reservation._id)}
-                          className="btn btn-warning"
-                        >
-                          Cancel Reservation
-                        </button>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Pagination at bottom */}
+            <div style={{ marginTop: "40px" }}>
+              <nav aria-label="Page navigation">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => goToPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                  </li>
+
+                  {[...Array(totalPages)].map((_, idx) => {
+                    const page = idx + 1;
+                    return (
+                      <li
+                        key={page}
+                        className={`page-item ${currentPage === page ? "active" : ""}`}
+                      >
+                        <button className="page-link" onClick={() => goToPage(page)}>
+                          {page}
+                        </button>
+                      </li>
+                    );
+                  })}
+
+                  <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => goToPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </>
         )}
       </div>
     </div>

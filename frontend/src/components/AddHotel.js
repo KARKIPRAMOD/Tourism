@@ -7,11 +7,10 @@ import styles from "../style_sheets/All.module.css";
 export default function AddHotel() {
   const [name, setname] = useState("");
   const [type, settype] = useState("");
-  const [location, setlocation] = useState(""); // plain location string
+  const [location, setlocation] = useState(""); 
   const [no_of_rooms, setno_of_rooms] = useState("");
   const [description, setdescription] = useState("");
-  const [map, SetMap] = useState(""); // will hold clean embed URL
-
+  const [map, SetMap] = useState(""); 
   const [photos, setPhotos] = useState([]);
 
   const [roomTypes, setRoomTypes] = useState([

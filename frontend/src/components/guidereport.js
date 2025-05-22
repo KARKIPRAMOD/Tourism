@@ -4,8 +4,11 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styleHome from "../style_sheets/Home.module.css";
+import Footer from "./Footer";
+import Destinations from "./guideimages";
 
 const styles = {
+  /* your existing styles unchanged */
   prettyGuideReportContainer: {
     backgroundColor: "#f9fafb",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
@@ -46,6 +49,7 @@ const styles = {
     height: "100%",
     objectFit: "contain",
     transition: "transform 0.4s ease",
+    margin:"10px"
   },
   imgHover: {
     transform: "scale(1.05)",
@@ -199,40 +203,94 @@ const styles = {
   confirmButtonHover: {
     backgroundColor: "#1e40af",
   },
-};
 
-// Simple keyframe animation for modal fade & scale
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(
-  `@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }`,
-  styleSheet.cssRules.length
-);
-styleSheet.insertRule(
-  `@keyframes scaleIn {
-    from {transform: scale(0.95);}
-    to {transform: scale(1);}
-  }`,
-  styleSheet.cssRules.length
-);
+  // New sidebar and pagination styles
+  mainLayout: {
+    display: "flex",
+    gap: "30px",
+    marginTop: "40px",
+    marginBottom: "50px",
+  },
+  sidebar: {
+    flex: "0 0 280px",
+    backgroundColor: "#f8f9fa",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    height: "fit-content",
+  },
+  filterTitle: {
+    fontWeight: "700",
+    fontSize: "1.2rem",
+    marginBottom: "15px",
+    color: "#2563eb",
+  },
+  filterLabel: {
+    fontWeight: "600",
+    marginTop: "12px",
+    marginBottom: "5px",
+    display: "block",
+  },
+  filterSelect: {
+    width: "100%",
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+  },
+  filterRange: {
+    width: "100%",
+  },
+  contentArea: {
+    flex: "1",
+  },
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "30px",
+    gap: "10px",
+  },
+  paginationButton: {
+    padding: "8px 14px",
+    borderRadius: "6px",
+    border: "1px solid #ddd",
+    cursor: "pointer",
+    userSelect: "none",
+  },
+  paginationButtonActive: {
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "1px solid #2563eb",
+    cursor: "default",
+  },
+  paginationButtonDisabled: {
+    opacity: 0.5,
+    cursor: "not-allowed",
+  },
+};
 
 export default class GuideReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tourguides: [],
+      filteredGuides: [],
       hoveredIndex: null,
       showModal: false,
       selectedGuide: null,
-      reservationDates: {}, // stores { tourguideId: { dateFrom, dateTo } }
-      reservations: [],
+      reservationDates: {},
       modalDateFrom: null,
       modalDateTo: null,
       reserveBtnHover: false,
       modalCloseHover: false,
-      feedbacks: {}, // <--- Added feedbacks state here
+      feedbacks: {},
+
+      filterLocation: "All",
+      filterGender: "All",
+      filterMaxPrice: 0,
+      maxPriceLimit: 100000,
+
+      currentPage: 1,
+      guidesPerPage: 10,
     };
   }
 
@@ -247,10 +305,21 @@ export default class GuideReport extends Component {
       .then((res) => {
         if (res.data.success) {
           const guides = res.data.guides;
-          this.setState({ tourguides: guides }, () => {
-            // Fetch feedbacks only after guides are loaded
-            this.fetchFeedbacksForGuides(guides);
-          });
+          const maxPrice = guides.length
+            ? Math.max(...guides.map((g) => g.amount || 0))
+            : 100000;
+          this.setState(
+            {
+              tourguides: guides,
+              filteredGuides: guides,
+              filterMaxPrice: maxPrice,
+              maxPriceLimit: maxPrice,
+            },
+            () => {
+              this.fetchFeedbacksForGuides(guides);
+              this.applyFilters();
+            }
+          );
         }
       })
       .catch((err) => {
@@ -372,9 +441,51 @@ export default class GuideReport extends Component {
     }
   };
 
+  handleFilterChange = (e) => {
+    const { name, value } = e.target;
+
+    this.setState(
+      {
+        [name]: name === "filterMaxPrice" ? Number(value) : value,
+        currentPage: 1,
+      },
+      this.applyFilters
+    );
+  };
+
+  applyFilters = () => {
+    const { tourguides, filterLocation, filterGender, filterMaxPrice } = this.state;
+
+    const filtered = tourguides.filter((guide) => {
+      if (filterLocation !== "All" && guide.address !== filterLocation) return false;
+      if (filterGender !== "All" && guide.gender !== filterGender) return false;
+      if ((guide.amount || 0) > filterMaxPrice) return false;
+      return true;
+    });
+
+    this.setState({ filteredGuides: filtered });
+  };
+
+  handlePageChange = (pageNumber) => {
+    this.setState({ currentPage: pageNumber });
+  };
+
+  goToPreviousPage = () => {
+    this.setState((prevState) => ({
+      currentPage: Math.max(prevState.currentPage - 1, 1),
+    }));
+  };
+
+  goToNextPage = () => {
+    this.setState((prevState) => {
+      const totalPages = Math.ceil(prevState.filteredGuides.length / prevState.guidesPerPage);
+      return { currentPage: Math.min(prevState.currentPage + 1, totalPages) };
+    });
+  };
+
   render() {
     const {
-      tourguides,
+      filteredGuides,
       hoveredIndex,
       showModal,
       selectedGuide,
@@ -384,7 +495,22 @@ export default class GuideReport extends Component {
       reserveBtnHover,
       modalCloseHover,
       feedbacks,
+      filterLocation,
+      filterGender,
+      filterMaxPrice,
+      maxPriceLimit,
+      currentPage,
+      guidesPerPage,
+      tourguides,
     } = this.state;
+
+    const uniqueLocations = ["All", ...new Set(tourguides.map((t) => t.address).filter(Boolean))];
+    const uniqueGenders = ["All", ...new Set(tourguides.map((t) => t.gender).filter(Boolean))];
+
+    const totalPages = Math.ceil(filteredGuides.length / guidesPerPage);
+    const indexOfLastGuide = currentPage * guidesPerPage;
+    const indexOfFirstGuide = indexOfLastGuide - guidesPerPage;
+    const currentGuides = filteredGuides.slice(indexOfFirstGuide, indexOfLastGuide);
 
     return (
       <>
@@ -398,176 +524,281 @@ export default class GuideReport extends Component {
             <div className={styleHome.centered}>
               <div className={styleHome.headerTxt}>Our Amazing Tour Guides</div>
               <div className={styleHome.sloganTxt}>
-                "Stop worrying about the potholes in the road and enjoy the
-                journey."
+                "Stop worrying about the potholes in the road and enjoy the journey."
               </div>
             </div>
           </div>
         </div>
+        <Destinations/>
 
-        <div style={styles.prettyGuideReportContainer}>
-          <div style={styles.prettyGuideCardGrid}>
-            {tourguides.map((tourguide, index) => {
-              const guideFeedbacks = feedbacks[tourguide._id] || [];
-              return (
-                <div
-                  key={index}
-                  style={{
-                    ...styles.card,
-                    ...(hoveredIndex === index ? styles.cardHover : {}),
-                  }}
-                  onMouseEnter={() => this.handleMouseEnter(index)}
-                  onMouseLeave={this.handleMouseLeave}
-                >
-                  <div style={styles.imageWrapper}>
-                    <img
-                      src={
-                        tourguide.image
-                          ? `http://localhost:8070/uploads/tourguide_pictures/${tourguide.image}`
-                          : "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
-                      }
-                      alt={tourguide.fullName}
+        <div style={styles.mainLayout}>
+          {/* Sidebar */}
+          <aside style={styles.sidebar}>
+            <h3 style={styles.filterTitle}>Filters</h3>
+
+            <label style={styles.filterLabel} htmlFor="filterLocation">
+              Location
+            </label>
+            <select
+              id="filterLocation"
+              name="filterLocation"
+              value={filterLocation}
+              onChange={this.handleFilterChange}
+              style={styles.filterSelect}
+            >
+              {uniqueLocations.map((loc, idx) => (
+                <option key={idx} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </select>
+
+            <label style={styles.filterLabel} htmlFor="filterGender">
+              Gender
+            </label>
+            <select
+              id="filterGender"
+              name="filterGender"
+              value={filterGender}
+              onChange={this.handleFilterChange}
+              style={styles.filterSelect}
+            >
+              {uniqueGenders.map((gen, idx) => (
+                <option key={idx} value={gen}>
+                  {gen}
+                </option>
+              ))}
+            </select>
+
+            <label style={styles.filterLabel} htmlFor="filterMaxPrice">
+              Max Price (Rs): {filterMaxPrice}
+            </label>
+            <input
+              type="range"
+              id="filterMaxPrice"
+              name="filterMaxPrice"
+              min="0"
+              max={maxPriceLimit}
+              step="100"
+              value={filterMaxPrice}
+              onChange={this.handleFilterChange}
+              style={styles.filterRange}
+            />
+          </aside>
+
+          {/* Content */}
+          <section style={styles.contentArea}>
+            <div style={styles.prettyGuideCardGrid}>
+              {currentGuides.length > 0 ? (
+                currentGuides.map((tourguide, index) => {
+                  const guideFeedbacks = feedbacks[tourguide._id] || [];
+                  return (
+                    <div
+                      key={index}
                       style={{
-                        ...styles.img,
-                        ...(hoveredIndex === index ? styles.imgHover : {}),
+                        ...styles.card,
+                        ...(hoveredIndex === index ? styles.cardHover : {}),
                       }}
-                    />
-                  </div>
-
-                  <div style={styles.cardContent}>
-                    <h3 style={styles.guideName}>{tourguide.fullName}</h3>
-
-
-                    <span style={styles.locationBadge}>
-                      <i className="fas fa-location-dot location-icon"></i>{" "}
-                      {tourguide.address || "Japan"}
-                    </span>
-
-                    <div style={styles.infoSection}>
-                      <p className="info-item">
-                        <i className="fas fa-venus-mars"></i> {tourguide.gender}{" "}
-                        <i
-                          style={{ marginLeft: "50px" }}
-                          className="fas fa-phone"
-                        ></i>{" "}
-                        {tourguide.contactNumber}
-                      </p>
-                      <p className="info-item">
-                        <i className="fas fa-envelope"></i> {tourguide.eMail}
-                      </p>
-                      <p className="info-item big-text">
-                        <i className="fas fa-briefcase"></i>
-                        <strong>
-                          {" "}
-                          {tourguide.workExperience}{" "}
-                          <i
-                            style={{ marginLeft: "50px" }}
-                            className="fas fa-money-bill-wave"
-                          ></i>{" "}
-                          Rs. {tourguide.amount}
-                        </strong>
-                      </p>
-                    </div>
-
- 
-
-
-                    <p style={styles.description}>{tourguide.description}</p>
-
-                    <p style={styles.bookedDates}>
-                      <strong>Booked:</strong>
-                    </p>
-                    <p>
-                      From:{" "}
-                      <strong>
-                        {reservationDates[tourguide._id]?.dateFrom
-                          ? reservationDates[tourguide._id].dateFrom.toLocaleDateString()
-                          : "N/A"}
-                      </strong>{" "}
-                      To:{" "}
-                      <strong>
-                        {reservationDates[tourguide._id]?.dateTo
-                          ? reservationDates[tourguide._id].dateTo.toLocaleDateString()
-                          : "N/A"}
-                      </strong>
-                    </p>
-
-                    <button
-                      onClick={() => this.openModal(tourguide)}
-                      style={{
-                        ...styles.reserveButton,
-                        ...(reserveBtnHover ? styles.reserveButtonHover : {}),
-                      }}
-                      onMouseEnter={() => this.setState({ reserveBtnHover: true })}
-                      onMouseLeave={() => this.setState({ reserveBtnHover: false })}
+                      onMouseEnter={() => this.handleMouseEnter(index)}
+                      onMouseLeave={this.handleMouseLeave}
                     >
-                      Reserve
+                      <div style={styles.imageWrapper}>
+                        <img
+                          src={
+                            tourguide.image
+                              ? `http://localhost:8070/uploads/tourguide_pictures/${tourguide.image}`
+                              : "https://gowithguide.com/_next/image?url=https%3A%2F%2Ftravelience-cdn.s3.us-east-1.amazonaws.com%2Fgowithguide%2Fassets%2Fhero-bg-home.png&w=1080&q=80"
+                          }
+                          alt={tourguide.fullName}
+                          style={{
+                            ...styles.img,
+                            ...(hoveredIndex === index ? styles.imgHover : {}),
+                          }}
+                        />
+                      </div>
+
+                      <div style={styles.cardContent}>
+                        <h3 style={styles.guideName}>{tourguide.fullName}</h3>
+
+                        <span style={styles.locationBadge}>
+                          <i className="fas fa-location-dot location-icon"></i>{" "}
+                          {tourguide.address || "Japan"}
+                        </span>
+
+                        <div style={styles.infoSection}>
+                          <p className="info-item">
+                            <i className="fas fa-venus-mars"></i> {tourguide.gender}{" "}
+                            <i style={{ marginLeft: "120px" }} className="fas fa-phone"></i>{" "}
+                            {tourguide.contactNumber}
+                          </p>
+                         
+                          <p className="info-item big-text">
+                            <i className="fas fa-briefcase"></i>
+                            <strong>
+                              {" "}
+                              {tourguide.workExperience}{" "}
+                              <i
+                                style={{ marginLeft: "140px" }}
+                                className="fas fa-money-bill-wave"
+                              ></i>{" "}
+                              Rs. {tourguide.amount}
+                            </strong>
+                          </p>
+                           <p className="info-item">
+                            <i className="fas fa-envelope"></i> {tourguide.eMail}
+                          </p>
+                        </div>
+
+                        <p style={styles.description}>{tourguide.description}</p>
+
+                        <p style={styles.bookedDates}>
+                          <strong>Booked:</strong>
+                        </p>
+                        <p>
+                          From:{" "}
+                          <strong>
+                            {reservationDates[tourguide._id]?.dateFrom
+                              ? reservationDates[tourguide._id].dateFrom.toLocaleDateString()
+                              : "N/A"}
+                          </strong>{" "}
+                     
+                          <strong  style={{ marginLeft: "80px" }}>
+                                 To:{" "}
+                            {reservationDates[tourguide._id]?.dateTo
+                              ? reservationDates[tourguide._id].dateTo.toLocaleDateString()
+                              : "N/A"}
+                          </strong>
+                        </p>
+
+                        <button
+                          onClick={() => this.openModal(tourguide)}
+                          style={{
+                            ...styles.reserveButton,
+                            ...(reserveBtnHover ? styles.reserveButtonHover : {}),
+                          }}
+                          onMouseEnter={() => this.setState({ reserveBtnHover: true })}
+                          onMouseLeave={() => this.setState({ reserveBtnHover: false })}
+                        >
+                          Reserve
+                        </button>
+
+                        {/* Feedback Section */}
+                        <div
+                          style={{
+                            marginTop: "15px",
+                            borderTop: "1px solid #eee",
+                            paddingTop: "10px",
+                            textAlign: "left",
+                          }}
+                        >
+                          <h4
+                            style={{
+                              fontWeight: "600",
+                              color: "#2563eb",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            Feedback
+                          </h4>
+                          {Array.isArray(guideFeedbacks) && guideFeedbacks.length > 0 ? (
+                            guideFeedbacks.map((fb) => (
+                              <div
+                                key={fb._id}
+                                style={{
+                                  backgroundColor: "#f3f4f6",
+                                  padding: "10px",
+                                  borderRadius: "8px",
+                                  marginBottom: "10px",
+                                  fontSize: "0.9rem",
+                                  color: "#333",
+                                }}
+                              >
+                                <div>
+                                  <strong>Rating:</strong>{" "}
+                                  <span style={{ color: "#fbbf24" }}>
+                                    {"⭐".repeat(fb.rating)} ({fb.rating}/5)
+                                  </span>
+                                </div>
+                                <div style={{ marginTop: "4px" }}>{fb.message}</div>
+                                <div
+                                  style={{
+                                    marginTop: "6px",
+                                    fontSize: "0.8rem",
+                                    color: "#666",
+                                  }}
+                                >
+                                  By User:{" "}
+                                  {fb.userId && typeof fb.userId === "object"
+                                    ? fb.userId.fullName || fb.userId.email || fb.userId._id || "Unknown User"
+                                    : fb.userId || "Unknown User"}
+                                  <br />
+                                  On: {new Date(fb.createdAt).toLocaleDateString()}
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p style={{ fontStyle: "italic", color: "#888" }}>No feedback yet.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                  );
+                })
+              ) : (
+                <p style={{ textAlign: "center", fontSize: "1.3rem", marginTop: "3rem" }}>
+                  No tour guides found.
+                </p>
+              )}
+
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={styles.paginationContainer}>
+                <button
+                  onClick={this.goToPreviousPage}
+                  disabled={currentPage === 1}
+                  style={{
+                    ...styles.paginationButton,
+                    ...(currentPage === 1 ? styles.paginationButtonDisabled : {}),
+                  }}
+                >
+                  &lt; Previous
+                </button>
+                {[...Array(totalPages)].map((_, idx) => {
+                  const page = idx + 1;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => this.handlePageChange(page)}
+                      disabled={currentPage === page}
+                      style={{
+                        ...styles.paginationButton,
+                        ...(currentPage === page ? styles.paginationButtonActive : {}),
+                      }}
+                    >
+                      {page}
                     </button>
-                                       {/* Feedback Section */}
-                   <div
-  style={{
-    marginTop: "15px",
-    borderTop: "1px solid #eee",
-    paddingTop: "10px",
-    textAlign: "left",
-  }}
->
-  <h4
-    style={{
-      fontWeight: "600",
-      color: "#2563eb",
-      marginBottom: "8px",
-    }}
-  >
-    Feedback
-  </h4>
-  {Array.isArray(guideFeedbacks) && guideFeedbacks.length > 0 ? (
-    guideFeedbacks.map((fb) => (
-      <div
-        key={fb._id}
-        style={{
-          backgroundColor: "#f3f4f6",
-          padding: "10px",
-          borderRadius: "8px",
-          marginBottom: "10px",
-          fontSize: "0.9rem",
-          color: "#333",
-        }}
-      >
-        <div>
-          <strong>Rating:</strong>{" "}
-          <span style={{ color: "#fbbf24" }}>
-            {"⭐".repeat(fb.rating)} ({fb.rating}/5)
-          </span>
+                  );
+                })}
+                <button
+                  onClick={this.goToNextPage}
+                  disabled={currentPage === totalPages}
+                  style={{
+                    ...styles.paginationButton,
+                    ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}),
+                  }}
+                >
+                  Next &gt;
+                </button>
+              </div>
+            )}
+          </section>
+          
         </div>
-        <div style={{ marginTop: "4px" }}>{fb.message}</div>
-        <div
-          style={{
-            marginTop: "6px",
-            fontSize: "0.8rem",
-            color: "#666",
-          }}
-        >
-          By User: {
-            fb.userId && typeof fb.userId === "object"
-              ? fb.userId.fullName || fb.userId.email || fb.userId._id || "Unknown User"
-              : fb.userId || "Unknown User"
-          }
-          <br />
-          On: {new Date(fb.createdAt).toLocaleDateString()}
-        </div>
-      </div>
-    ))
-  ) : (
-    <p style={{ fontStyle: "italic", color: "#888" }}>No feedback yet.</p>
-  )}
-</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <Footer/>
+
 
         {showModal && selectedGuide && (
           <div style={styles.modalOverlay}>
@@ -629,9 +860,11 @@ export default class GuideReport extends Component {
                 Confirm Reservation
               </button>
             </div>
+            
           </div>
         )}
       </>
     );
   }
 }
+

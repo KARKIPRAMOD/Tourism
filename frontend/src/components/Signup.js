@@ -15,6 +15,16 @@ const Signup = () => {
   const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const [profile_image, setProfileImage] = useState(null);
+  
+  const validatePassword = (value) => {
+    const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?-])(?!.*\s).{8,}$/;
+    if (!regex.test(value)) {
+      setError("Password must contain at least 1 uppercase letter, 1 number, 1 special character, no spaces, and be at least 8 characters long.");
+    } else {
+      setError("");
+    }
+    setPassword(value);
+  };
 
   const history = useHistory();
 
@@ -144,7 +154,7 @@ const Signup = () => {
                       className="form-control"
                       placeholder="Full Name"
                       maxLength="25"
-                      minLength="51"
+                      minLength="5"
                       onChange={(e) => setFullName(e.target.value)}
                       required
                     />
@@ -211,11 +221,12 @@ const Signup = () => {
                   </div>
 
                   <div className="form-outline mb-4">
-                    <input
+                     <input
                       type="password"
                       className="form-control"
                       placeholder="Password"
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
+                      onChange={(e) => validatePassword(e.target.value)}
                       required
                     />
                   </div>

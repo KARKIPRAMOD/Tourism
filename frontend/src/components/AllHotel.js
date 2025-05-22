@@ -17,7 +17,10 @@ export default class AllHotel extends Component {
     this.state = {
       hotels: [],
       searchQuery: "",
-      sortKey: "",
+      filterBy: "All",
+      filterValue: "All",
+      sortBy: "",
+      sortOrder: "asc", // ascending or descending
     };
   }
 
@@ -40,11 +43,94 @@ export default class AllHotel extends Component {
     }));
   };
 
-  render() {
-    const { hotels, searchQuery } = this.state;
-    const filteredHotels = hotels.filter((hotel) =>
+  handleSearchChange = (e) => {
+    this.setState({ searchQuery: e.target.value });
+  };
+
+  handleFilterByChange = (e) => {
+    this.setState({
+      filterBy: e.target.value,
+      filterValue: "All", // reset filter value when filter by changes
+    });
+  };
+
+  handleFilterValueChange = (e) => {
+    this.setState({ filterValue: e.target.value });
+  };
+
+  handleSortByChange = (e) => {
+    this.setState({ sortBy: e.target.value });
+  };
+
+  toggleSortOrder = () => {
+    this.setState((prevState) => ({
+      sortOrder: prevState.sortOrder === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  applyFiltersAndSort = () => {
+    const { hotels, searchQuery, filterBy, filterValue, sortBy, sortOrder } = this.state;
+
+    // 1. Filter by search query (hotel name)
+    let filtered = hotels.filter((hotel) =>
       hotel.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // 2. Filter by filterBy and filterValue (type or location)
+    if (filterBy !== "All" && filterValue !== "All") {
+      if (filterBy === "Type") {
+        filtered = filtered.filter((hotel) => hotel.type === filterValue);
+      } else if (filterBy === "Location") {
+        filtered = filtered.filter((hotel) => hotel.location === filterValue);
+      }
+    }
+
+    // 3. Sort
+    if (sortBy) {
+      filtered = filtered.sort((a, b) => {
+        let valA, valB;
+
+        switch (sortBy) {
+          case "Name":
+            valA = a.name.toLowerCase();
+            valB = b.name.toLowerCase();
+            break;
+          case "Price":
+            valA = a.price;
+            valB = b.price;
+            break;
+          case "Rooms":
+            valA = a.no_of_rooms;
+            valB = b.no_of_rooms;
+            break;
+          default:
+            return 0;
+        }
+
+        if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+        if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  };
+
+  render() {
+    const {
+      searchQuery,
+      filterBy,
+      filterValue,
+      sortBy,
+      sortOrder,
+      hotels,
+    } = this.state;
+
+    // Generate filter options based on current hotels
+    const uniqueTypes = ["All", ...new Set(hotels.map((h) => h.type).filter(Boolean))];
+    const uniqueLocations = ["All", ...new Set(hotels.map((h) => h.location).filter(Boolean))];
+
+    const filteredHotels = this.applyFiltersAndSort();
 
     return (
       <div className={styles.body}>
@@ -136,25 +222,66 @@ export default class AllHotel extends Component {
                   style={{ maxWidth: "300px" }}
                   placeholder="Search a hotel"
                   value={searchQuery}
-                  onChange={(e) =>
-                    this.setState({ searchQuery: e.target.value })
-                  }
+                  onChange={this.handleSearchChange}
                 />
                 <div className="d-flex align-items-center gap-2">
-                  <select className="form-select">
-                    <option>Filter by</option>
-                    <option>Type</option>
-                    <option>Location</option>
+                  <select
+                    className="form-select"
+                    value={filterBy}
+                    onChange={this.handleFilterByChange}
+                  >
+                    <option value="All">Filter by</option>
+                    <option value="Type">Type</option>
+                    <option value="Location">Location</option>
                   </select>
-                  <select className="form-select">
-                    <option>Sort by</option>
-                    <option>Name</option>
-                    <option>Price</option>
-                    <option>Rooms</option>
+
+                  <select
+                    className="form-select"
+                    value={sortBy}
+                    onChange={this.handleSortByChange}
+                  >
+                    <option value="">Sort by</option>
+                    <option value="Name">Name</option>
+                    <option value="Price">Price</option>
+                    <option value="Rooms">Rooms</option>
                   </select>
-                  <button className="btn btn-outline-secondary">
-                    <i className="bi bi-sliders"></i>
-                  </button>
+
+                  {/* Show filter value dropdown only if filterBy is not All */}
+                  {filterBy !== "All" && (
+                    <select
+                      className="form-select"
+                      value={filterValue}
+                      onChange={this.handleFilterValueChange}
+                    >
+                      <option value="All">All</option>
+                      {filterBy === "Type" &&
+                        uniqueTypes.map((type, idx) => (
+                          <option key={idx} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      {filterBy === "Location" &&
+                        uniqueLocations.map((loc, idx) => (
+                          <option key={idx} value={loc}>
+                            {loc}
+                          </option>
+                        ))}
+                    </select>
+                  )}
+
+                  {sortBy && (
+                    <button
+                      className="btn btn-outline-secondary"
+                      title={`Toggle sort order (currently ${sortOrder})`}
+                      onClick={this.toggleSortOrder}
+                    >
+                      {sortOrder === "asc" ? (
+                        <i className="bi bi-sort-alpha-down"></i>
+                      ) : (
+                        <i className="bi bi-sort-alpha-up"></i>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
 

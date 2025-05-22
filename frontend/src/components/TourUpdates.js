@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import tourImage from '../img/tourupdates.jpg'; // Image to be shown at the top
+import tourImage from '../img/tourupdates.jpg'; 
+import Footer from "./Footer";
+
 
 const TourUpdates = () => {
   const [updates, setUpdates] = useState([]);
@@ -174,6 +176,7 @@ const TourUpdates = () => {
           }
         }
       `}</style>
+      <Footer/>
     </>
   );
 };

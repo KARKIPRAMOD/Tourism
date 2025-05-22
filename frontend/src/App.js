@@ -106,78 +106,111 @@ const App = () => {
      localStorage.removeItem("hideNavbar"); 
     window.location.reload();
   }
+  const activeStyle = {
+    fontWeight: "bold",
+    color: "#f90",       // highlight color (orange)
+    borderBottom: "2px solid #f90",
+    paddingBottom: "4px",
+  };
+    const location = useLocation();
 
+ const currentPath = location.pathname;
   return (
     <Router>
       <div className="App min-vh-100" style={{ backgroundColor: "#f7f7f7" }}>
       {isNavbarVisible && userRole !== "admin" && (
-  <nav className={`navbar-fixed-top ${styles.nav}`}>
-    <div className={`container ${styles.parentnav}`}>
-      <img src={logo} alt="Travelo logo" className={styles.logo}></img>
-      <div className={styles.topnav_center}>
-        <ul>
-          <li>
-            <Link to="/home">Home</Link>
-          </li>
-          <li>
-            <Link to="/view/hotel">Hotels</Link>
-          </li>
-          <li>
-            <Link to="/guidereport">Tour Guides</Link>
-          </li>
-          <li>
-            <Link to="/view/cuspackage">Tour Packages</Link>
-          </li>
-           <li>
-            <Link to="/thingstodo">Things To Do</Link>
-          </li>
-          <li>
-            <Link to="/tour-updates">Tour Updates</Link>
-          </li>         
-        </ul>
-      </div>
+        <nav className={`navbar-fixed-top ${styles.nav}`}>
+          <div className={`container ${styles.parentnav}`}>
+            <img src={logo} alt="Travelo logo" className={styles.logo} />
+            <div className={styles.topnav_center}>
+              <ul>
+                <li>
+                  <Link
+                    to="/home"
+                    style={currentPath === "/home" ? activeStyle : undefined}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/view/hotel"
+                    style={currentPath === "/view/hotel" ? activeStyle : undefined}
+                  >
+                    Hotels
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/guidereport"
+                    style={currentPath === "/guidereport" ? activeStyle : undefined}
+                  >
+                    Tour Guides
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/view/cuspackage"
+                    style={currentPath === "/view/cuspackage" ? activeStyle : undefined}
+                  >
+                    Tour Packages
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/thingstodo"
+                    style={currentPath === "/thingstodo" ? activeStyle : undefined}
+                  >
+                    Things To Do
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/tour-updates"
+                    style={currentPath === "/tour-updates" ? activeStyle : undefined}
+                  >
+                    Tour Updates
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-      {/* Profile and Login/Logout */}
-      <div className="d-flex align-items-center">
-        {/* Profile Icon */}
-        {userId && (
-          <a
-            href={`/profile/home/${userId}`}
-            className="d-flex align-items-center me-3"
-            onClick={(e) => {
-              if (!userId) {
-                localStorage.setItem("hideNavbar", "false");
-              } else {
-                localStorage.setItem("hideNavbar", "true");
-              }
+            {/* Profile and Login/Logout */}
+            <div className="d-flex align-items-center">
+              {userId && (
+                <a
+                  href={`/profile/home/${userId}`}
+                  className="d-flex align-items-center me-3"
+                  onClick={(e) => {
+                    if (!userId) {
+                      localStorage.setItem("hideNavbar", "false");
+                    } else {
+                      localStorage.setItem("hideNavbar", "true");
+                    }
+                    window.location.href = `/profile/home/${userId}`;
+                    window.location.reload();
+                  }}
+                >
+                  <i
+                    className="bi bi-person-circle"
+                    style={{ fontSize: "2.5rem", color: "#000" }}
+                  ></i>
+                </a>
+              )}
 
-              // Force navigation to the Profile page
-              window.location.href = `/profile/home/${userId}`;
-              window.location.reload();
-            }}
-          >
-            <i className="bi bi-person-circle" style={{ fontSize: "2.5rem", color: "#000" }}></i>
-          </a>
-        )}
-
-        {/* Login/Logout Button */}
-        {userId ? (
-          <Link
-            to={"/home"}
-            onClick={logout}
-            className={styles.btn_login}
-          >
-            Logout
-          </Link>
-        ) : (
-          <Link to={"/user/login"} className={styles.btn_login}>
-            Login
-          </Link>
-        )}
-      </div>
-    </div>
-  </nav>
-)}
+              {userId ? (
+                <Link to={"/home"} onClick={logout} className={styles.btn_login}>
+                  Logout
+                </Link>
+              ) : (
+                <Link to={"/user/login"} className={styles.btn_login}>
+                  Login
+                </Link>
+              )}
+            </div>
+          </div>
+        </nav>
+      )}
 
 
 

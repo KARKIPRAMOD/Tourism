@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../style_sheets/View.module.css";
+import Destinations from "./hotelimages";
 
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaArrowAltCircleRight } from "react-icons/fa";
@@ -139,6 +141,7 @@ export default class ViewHotel extends Component {
     const totalPages = Math.ceil(filteredHotels.length / hotelsPerPage);
 
     return (
+      
       <div
         className={styles.body}
         style={{
@@ -147,7 +150,8 @@ export default class ViewHotel extends Component {
           width: "100%",
           textAlign: "left",
         }}
-      >
+      >          
+
         {/* Home Section */}
         <section
           className={styles.home2}
@@ -161,14 +165,20 @@ export default class ViewHotel extends Component {
 
           </div>
         </section>
+          <Destinations/>
+          <div className={styles.heading} style={{ textAlign: "center" }}>
+            <h1>
+              Our <span>Rooms</span>
+            </h1>
+          </div>
 
         {/* Offer Section */}
-        <section className={styles.offer} style={{ paddingLeft: "20px", paddingRight: "20px" }}>
+        <section className={styles.offer} style={{ paddingLeft: "20px", paddingRight: "20px"}}>
           <div
             className={styles.container}
             style={{ margin: 0, maxWidth: "100%", padding: 0 }}
           >
-            <div className="row p-0" style={{ marginLeft: 0, marginRight: 0 }}>
+            <div className="row p-0" style={{ marginLeft: 0, marginRight: 0}}>
               {/* Sidebar for Filters */}
               <div
                 className="col-md-2 p-0"
@@ -213,6 +223,23 @@ export default class ViewHotel extends Component {
                     }}
                   />
                 </div>
+                <h4
+                    style={{
+                      fontWeight: "600",
+                      marginBottom: "10px",
+                      borderBottom: "2px solid orange",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    Type Search
+                  </h4>
+                 <input
+                  className="form-control mb-4"
+                  type="search"
+                  placeholder="Search type of hotel"
+                  value={searchPackageName}
+                  onChange={this.handlePackageNameSearch}
+                />
 
                 {/* Filter By Price */}
                 <div style={{ marginBottom: "10px" }}>
@@ -259,20 +286,10 @@ export default class ViewHotel extends Component {
               {/* Hotels Section */}
               <div
                 className="col-md-10"
-                style={{ paddingLeft: "15px", paddingRight: "15px", textAlign: "left" }}
+                style={{ paddingLeft: "30px", paddingRight: "15px", textAlign: "left" }}
               >
-                <input
-                  className="form-control mb-4"
-                  type="search"
-                  placeholder="Search type of hotel"
-                  value={searchPackageName}
-                  onChange={this.handlePackageNameSearch}
-                />
-                <div className={styles.heading} style={{ textAlign: "left" }}>
-                  <h1>
-                    Our <span>Rooms</span>
-                  </h1>
-                </div>
+               
+                
 
                 {/* Hotel Cards */}
                 <div className="row">
@@ -382,7 +399,7 @@ export default class ViewHotel extends Component {
         </section>
 
         {/* Gallery Section */}
-        <div
+        {/* <div
           className={styles.gallery}
           style={{ textAlign: "left", paddingLeft: "20px", paddingRight: "20px" }}
         >
@@ -398,7 +415,8 @@ export default class ViewHotel extends Component {
               )
             )}
           </div>
-        </div>
+        </div> */}
+        <Footer/>
       </div>
     );
   }
