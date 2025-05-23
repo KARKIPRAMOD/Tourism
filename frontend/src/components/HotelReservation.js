@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import qr from "../img/qr.png"
 
 function HotelReservation() {
   const location = useLocation();
@@ -305,7 +306,10 @@ function HotelReservation() {
               Book Now
             </button>
           </form>
+                              <img src={qr} alt="Main Hotel" style={styles.mainImage} />
+
         </div>
+
       </div>
 
       <style>

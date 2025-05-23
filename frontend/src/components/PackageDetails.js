@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "../style_sheets/PackageDetails.module.css"; // Corrected CSS import path
 import { Link } from "react-router-dom";
+import qr from "../img/qr.png"
 
 function PackageDetails() {
   const { packageId } = useParams(); // Get packageId from URL
@@ -228,6 +229,7 @@ function PackageDetails() {
             🚀 Book Now
           </button>
         </form>
+        
 
           {/* Confirmation Message */}
           {message && <div className={styles.message}>{message}</div>}
